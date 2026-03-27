@@ -43,7 +43,7 @@ function PositionalStep({ active, tokens }) {
       <button
         onClick={() => {
   if (usePosition) {
-    // going to WITHOUT → shuffle once
+    // going to WITHOUT  → shuffle once
     setShuffledTokens(shuffleArray(tokens));
   }
   setUsePosition(!usePosition);
@@ -51,8 +51,8 @@ function PositionalStep({ active, tokens }) {
         className="mb-4 px-4 py-1 text-xs border border-red-400 text-red-300 rounded hover:bg-red-400/10"
       >
         {usePosition
-          ? "Without Positional Encoding"
-          : "With Positional Encoding"}
+          ? "Show Without Positional Encoding"
+          : "Show With Positional Encoding"}
       </button>
 
       <div className="flex flex-col gap-4 w-full items-center">
