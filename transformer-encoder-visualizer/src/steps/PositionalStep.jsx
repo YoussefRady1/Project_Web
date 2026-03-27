@@ -72,7 +72,7 @@ function PositionalStep({ active, tokens }) {
             >
               {/* 🔥 WORD + LABEL */}
               <div className="text-cyan-300 text-sm w-20 text-right">
-                Word {index + 1}
+                (Word {index + 1})
               </div>
 
               {/* WORD */}

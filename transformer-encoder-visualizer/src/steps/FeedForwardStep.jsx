@@ -11,25 +11,15 @@ const generateVector = () =>
   });
 
 function FeedForwardStep({ active, tokens }) {
-  const [phase, setPhase] = useState(0);
+  const [isOutput, setIsOutput] = useState(false);
   const [vectors, setVectors] = useState([]);
 
-  // ✅ Generate vectors ONLY when tokens change
+  // ✅ Generate once per tokens change
   useEffect(() => {
     const newVectors = tokens.map(() => generateVector());
     setVectors(newVectors);
+    setIsOutput(false); // reset to input
   }, [tokens]);
-
-  // ✅ Animation loop
-  useEffect(() => {
-    if (!active) return;
-
-    const interval = setInterval(() => {
-      setPhase((p) => (p === 0 ? 1 : 0));
-    }, 2500);
-
-    return () => clearInterval(interval);
-  }, [active]);
 
   return (
     <motion.div
@@ -46,8 +36,20 @@ function FeedForwardStep({ active, tokens }) {
       </h2>
 
       <p className="text-xs text-slate-400 text-center mb-4">
-        ReLU converts negative to zero
+        Refine and improve each word’s representation by ReLU that converts negative to zero
       </p>
+
+      {/* 🔥 BUTTON */}
+      <button
+        onClick={() => setIsOutput((prev) => !prev)}
+        className={`mb-4 px-4 py-1 text-xs border rounded ${
+          isOutput
+            ? "border-green-400 text-green-300 hover:bg-green-400/10"
+            : "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10"
+        }`}
+      >
+        {isOutput ? "Show Input" : "Show Output" }
+      </button>
 
       <div className="flex flex-col gap-4 w-full">
 
@@ -71,18 +73,19 @@ function FeedForwardStep({ active, tokens }) {
                   const isNegative = val < 0;
                   const relu = Math.max(0, val);
 
-                  const displayValue =
-                    phase === 0 ? v : relu.toFixed(2);
+                  const displayValue = isOutput
+                    ? relu.toFixed(2)
+                    : v;
 
                   const isRed =
-                    phase === 0 && isNegative;
+                    !isOutput && isNegative;
 
                   return (
                     <motion.div
                       key={i}
                       animate={{
                         scale:
-                          isNegative && phase === 1
+                          isNegative && isOutput
                             ? [1, 1.15, 1]
                             : 1,
                       }}
@@ -99,10 +102,10 @@ function FeedForwardStep({ active, tokens }) {
                 })}
               </div>
 
-              {/* 🔥 ARROW (FLIPS) */}
+              {/* 🔥 ARROW (FLIPS MANUALLY) */}
               <motion.span
                 animate={{
-                  rotate: phase === 1 ? 180 : 0,
+                  rotate: isOutput ? 180 : 0,
                 }}
                 transition={{ duration: 0.4 }}
                 className="text-cyan-400"
