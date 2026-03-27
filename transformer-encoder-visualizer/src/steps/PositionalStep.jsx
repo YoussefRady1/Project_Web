@@ -43,7 +43,7 @@ function PositionalStep({ active, tokens }) {
       <button
         onClick={() => {
   if (usePosition) {
-    // going to WITHOUT → shuffle once
+    // going to WITHOUT  → shuffle once
     setShuffledTokens(shuffleArray(tokens));
   }
   setUsePosition(!usePosition);
