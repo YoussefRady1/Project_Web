@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 const BOX_W = 760;
 const BOX_H = 340;
 const GRAPH_W = 700;
-const GRAPH_H = 220;
+const GRAPH_H = 250;
 const GRAPH_X = 30;
 const GRAPH_Y = 90;
 const NODE_R = 28;
@@ -263,6 +263,7 @@ function AttentionStep({ active, tokens = [] }) {
             Self-Attention
           </h2>
           <p className="text-slate-400 text-sm mt-1">
+            (Each word focuses on other words)<br />
             Cut links with the scissor. Double-tap one neuron, then another, to reconnect a cut link.
           </p>
         </div>
