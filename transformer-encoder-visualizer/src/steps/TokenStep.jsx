@@ -111,9 +111,13 @@ function TokenStep({ active, tokens = [] }) {
       transition={{ duration: 0.3 }}
       className="p-6 border border-cyan-500 rounded-2xl w-[420px] h-[260px] flex flex-col items-center justify-center overflow-hidden"
     >
-      <h2 className="text-cyan-300 font-semibold text-center mb-4">
-        Tokenization
-      </h2>
+      <h2 className="text-cyan-300 font-semibold text-center">
+  Tokenization
+</h2>
+
+<p className="text-xs text-slate-400 text-center mb-6">
+  Splits the sentence into individual words
+</p>
 
       {/* 🔥 BUTTONS */}
       <div className="flex gap-3 mb-4">
