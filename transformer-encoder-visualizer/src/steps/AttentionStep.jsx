@@ -1,12 +1,14 @@
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-const BOX_W = 760;
-const BOX_H = 340;
-const GRAPH_W = 700;
+const BOX_W = 980;
+const BOX_H = 420;
+
+const GRAPH_W = 620;
 const GRAPH_H = 250;
-const GRAPH_X = 30;
-const GRAPH_Y = 90;
+const GRAPH_X = 20;
+const GRAPH_Y = 112;
+
 const NODE_R = 28;
 const SCISSOR_SIZE = 34;
 const CUT_DISTANCE = 12;
@@ -30,7 +32,7 @@ function getNodePositions(count) {
   else radius = 60;
 
   return Array.from({ length: safeCount }).map((_, i) => {
-    const angle = (-Math.PI / 2) + (i * 2 * Math.PI) / safeCount;
+    const angle = -Math.PI / 2 + (i * 2 * Math.PI) / safeCount;
     return {
       x: cx + radius * Math.cos(angle),
       y: cy + radius * Math.sin(angle),
@@ -84,9 +86,103 @@ function getConnectionStateColor(ratio) {
   };
 }
 
+// Same embedding rule used in Embedding / Positional step
+function generateEmbeddingVector(word) {
+  const cleanWord = (word || "").toLowerCase();
+
+  if (!cleanWord) return [0, 0, 0, 0];
+
+  const chars = cleanWord.split("");
+  const codes = chars.map((char) => char.charCodeAt(0));
+
+  const sum = codes.reduce((acc, code) => acc + code, 0);
+  const first = codes[0] || 0;
+  const last = codes[codes.length - 1] || 0;
+  const length = cleanWord.length;
+
+  const vowelCount = chars.filter((char) =>
+    ["a", "e", "i", "o", "u"].includes(char)
+  ).length;
+
+  return [
+    Number(((sum % 100) / 100).toFixed(2)),
+    Number((((first * length) % 100) / 100).toFixed(2)),
+    Number((((last + vowelCount * 7) % 100) / 100).toFixed(2)),
+    Number(((((sum + first + last + length) * 3) % 100) / 100).toFixed(2)),
+  ];
+}
+
+// Same positional rule used in Positional step
+function generatePositionVector(position) {
+  const pos = position + 1;
+
+  return [
+    Number(((pos * 0.1) % 1).toFixed(2)),
+    Number(((pos * 0.2) % 1).toFixed(2)),
+    Number(((pos * 0.3) % 1).toFixed(2)),
+    Number(((pos * 0.4) % 1).toFixed(2)),
+  ];
+}
+
+function addVectors(a, b) {
+  return a.map((value, index) => Number((value + b[index]).toFixed(2)));
+}
+
+// Small fixed demo projection matrices
+const WQ = [0.9, 0.3, 0.6, 0.2];
+const WK = [0.2, 0.8, 0.4, 0.7];
+const WV = [0.7, 0.4, 0.9, 0.3];
+
+function projectVector(input, weights, shift) {
+  return input.map((value, index) =>
+    Number(((value * weights[index] + shift[index]) % 1).toFixed(2))
+  );
+}
+
+const Q_SHIFT = [0.03, 0.05, 0.02, 0.04];
+const K_SHIFT = [0.04, 0.02, 0.05, 0.03];
+const V_SHIFT = [0.02, 0.04, 0.03, 0.05];
+
+function formatVector(vector) {
+  return vector.map((v) => v.toFixed(2));
+}
+
+function dotProduct(a, b) {
+  return a.reduce((sum, value, index) => sum + value * b[index], 0);
+}
+
+function normalizeScore(score) {
+  return Math.min(0.99, Math.max(0, score / 2.5));
+}
+
 function AttentionStep({ active, tokens = [] }) {
   const safeTokens = tokens.length ? tokens.slice(0, 10) : ["token"];
-  const positions = useMemo(() => getNodePositions(safeTokens.length), [safeTokens.length]);
+  const positions = useMemo(
+    () => getNodePositions(safeTokens.length),
+    [safeTokens.length]
+  );
+
+  const tokenVectors = useMemo(() => {
+    return safeTokens.map((word, index) => {
+      const embedding = generateEmbeddingVector(word);
+      const positional = generatePositionVector(index);
+      const input = addVectors(embedding, positional);
+
+      const query = projectVector(input, WQ, Q_SHIFT);
+      const key = projectVector(input, WK, K_SHIFT);
+      const value = projectVector(input, WV, V_SHIFT);
+
+      return {
+        word,
+        embedding,
+        positional,
+        input,
+        query,
+        key,
+        value,
+      };
+    });
+  }, [safeTokens]);
 
   const baseEdges = useMemo(() => {
     const edges = [];
@@ -100,9 +196,10 @@ function AttentionStep({ active, tokens = [] }) {
 
   const [edgeState, setEdgeState] = useState({});
   const [selectedNode, setSelectedNode] = useState(null);
+  const [focusedNode, setFocusedNode] = useState(0);
   const [scissorPos, setScissorPos] = useState({
-    x: BOX_W - 72,
-    y: 34,
+    x: GRAPH_X + GRAPH_W - 50,
+    y: 28,
   });
   const [dragging, setDragging] = useState(false);
   const [lastTap, setLastTap] = useState({ node: null, time: 0 });
@@ -117,6 +214,12 @@ function AttentionStep({ active, tokens = [] }) {
     setEdgeState(initial);
     setSelectedNode(null);
   }, [baseEdges]);
+
+  useEffect(() => {
+    if (focusedNode > safeTokens.length - 1) {
+      setFocusedNode(0);
+    }
+  }, [safeTokens.length, focusedNode]);
 
   const connectionRatioByNode = useMemo(() => {
     const totalPossible = Math.max(1, safeTokens.length - 1);
@@ -183,8 +286,11 @@ function AttentionStep({ active, tokens = [] }) {
     const localX = clientX - rect.left;
     const localY = clientY - rect.top;
 
-    const clampedX = Math.max(12, Math.min(BOX_W - SCISSOR_SIZE - 12, localX - SCISSOR_SIZE / 2));
-    const clampedY = Math.max(12, Math.min(BOX_H - SCISSOR_SIZE - 12, localY - SCISSOR_SIZE / 2));
+    const maxX = GRAPH_X + GRAPH_W - SCISSOR_SIZE - 10;
+    const maxY = BOX_H - SCISSOR_SIZE - 12;
+
+    const clampedX = Math.max(12, Math.min(maxX, localX - SCISSOR_SIZE / 2));
+    const clampedY = Math.max(12, Math.min(maxY, localY - SCISSOR_SIZE / 2));
 
     setScissorPos({ x: clampedX, y: clampedY });
 
@@ -218,6 +324,7 @@ function AttentionStep({ active, tokens = [] }) {
     const isDoubleTap =
       lastTap.node === nodeIndex && now - lastTap.time <= DOUBLE_TAP_MS;
 
+    setFocusedNode(nodeIndex);
     setLastTap({ node: nodeIndex, time: now });
 
     if (!isDoubleTap) return;
@@ -242,6 +349,30 @@ function AttentionStep({ active, tokens = [] }) {
     setSelectedNode(null);
   };
 
+      const focusedData = tokenVectors[focusedNode] || tokenVectors[0];
+
+  const attentionMatrix = tokenVectors.map((sourceToken, rowIndex) =>
+    tokenVectors.map((targetToken, colIndex) => {
+      const rawScore = dotProduct(sourceToken.query, targetToken.key);
+      const normalized = normalizeScore(rawScore);
+      const key = edgeKey(rowIndex, colIndex);
+
+      if (rowIndex === colIndex) {
+        return {
+          raw: rawScore,
+          score: Number(normalized.toFixed(2)),
+          active: true,
+        };
+      }
+
+      return {
+        raw: rawScore,
+        score: Number(normalized.toFixed(2)),
+        active: !!edgeState[key],
+      };
+    })
+  );
+
   return (
     <motion.div
       animate={{
@@ -258,13 +389,17 @@ function AttentionStep({ active, tokens = [] }) {
         style={{ touchAction: "none" }}
       >
         {/* Title */}
-        <div className="absolute top-6 left-0 right-0 text-center">
-          <h2 className="text-cyan-300 font-semibold text-3xl" style={{ fontSize: "1.75rem" }}>
+        <div className="absolute top-5 left-0 right-0 text-center">
+          <h2
+            className="text-cyan-300 font-semibold text-3xl"
+            style={{ fontSize: "1.6rem" }}
+          >
             Self-Attention
           </h2>
-          <p className="text-slate-400 text-sm mt-1">
-            (Each word focuses on other words)<br />
-            Cut links with the scissor. Double-tap one neuron, then another, to reconnect a cut link.
+          <p className="text-slate-400 text-sm mt-1 leading-5">
+            Each word compares itself with other words to decide what to focus on.
+            <br />
+            Cut links with the scissor. Double-tap one word, then another, to reconnect a cut link.
           </p>
         </div>
 
@@ -289,14 +424,269 @@ function AttentionStep({ active, tokens = [] }) {
           <span className="text-cyan-300 text-lg leading-none">✂</span>
         </motion.div>
 
-        {/* SVG graph */}
-        <svg
-          width={BOX_W}
-          height={BOX_H}
-          className="absolute inset-0"
+        {/* Right educational panel */}
+        <div
+  className="absolute top-[120px] right-4 z-30 w-[420px] h-[320px] overflow-y-scroll rounded-xl border border-slate-700 bg-slate-900/95 p-4 pr-3 pointer-events-auto"
+  onPointerDown={(e) => e.stopPropagation()}
+  onWheel={(e) => e.stopPropagation()}
+  style={{
+    touchAction: "auto",
+    overscrollBehavior: "contain",
+    WebkitOverflowScrolling: "touch",
+    scrollbarWidth: "thin",
+  }}
+>
+          <div className="min-h-max"> 
+  <div className="flex items-start justify-between mb-3 gap-3"></div>
+            <div>
+              <div className="text-cyan-300 text-sm font-semibold">
+                Attention details
+              </div>
+              <div className="text-[11px] text-slate-500">
+                Focused word: <span className="text-white">{focusedData.word}</span>
+              </div>
+            </div>
+
+            <div className="text-[10px] text-slate-400 text-right leading-4">
+  Click any word
+  <br />
+  to inspect it
+</div>
+          </div>
+
+          <div className="space-y-3 text-[11px]">
+            <div className="rounded-lg border border-cyan-400/30 bg-cyan-400/5 p-3">
+              <div className="text-cyan-300 font-medium mb-1">
+                Input from Positional Encoding
+              </div>
+              <div className="text-slate-300 leading-5">
+                Input vector = Embedding + Position
+              </div>
+
+
+
+              <div className="mt-2 flex items-center gap-2 flex-wrap">
+  {/* Embedding */}
+  <div className="flex gap-1">
+    {formatVector(focusedData.embedding).map((v, i) => (
+      <span
+        key={`emb-${i}`}
+        className="px-2 py-1 rounded border border-cyan-400 text-cyan-300"
+      >
+        {v}
+      </span>
+    ))}
+  </div>
+
+  <span className="text-cyan-400">+</span>
+
+  {/* Position */}
+  <div className="flex gap-1">
+    {formatVector(focusedData.positional).map((v, i) => (
+      <span
+        key={`pos-${i}`}
+        className="px-2 py-1 rounded border border-purple-400 text-purple-300"
+      >
+        {v}
+      </span>
+    ))}
+  </div>
+</div>
+
+{/* RESULT */}
+<div className="mt-2 flex items-center gap-2">
+  <span className="text-cyan-400">→</span>
+  <div className="flex gap-1">
+    {formatVector(focusedData.input).map((v, i) => (
+      <span
+        key={`inp-${i}`}
+        className="px-2 py-1 rounded border border-green-400 text-green-300"
+      >
+        {v}
+      </span>
+    ))}
+  </div>
+</div>
+            </div>
+
+            <div className="rounded-lg border border-slate-700 bg-slate-950/60 p-3">
+  <div className="text-slate-300 font-medium mb-2">
+    Q, K, V from the input vector
+  </div>
+
+  <div className="text-[11px] text-slate-400 leading-5 mb-3">
+    The same input vector is transformed into three versions:
+    <br />
+    <span className="text-amber-300">Q (Query)</span> = what this word is looking for
+    <br />
+    <span className="text-pink-300">K (Key)</span> = what this word offers to other words
+    <br />
+    <span className="text-lime-300">V (Value)</span> = the information passed forward
+  </div>
+
+  <div className="rounded-md border border-slate-800 bg-slate-900/70 p-2 mb-3">
+    <div className="text-[10px] text-slate-500 mb-1">Focused input vector</div>
+    <div className="flex flex-wrap gap-1">
+      {formatVector(focusedData.input).map((v, i) => (
+        <span
+          key={`input-show-${i}`}
+          className="px-2 py-1 rounded border border-green-400 text-green-300"
         >
+          {v}
+        </span>
+      ))}
+    </div>
+  </div>
+
+  <div className="space-y-3">
+    <div className="border border-amber-400/30 rounded-md p-2 bg-amber-400/5">
+      <div className="text-[10px] text-amber-300 mb-1">
+        Query (Q) → input transformed with a fixed demo rule
+      </div>
+      <div className="flex flex-wrap gap-1">
+        {formatVector(focusedData.query).map((v, i) => (
+          <span
+            key={`q-${i}`}
+            className="px-2 py-1 rounded border border-amber-400 text-amber-300"
+          >
+            {v}
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <div className="border border-pink-400/30 rounded-md p-2 bg-pink-400/5">
+      <div className="text-[10px] text-pink-300 mb-1">
+        Key (K) → another transformed version of the same input
+      </div>
+      <div className="flex flex-wrap gap-1">
+        {formatVector(focusedData.key).map((v, i) => (
+          <span
+            key={`k-${i}`}
+            className="px-2 py-1 rounded border border-pink-400 text-pink-300"
+          >
+            {v}
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <div className="border border-lime-400/30 rounded-md p-2 bg-lime-400/5">
+      <div className="text-[10px] text-lime-300 mb-1">
+        Value (V) → the version used to pass information onward
+      </div>
+      <div className="flex flex-wrap gap-1">
+        {formatVector(focusedData.value).map((v, i) => (
+          <span
+            key={`v-${i}`}
+            className="px-2 py-1 rounded border border-lime-400 text-lime-300"
+          >
+            {v}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div className="rounded-lg border border-slate-700 bg-slate-950/60 p-3">
+  <div className="text-slate-300 font-medium mb-2">
+    Attention score matrix
+  </div>
+
+  <div className="text-[11px] text-slate-400 leading-5 mb-3">
+    Each cell compares the <span className="text-amber-300">Query</span> of the row word
+    with the <span className="text-pink-300">Key</span> of the column word.
+    <br />
+    Higher score = stronger attention.
+  </div>
+
+  <div className="overflow-x-auto">
+    <table className="text-[11px] border-collapse">
+      <thead>
+        <tr>
+          <th className="px-2 py-1 text-slate-500"></th>
+          {safeTokens.map((token, index) => (
+            <th
+              key={`col-${index}`}
+              className="px-2 py-1 text-cyan-300 font-medium"
+            >
+              {token}
+            </th>
+          ))}
+        </tr>
+      </thead>
+
+      <tbody>
+        {attentionMatrix.map((row, rowIndex) => (
+          <tr key={`row-${rowIndex}`}>
+            <td className="px-2 py-1 text-cyan-300 font-medium">
+              {safeTokens[rowIndex]}
+            </td>
+
+            {row.map((cell, colIndex) => {
+              const isDiagonal = rowIndex === colIndex;
+              const bgClass = isDiagonal
+                ? "bg-slate-800/90 text-white"
+                : cell.active
+                ? "bg-cyan-400/10 text-cyan-200"
+                : "bg-red-400/10 text-red-300";
+
+              return (
+                <td key={`cell-${rowIndex}-${colIndex}`} className="px-1 py-1">
+                  <div
+                    className={`min-w-[44px] text-center rounded border border-slate-700 px-2 py-1 ${bgClass}`}
+                  >
+                    {cell.score.toFixed(2)}
+                  </div>
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <div className="mt-3 text-[11px] text-slate-400 leading-5">
+    Cyan cells = currently allowed graph connections.
+    <br />
+    Red cells = disconnected graph links, so that attention path is blocked in this demo.
+  </div>
+</div>
+
+
+            <div className="rounded-lg border border-slate-700 bg-slate-950/60 p-3 text-slate-300 leading-5">
+  <div className="text-cyan-300 font-medium mb-1">
+    How the graph, Q/K/V, and matrix relate
+  </div>
+
+  1. The input vector creates <span className="text-amber-300">Q</span>, <span className="text-pink-300">K</span>, and <span className="text-lime-300">V</span>.
+  <br /><br />
+
+  2. The matrix compares <span className="text-amber-300">Q</span> of one word with <span className="text-pink-300">K</span> of another word.
+  <br /><br />
+
+  3. The graph shows these attention relationships visually.
+  <br /><br />
+
+  4. Disconnecting a graph edge does <span className="text-white">not</span> change Q, K, or V.
+  It blocks that attention connection in the demo matrix instead.
+</div>
+          </div>
+        </div>
+        
+
+        {/* SVG graph */}
+        <svg width={BOX_W} height={BOX_H} className="absolute inset-0">
           <defs>
-            <linearGradient id="attentionActiveLine" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient
+              id="attentionActiveLine"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="100%"
+            >
               <stop offset="0%" stopColor="#22d3ee" />
               <stop offset="100%" stopColor="#38bdf8" />
             </linearGradient>
@@ -312,7 +702,7 @@ function AttentionStep({ active, tokens = [] }) {
                     y1={line.y1}
                     x2={line.x2}
                     y2={line.y2}
-                    stroke="url(#attentionActiveLine)"
+                    stroke="#22d3ee"
                     strokeWidth="1.8"
                     strokeDasharray="5 5"
                     animate={{
@@ -364,6 +754,7 @@ function AttentionStep({ active, tokens = [] }) {
           const ratio = connectionRatioByNode[index];
           const color = getConnectionStateColor(ratio);
           const isSelected = selectedNode === index;
+          const isFocused = focusedNode === index;
 
           return (
             <motion.button
@@ -373,7 +764,7 @@ function AttentionStep({ active, tokens = [] }) {
               animate={{
                 x: pos.x - NODE_R,
                 y: pos.y - NODE_R,
-                scale: isSelected ? 1.08 : 1,
+                scale: isSelected ? 1.08 : isFocused ? 1.05 : 1,
               }}
               transition={{ duration: 0.2 }}
               className="absolute z-10 w-[56px] h-[56px] rounded-full border bg-slate-900 flex items-center justify-center text-sm font-semibold"
@@ -383,6 +774,8 @@ function AttentionStep({ active, tokens = [] }) {
                 background: color.fill,
                 boxShadow: isSelected
                   ? `0 0 0 2px rgba(255,255,255,0.15), ${color.glow}`
+                  : isFocused
+                  ? `0 0 0 2px rgba(34,211,238,0.22), ${color.glow}`
                   : color.glow,
               }}
               title={`${safeTokens[index]} — ${Math.round(ratio * 100)}% connected`}
@@ -392,11 +785,17 @@ function AttentionStep({ active, tokens = [] }) {
           );
         })}
 
-        {/* Legend */}
+        {/* Bottom-left legend */}
         <div className="absolute bottom-4 left-4 text-[11px] text-slate-400 space-y-1">
-          <div><span className="text-green-400">●</span> 70%–100% connected</div>
-          <div><span className="text-amber-400">●</span> 50%–69% connected</div>
-          <div><span className="text-red-400">●</span> below 50% connected</div>
+          <div>
+            <span className="text-green-400">●</span> 70%–100% connected
+          </div>
+          <div>
+            <span className="text-amber-400">●</span> 50%–69% connected
+          </div>
+          <div>
+            <span className="text-red-400">●</span> below 50% connected
+          </div>
         </div>
       </div>
     </motion.div>
