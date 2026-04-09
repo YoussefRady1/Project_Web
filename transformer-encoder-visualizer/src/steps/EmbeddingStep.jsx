@@ -59,7 +59,7 @@ function EmbeddingStep({ active, tokens }) {
         scale: active ? 1 : 0.95,
       }}
       transition={{ duration: 0.3 }}
-      className="p-6 border border-cyan-500 rounded-2xl w-[700px] min-h-[260px] flex flex-col items-center"
+      className="p-6 border border-cyan-500 rounded-2xl w-[760px] min-h-[420px] flex flex-col items-center"
     >
       <h2 className="text-cyan-300 font-semibold text-center">
         Embedding
@@ -69,78 +69,16 @@ function EmbeddingStep({ active, tokens }) {
         converts each word into a vector
       </p>
 
-      <div className="w-full grid grid-cols-[1.4fr_1fr] gap-6 items-start">
-        {/* LEFT: WORD TO VECTOR */}
-        <div className="flex flex-col gap-4 mt-1">
-          {tokens.map((word, index) => {
-            const vector = generateVector(word);
-
-            return (
-              <div key={index} className="flex items-center gap-3">
-                <motion.div
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{
-                    opacity: active ? 1 : 0.3,
-                    x: active ? 0 : -10,
-                  }}
-                  transition={{ delay: index * 0.15 }}
-                  className="text-cyan-300 text-sm w-16 text-right font-medium"
-                >
-                  {word}
-                </motion.div>
-
-                <motion.div
-                  animate={{
-                    x: active ? [0, 6, 0] : 0,
-                    opacity: active ? 1 : 0,
-                  }}
-                  transition={{
-                    duration: 1,
-                    repeat: Infinity,
-                    delay: index * 0.15,
-                  }}
-                  className="text-cyan-400"
-                >
-                  →
-                </motion.div>
-
-                <div className="flex flex-col gap-1">
-                  <div className="text-[10px] text-slate-500">letter-based demo vector</div>
-
-                  <div className="flex gap-1 bg-slate-900 px-2 py-1 rounded border border-cyan-400">
-                    {vector.map((v, i) => (
-                      <motion.span
-                        key={i}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{
-                          opacity: active ? 1 : 0,
-                          y: active ? 0 : 10,
-                        }}
-                        transition={{
-                          delay: index * 0.15 + i * 0.08,
-                          duration: 0.25,
-                        }}
-                        className="text-white text-xs"
-                      >
-                        {v}
-                      </motion.span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* RIGHT: SIMPLE EXPLANATION */}
+      <div className="w-full flex flex-col gap-6 items-center">
+                {/* TOP: SIMPLE EXPLANATION */}
         <motion.div
-          initial={{ opacity: 0, x: 10 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{
             opacity: active ? 1 : 0.2,
-            x: active ? 0 : 10,
+            y: active ? 0 : -10,
           }}
           transition={{ duration: 0.4, delay: 0.2 }}
-          className="rounded-xl border border-slate-700 bg-slate-900/70 p-4"
+          className="w-full rounded-xl border border-slate-700 bg-slate-900/70 p-4"
         >
           <div className="mb-4 flex justify-center">
   <button
@@ -285,7 +223,69 @@ function EmbeddingStep({ active, tokens }) {
 </div>
   </>
 )}
-        </motion.div>
+                </motion.div>
+
+        {/* BOTTOM: WORD TO VECTOR */}
+        <div className="w-full flex flex-col gap-4 mt-1 items-center">
+          {tokens.map((word, index) => {
+            const vector = generateVector(word);
+
+            return (
+              <div key={index} className="flex items-center gap-3">
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{
+                    opacity: active ? 1 : 0.3,
+                    x: active ? 0 : -10,
+                  }}
+                  transition={{ delay: index * 0.15 }}
+                  className="text-cyan-300 text-sm w-16 text-right font-medium"
+                >
+                  {word}
+                </motion.div>
+
+                <motion.div
+                  animate={{
+                    x: active ? [0, 6, 0] : 0,
+                    opacity: active ? 1 : 0,
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    delay: index * 0.15,
+                  }}
+                  className="text-cyan-400"
+                >
+                  →
+                </motion.div>
+
+                <div className="flex flex-col gap-1">
+                  <div className="text-[10px] text-slate-500">letter-based demo vector</div>
+
+                  <div className="flex gap-1 bg-slate-900 px-2 py-1 rounded border border-cyan-400">
+                    {vector.map((v, i) => (
+                      <motion.span
+                        key={i}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{
+                          opacity: active ? 1 : 0,
+                          y: active ? 0 : 10,
+                        }}
+                        transition={{
+                          delay: index * 0.15 + i * 0.08,
+                          duration: 0.25,
+                        }}
+                        className="text-white text-xs"
+                      >
+                        {v}
+                      </motion.span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
       
     </motion.div>

@@ -91,7 +91,7 @@ function FeedForwardStep({ active, tokens = [] }) {
         scale: active ? 1 : 0.95,
       }}
       transition={{ duration: 0.3 }}
-      className="p-6 border border-cyan-500 rounded-2xl w-[980px] min-h-[420px] flex flex-col items-center"
+      className="p-6 border border-cyan-500 rounded-2xl w-[980px] min-h-[760px] flex flex-col items-center"
     >
       <h2 className="text-cyan-300 font-semibold text-center">
         Feed Forward (ReLU)
@@ -101,134 +101,13 @@ function FeedForwardStep({ active, tokens = [] }) {
         The feed forward layer transforms each word vector, then ReLU turns negative values into 0
       </p>
 
-      <p className="text-[11px] text-slate-500 text-center mb-4 max-w-[780px] leading-5">
-        The input here is built from the same stable rules used earlier:
-        word embedding + positional vector. Then a fixed feed-forward demo rule changes the values.
-        Some dimensions become negative, and ReLU keeps only the positive ones.
-      </p>
+      
 
-      <div className="flex w-full gap-6 items-start">
-        {/* LEFT SIDE */}
-        <div className="flex-1">
-          <div className="mb-4 flex items-center justify-center gap-3">
-            <button
-              onClick={() => setShowOutput(false)}
-              className={`px-4 py-1.5 text-xs rounded-lg border transition ${
-                !showOutput
-                  ? "border-cyan-400 text-cyan-300 bg-cyan-400/10"
-                  : "border-slate-600 text-slate-300 hover:bg-slate-800"
-              }`}
-            >
-              Show Feed Forward Input
-            </button>
+      <div className="w-full flex flex-col gap-6 items-center">
+        
 
-            <button
-              onClick={() => setShowOutput(true)}
-              className={`px-4 py-1.5 text-xs rounded-lg border transition ${
-                showOutput
-                  ? "border-green-400 text-green-300 bg-green-400/10"
-                  : "border-slate-600 text-slate-300 hover:bg-slate-800"
-              }`}
-            >
-              Show ReLU Output
-            </button>
-          </div>
-
-          <div className="space-y-4">
-            {rows.map((row, rowIndex) => (
-              <motion.div
-                key={row.word + rowIndex}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{
-                  opacity: active ? 1 : 0.3,
-                  y: active ? 0 : 10,
-                }}
-                transition={{ delay: rowIndex * 0.08, duration: 0.25 }}
-                className="rounded-xl border border-slate-700 bg-slate-900/70 p-4"
-              >
-                <div className="flex items-center gap-3 mb-2 flex-wrap">
-                  <div className="text-cyan-300 text-sm font-medium min-w-[70px]">
-                    {row.word}
-                  </div>
-
-                  <div className="text-[10px] text-slate-500">
-                    Input = Embedding + Position
-                  </div>
-
-                  <div className="flex gap-1 flex-wrap">
-                    {row.encoderLikeInput.map((v, i) => (
-                      <span
-                        key={`enc-${rowIndex}-${i}`}
-                        className="px-2 py-1 text-xs border border-cyan-400 text-cyan-300 rounded"
-                      >
-                        {v.toFixed(2)}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 flex-wrap">
-                  <div className="flex gap-1 flex-wrap">
-                    {(showOutput ? row.reluOutput : row.transformed).map((v, i) => {
-                      const originalValue = row.transformed[i];
-                      const isNegativeOriginal = originalValue < 0;
-                      const isZeroAfterRelu = showOutput && originalValue < 0;
-
-                      return (
-                        <motion.span
-                          key={`vec-${rowIndex}-${i}`}
-                          animate={{
-                            opacity: active ? 1 : 0.3,
-                            scale:
-                              active && isNegativeOriginal
-                                ? [1, 1.08, 1]
-                                : 1,
-                          }}
-                          transition={{
-                            duration: 0.9,
-                            repeat: active && isNegativeOriginal ? Infinity : 0,
-                            delay: i * 0.05,
-                          }}
-                          className={`px-3 py-1 text-xs rounded border ${
-                            showOutput
-                              ? isZeroAfterRelu
-                                ? "border-blue-400 text-blue-300"
-                                : "border-green-400 text-green-300"
-                              : isNegativeOriginal
-                              ? "border-red-400 text-red-300"
-                              : "border-cyan-400 text-cyan-300"
-                          }`}
-                        >
-                          {v.toFixed(2)}
-                        </motion.span>
-                      );
-                    })}
-                  </div>
-
-                  <motion.div
-                    animate={{
-                      rotate: showOutput ? 180 : 0,
-                      opacity: active ? 1 : 0.3,
-                    }}
-                    transition={{ duration: 0.35 }}
-                    className="text-cyan-400 text-lg"
-                  >
-                    {showOutput ? "←" : "→"}
-                  </motion.div>
-
-                  <div className="text-[11px] text-slate-400">
-                    {showOutput
-                      ? "After ReLU: every negative value becomes 0"
-                      : "Before ReLU: feed forward transformation can create negative values"}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* RIGHT SIDE */}
-        <div className="w-[320px] flex flex-col gap-4">
+                {/* EXPLANATION CARDS */}
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           <div className="rounded-xl border border-slate-700 bg-slate-900/80 p-4">
             <h3 className="text-cyan-300 text-sm font-semibold mb-2">
               Where do the negative values come from?
@@ -424,6 +303,128 @@ function FeedForwardStep({ active, tokens = [] }) {
               </div>
             </div>
           )}
+        </div>
+        <p className="text-[11px] text-slate-500 text-center max-w-[780px] leading-5">
+          The input here is built from the same stable rules used earlier:
+          word embedding + positional vector. Then a fixed feed-forward demo rule changes the values.
+          Some dimensions become negative, and ReLU keeps only the positive ones.
+        </p>
+        {/* BUTTONS */}
+        <div className="w-full flex items-center justify-center gap-3">
+          <button
+            onClick={() => setShowOutput(false)}
+            className={`px-4 py-1.5 text-xs rounded-lg border transition ${
+              !showOutput
+                ? "border-cyan-400 text-cyan-300 bg-cyan-400/10"
+                : "border-slate-600 text-slate-300 hover:bg-slate-800"
+            }`}
+          >
+            Show Feed Forward Input
+          </button>
+
+          <button
+            onClick={() => setShowOutput(true)}
+            className={`px-4 py-1.5 text-xs rounded-lg border transition ${
+              showOutput
+                ? "border-green-400 text-green-300 bg-green-400/10"
+                : "border-slate-600 text-slate-300 hover:bg-slate-800"
+            }`}
+          >
+            Show ReLU Output
+          </button>
+        </div>
+
+        {/* VECTORS BELOW */}
+        <div className="w-full space-y-4">
+          {rows.map((row, rowIndex) => (
+            <motion.div
+              key={row.word + rowIndex}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{
+                opacity: active ? 1 : 0.3,
+                y: active ? 0 : 10,
+              }}
+              transition={{ delay: rowIndex * 0.08, duration: 0.25 }}
+              className="rounded-xl border border-slate-700 bg-slate-900/70 p-4"
+            >
+              <div className="flex items-center gap-3 mb-2 flex-wrap">
+                <div className="text-cyan-300 text-sm font-medium min-w-[70px]">
+                  {row.word}
+                </div>
+
+                <div className="text-[10px] text-slate-500">
+                  Input = Embedding + Position
+                </div>
+
+                <div className="flex gap-1 flex-wrap">
+                  {row.encoderLikeInput.map((v, i) => (
+                    <span
+                      key={`enc-${rowIndex}-${i}`}
+                      className="px-2 py-1 text-xs border border-cyan-400 text-cyan-300 rounded"
+                    >
+                      {v.toFixed(2)}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex gap-1 flex-wrap">
+                  {(showOutput ? row.reluOutput : row.transformed).map((v, i) => {
+                    const originalValue = row.transformed[i];
+                    const isNegativeOriginal = originalValue < 0;
+                    const isZeroAfterRelu = showOutput && originalValue < 0;
+
+                    return (
+                      <motion.span
+                        key={`vec-${rowIndex}-${i}`}
+                        animate={{
+                          opacity: active ? 1 : 0.3,
+                          scale:
+                            active && isNegativeOriginal
+                              ? [1, 1.08, 1]
+                              : 1,
+                        }}
+                        transition={{
+                          duration: 0.9,
+                          repeat: active && isNegativeOriginal ? Infinity : 0,
+                          delay: i * 0.05,
+                        }}
+                        className={`px-3 py-1 text-xs rounded border ${
+                          showOutput
+                            ? isZeroAfterRelu
+                              ? "border-blue-400 text-blue-300"
+                              : "border-green-400 text-green-300"
+                            : isNegativeOriginal
+                            ? "border-red-400 text-red-300"
+                            : "border-cyan-400 text-cyan-300"
+                        }`}
+                      >
+                        {v.toFixed(2)}
+                      </motion.span>
+                    );
+                  })}
+                </div>
+
+                <motion.div
+                  animate={{
+                    rotate: showOutput ? 180 : 0,
+                    opacity: active ? 1 : 0.3,
+                  }}
+                  transition={{ duration: 0.35 }}
+                  className="text-cyan-400 text-lg"
+                >
+                  {showOutput ? "←" : "→"}
+                </motion.div>
+
+                <div className="text-[11px] text-slate-400">
+                  {showOutput
+                    ? "After ReLU: every negative value becomes 0"
+                    : "Before ReLU: feed forward transformation can create negative values"}
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </motion.div>
