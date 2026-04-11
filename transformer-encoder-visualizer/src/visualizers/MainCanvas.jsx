@@ -3,26 +3,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import TokenStep from "../steps/TokenStep";
 import EmbeddingStep from "../steps/EmbeddingStep";
 import PositionalStep from "../steps/PositionalStep";
-import AttentionStep from "../steps/AttentionStep";
 import EncoderStackStep from "../steps/EncoderStackStep";
-import FeedForwardStep from "../steps/FeedForwardStep";
+import EncoderOutputStep from "../steps/EncoderOutputStep";
 
 const stepComponents = [
   TokenStep,
   EmbeddingStep,
   PositionalStep,
-  AttentionStep,
   EncoderStackStep,
-  FeedForwardStep,
+  EncoderOutputStep,
 ];
 
 const stepTitles = [
   "Tokenization",
   "Embedding",
   "Positional Encoding",
-  "Self-Attention",
   "Encoder Stack",
-  "Feed Forward",
+  "Encoder Output",
 ];
 
 function MainCanvas({ step, tokens }) {
@@ -31,11 +28,7 @@ function MainCanvas({ step, tokens }) {
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center px-6">
-
-      {/* 🔥 HEADER */}
       <div className="w-full max-w-[700px] mb-6">
-
-        {/* STEP TEXT */}
         <div className="flex justify-between items-center mb-2">
           <span className="text-slate-400 text-sm">
             Step {step + 1} of {stepComponents.length}
@@ -46,7 +39,6 @@ function MainCanvas({ step, tokens }) {
           </span>
         </div>
 
-        {/* 🔥 PROGRESS BAR */}
         <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
           <motion.div
             className="h-full bg-cyan-400"
@@ -57,7 +49,6 @@ function MainCanvas({ step, tokens }) {
         </div>
       </div>
 
-      {/* 🔥 STEP CONTENT */}
       <div className="w-full flex items-center justify-center overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
@@ -72,7 +63,6 @@ function MainCanvas({ step, tokens }) {
           </motion.div>
         </AnimatePresence>
       </div>
-
     </div>
   );
 }
