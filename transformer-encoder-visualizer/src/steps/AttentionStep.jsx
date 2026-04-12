@@ -7,8 +7,8 @@ const BOX_W = 980;
 const GRAPH_W = 620;
 const GRAPH_H = 250;
 const GRAPH_X = 20;
-const GRAPH_Y = 60;           // reduced from 112 — title is now outside the graph area
-const GRAPH_AREA_H = GRAPH_Y + GRAPH_H + 80; // dynamic-enough fixed height for the graph canvas
+const GRAPH_Y = 60;
+const GRAPH_AREA_H = GRAPH_Y + GRAPH_H + 80;
 
 const NODE_R = 28;
 const SCISSOR_SIZE = 34;
@@ -25,12 +25,12 @@ function getNodePositions(count) {
   const cy = GRAPH_Y + GRAPH_H / 2;
   const maxRadius = Math.min(GRAPH_W, GRAPH_H) / 2 - 52;
 
-let radius = maxRadius;
-if (safeCount <= 2) radius = 120;
-else if (safeCount <= 4) radius = 120;
-else if (safeCount <= 6) radius = 120;
-else if (safeCount <= 8) radius = 120;
-else radius = 120;
+  let radius = maxRadius;
+  if (safeCount <= 2) radius = 120;
+  else if (safeCount <= 4) radius = 120;
+  else if (safeCount <= 6) radius = 120;
+  else if (safeCount <= 8) radius = 120;
+  else radius = 120;
 
   return Array.from({ length: safeCount }).map((_, i) => {
     const angle = -Math.PI / 2 + (i * 2 * Math.PI) / safeCount;
@@ -153,7 +153,8 @@ function normalizeScore(score) {
   return Math.min(0.99, Math.max(0, score / 2.5));
 }
 
-function AttentionStep({ active, tokens = [] }) {
+function AttentionStep({ active, tokens = [], theme }) {
+  const isDark = theme === "dark";
   const safeTokens = tokens.length ? tokens.slice(0, 10) : ["token"];
   const positions = useMemo(
     () => getNodePositions(safeTokens.length),
@@ -187,7 +188,6 @@ function AttentionStep({ active, tokens = [] }) {
   const [edgeState, setEdgeState] = useState({});
   const [selectedNode, setSelectedNode] = useState(null);
   const [focusedNode, setFocusedNode] = useState(0);
-  // Scissor starts near the graph area (top-right of graph canvas)
   const [scissorPos, setScissorPos] = useState({
     x: GRAPH_X + GRAPH_W - 50,
     y: 16,
@@ -195,7 +195,6 @@ function AttentionStep({ active, tokens = [] }) {
   const [dragging, setDragging] = useState(false);
   const [lastTap, setLastTap] = useState({ node: null, time: 0 });
 
-  // wrapRef now points to the graph area div only
   const wrapRef = useRef(null);
 
   useEffect(() => {
@@ -365,9 +364,6 @@ function AttentionStep({ active, tokens = [] }) {
     })
   );
 
-  // ─────────────────────────────────────────────────────────────────────────────
-  // LAYOUT: vertical flex-column — explanation panel → instruction → graph area
-  // ─────────────────────────────────────────────────────────────────────────────
   return (
     <motion.div
       animate={{
@@ -375,41 +371,63 @@ function AttentionStep({ active, tokens = [] }) {
         scale: active ? 1 : 0.97,
       }}
       transition={{ duration: 0.3 }}
-      className="border border-cyan-500 rounded-2xl overflow-hidden"
-      style={{ width: BOX_W }}   // height is now auto / dynamic
+      className={`border rounded-2xl overflow-hidden ${
+        isDark ? "border-cyan-500" : "border-blue-300 bg-white"
+      }`}
+      style={{ width: BOX_W }}
     >
       <div className="flex flex-col w-full bg-transparent select-none">
-
-        {/* ── 1. Title ─────────────────────────────────────────────────────── */}
         <div className="pt-5 pb-3 text-center">
           <h2
-            className="text-cyan-300 font-semibold"
+            className={`font-semibold ${
+              isDark ? "text-cyan-300" : "text-blue-800"
+            }`}
             style={{ fontSize: "1.6rem" }}
           >
             Self-Attention
           </h2>
-          <p className="text-slate-400 text-sm mt-1 leading-5">
+          <p
+            className={`text-sm mt-1 leading-5 ${
+              isDark ? "text-slate-400" : "text-slate-700"
+            }`}
+          >
             Each word compares itself with other words to decide what to focus on.
           </p>
         </div>
 
-        {/* ── 2. Explanation / details panel (full-width, no scroll) ────────── */}
         <div
-          className="mx-4 mb-3 rounded-xl border border-slate-700 bg-slate-900/95 p-4"
+          className={`mx-4 mb-3 rounded-xl border p-4 ${
+            isDark
+              ? "border-slate-700 bg-slate-900/95"
+              : "border-slate-300 bg-slate-50"
+          }`}
           style={{ touchAction: "auto" }}
         >
-          {/* Header row */}
           <div className="flex items-start justify-between mb-3 gap-3">
             <div>
-              <div className="text-cyan-300 text-sm font-semibold">
+              <div
+                className={`text-sm font-semibold ${
+                  isDark ? "text-cyan-300" : "text-blue-800"
+                }`}
+              >
                 Attention details
               </div>
-              <div className="text-[11px] text-slate-500">
+              <div
+                className={`text-[11px] ${
+                  isDark ? "text-slate-500" : "text-slate-600"
+                }`}
+              >
                 Focused word:{" "}
-                <span className="text-white">{focusedData.word}</span>
+                <span className={isDark ? "text-white" : "text-slate-900"}>
+                  {focusedData.word}
+                </span>
               </div>
             </div>
-            <div className="text-[10px] text-slate-400 text-right leading-4">
+            <div
+              className={`text-[10px] text-right leading-4 ${
+                isDark ? "text-slate-400" : "text-slate-700"
+              }`}
+            >
               Click any word
               <br />
               to inspect it
@@ -417,78 +435,139 @@ function AttentionStep({ active, tokens = [] }) {
           </div>
 
           <div className="space-y-3 text-[11px]">
-            {/* Input from Positional Encoding */}
-            <div className="rounded-lg border border-cyan-400/30 bg-cyan-400/5 p-3">
-              <div className="text-cyan-300 font-medium mb-1">
+            <div
+              className={`rounded-lg border p-3 ${
+                isDark
+                  ? "border-cyan-400/30 bg-cyan-400/5"
+                  : "border-blue-300 bg-blue-50"
+              }`}
+            >
+              <div
+                className={`font-medium mb-1 ${
+                  isDark ? "text-cyan-300" : "text-blue-800"
+                }`}
+              >
                 Input from Positional Encoding
               </div>
-              <div className="text-slate-300 leading-5">
+              <div
+                className={isDark ? "text-slate-300 leading-5" : "text-slate-700 leading-5"}
+              >
                 Input vector = Embedding + Position
               </div>
 
               <div className="mt-2 flex items-center gap-2 whitespace-nowrap overflow-x-auto">
-  <div className="flex gap-1">
-    {formatVector(focusedData.embedding).map((v, i) => (
-      <span
-        key={`emb-${i}`}
-        className="px-2 py-1 rounded border border-cyan-400 text-cyan-300"
-      >
-        {v}
-      </span>
-    ))}
-  </div>
+                <div className="flex gap-1">
+                  {formatVector(focusedData.embedding).map((v, i) => (
+                    <span
+                      key={`emb-${i}`}
+                      className={`px-2 py-1 rounded border ${
+                        isDark
+                          ? "border-cyan-400 text-cyan-300"
+                          : "border-blue-300 text-blue-800 bg-blue-100"
+                      }`}
+                    >
+                      {v}
+                    </span>
+                  ))}
+                </div>
 
-  <span className="text-cyan-400">+</span>
+                <span className={isDark ? "text-cyan-400" : "text-blue-600"}>+</span>
 
-  <div className="flex gap-1">
-    {formatVector(focusedData.positional).map((v, i) => (
-      <span
-        key={`pos-${i}`}
-        className="px-2 py-1 rounded border border-purple-400 text-purple-300"
-      >
-        {v}
-      </span>
-    ))}
-  </div>
+                <div className="flex gap-1">
+                  {formatVector(focusedData.positional).map((v, i) => (
+                    <span
+                      key={`pos-${i}`}
+                      className={`px-2 py-1 rounded border ${
+                        isDark
+                          ? "border-purple-400 text-purple-300"
+                          : "border-violet-300 text-violet-700 bg-violet-100"
+                      }`}
+                    >
+                      {v}
+                    </span>
+                  ))}
+                </div>
 
-  <span className="text-cyan-400">→</span>
+                <span className={isDark ? "text-cyan-400" : "text-blue-600"}>→</span>
 
-  <div className="flex gap-1">
-    {formatVector(focusedData.input).map((v, i) => (
-      <span
-        key={`inp-${i}`}
-        className="px-2 py-1 rounded border border-green-400 text-green-300"
-      >
-        {v}
-      </span>
-    ))}
-  </div>
-</div>
+                <div className="flex gap-1">
+                  {formatVector(focusedData.input).map((v, i) => (
+                    <span
+                      key={`inp-${i}`}
+                      className={`px-2 py-1 rounded border ${
+                        isDark
+                          ? "border-green-400 text-green-300"
+                          : "border-green-400 text-green-700 bg-green-100"
+                      }`}
+                    >
+                      {v}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            {/* Q, K, V */}
-            <div className="rounded-lg border border-slate-700 bg-slate-950/60 p-3">
-              <div className="text-slate-300 font-medium mb-2">
+            <div
+              className={`rounded-lg border p-3 ${
+                isDark
+                  ? "border-slate-700 bg-slate-950/60"
+                  : "border-slate-300 bg-white"
+              }`}
+            >
+              <div
+                className={`font-medium mb-2 ${
+                  isDark ? "text-slate-300" : "text-slate-900"
+                }`}
+              >
                 Q, K, V from the input vector
               </div>
 
-              <div className="text-[11px] text-slate-400 leading-5 mb-3">
+              <div
+                className={`text-[11px] leading-5 mb-3 ${
+                  isDark ? "text-slate-400" : "text-slate-700"
+                }`}
+              >
                 The same input vector is transformed into three versions:
                 <br />
-                <span className="text-amber-300">Q (Query)</span> = what this word is looking for
+                <span className={isDark ? "text-amber-300" : "text-amber-700"}>
+                  Q (Query)
+                </span>{" "}
+                = what this word is looking for
                 <br />
-                <span className="text-pink-300">K (Key)</span> = what this word offers to other words
+                <span className={isDark ? "text-pink-300" : "text-pink-700"}>
+                  K (Key)
+                </span>{" "}
+                = what this word offers to other words
                 <br />
-                <span className="text-lime-300">V (Value)</span> = the information passed forward
+                <span className={isDark ? "text-lime-300" : "text-lime-700"}>
+                  V (Value)
+                </span>{" "}
+                = the information passed forward
               </div>
 
-              <div className="rounded-md border border-slate-800 bg-slate-900/70 p-2 mb-3">
-                <div className="text-[10px] text-slate-500 mb-1">Focused input vector</div>
+              <div
+                className={`rounded-md border p-2 mb-3 ${
+                  isDark
+                    ? "border-slate-800 bg-slate-900/70"
+                    : "border-slate-300 bg-slate-50"
+                }`}
+              >
+                <div
+                  className={`text-[10px] mb-1 ${
+                    isDark ? "text-slate-500" : "text-slate-600"
+                  }`}
+                >
+                  Focused input vector
+                </div>
                 <div className="flex flex-wrap gap-1">
                   {formatVector(focusedData.input).map((v, i) => (
                     <span
                       key={`input-show-${i}`}
-                      className="px-2 py-1 rounded border border-green-400 text-green-300"
+                      className={`px-2 py-1 rounded border ${
+                        isDark
+                          ? "border-green-400 text-green-300"
+                          : "border-green-400 text-green-700 bg-green-100"
+                      }`}
                     >
                       {v}
                     </span>
@@ -497,15 +576,29 @@ function AttentionStep({ active, tokens = [] }) {
               </div>
 
               <div className="space-y-3">
-                <div className="border border-amber-400/30 rounded-md p-2 bg-amber-400/5">
-                  <div className="text-[10px] text-amber-300 mb-1">
+                <div
+                  className={`rounded-md p-2 ${
+                    isDark
+                      ? "border border-amber-400/30 bg-amber-400/5"
+                      : "border border-amber-300 bg-amber-50"
+                  }`}
+                >
+                  <div
+                    className={`text-[10px] mb-1 ${
+                      isDark ? "text-amber-300" : "text-amber-700"
+                    }`}
+                  >
                     Query (Q) → input transformed with a fixed demo rule
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {formatVector(focusedData.query).map((v, i) => (
                       <span
                         key={`q-${i}`}
-                        className="px-2 py-1 rounded border border-amber-400 text-amber-300"
+                        className={`px-2 py-1 rounded border ${
+                          isDark
+                            ? "border-amber-400 text-amber-300"
+                            : "border-amber-400 text-amber-700 bg-amber-100"
+                        }`}
                       >
                         {v}
                       </span>
@@ -513,15 +606,29 @@ function AttentionStep({ active, tokens = [] }) {
                   </div>
                 </div>
 
-                <div className="border border-pink-400/30 rounded-md p-2 bg-pink-400/5">
-                  <div className="text-[10px] text-pink-300 mb-1">
+                <div
+                  className={`rounded-md p-2 ${
+                    isDark
+                      ? "border border-pink-400/30 bg-pink-400/5"
+                      : "border border-pink-300 bg-pink-50"
+                  }`}
+                >
+                  <div
+                    className={`text-[10px] mb-1 ${
+                      isDark ? "text-pink-300" : "text-pink-700"
+                    }`}
+                  >
                     Key (K) → another transformed version of the same input
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {formatVector(focusedData.key).map((v, i) => (
                       <span
                         key={`k-${i}`}
-                        className="px-2 py-1 rounded border border-pink-400 text-pink-300"
+                        className={`px-2 py-1 rounded border ${
+                          isDark
+                            ? "border-pink-400 text-pink-300"
+                            : "border-pink-400 text-pink-700 bg-pink-100"
+                        }`}
                       >
                         {v}
                       </span>
@@ -529,15 +636,29 @@ function AttentionStep({ active, tokens = [] }) {
                   </div>
                 </div>
 
-                <div className="border border-lime-400/30 rounded-md p-2 bg-lime-400/5">
-                  <div className="text-[10px] text-lime-300 mb-1">
+                <div
+                  className={`rounded-md p-2 ${
+                    isDark
+                      ? "border border-lime-400/30 bg-lime-400/5"
+                      : "border border-lime-300 bg-lime-50"
+                  }`}
+                >
+                  <div
+                    className={`text-[10px] mb-1 ${
+                      isDark ? "text-lime-300" : "text-lime-700"
+                    }`}
+                  >
                     Value (V) → the version used to pass information onward
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {formatVector(focusedData.value).map((v, i) => (
                       <span
                         key={`v-${i}`}
-                        className="px-2 py-1 rounded border border-lime-400 text-lime-300"
+                        className={`px-2 py-1 rounded border ${
+                          isDark
+                            ? "border-lime-400 text-lime-300"
+                            : "border-lime-400 text-lime-700 bg-lime-100"
+                        }`}
                       >
                         {v}
                       </span>
@@ -547,17 +668,35 @@ function AttentionStep({ active, tokens = [] }) {
               </div>
             </div>
 
-            {/* Attention score matrix */}
-            <div className="rounded-lg border border-slate-700 bg-slate-950/60 p-3">
-              <div className="text-slate-300 font-medium mb-2">
+            <div
+              className={`rounded-lg border p-3 ${
+                isDark
+                  ? "border-slate-700 bg-slate-950/60"
+                  : "border-slate-300 bg-white"
+              }`}
+            >
+              <div
+                className={`font-medium mb-2 ${
+                  isDark ? "text-slate-300" : "text-slate-900"
+                }`}
+              >
                 Attention score matrix
               </div>
 
-              <div className="text-[11px] text-slate-400 leading-5 mb-3">
+              <div
+                className={`text-[11px] leading-5 mb-3 ${
+                  isDark ? "text-slate-400" : "text-slate-700"
+                }`}
+              >
                 Each cell compares the{" "}
-                <span className="text-amber-300">Query</span> of the row word
-                with the{" "}
-                <span className="text-pink-300">Key</span> of the column word.
+                <span className={isDark ? "text-amber-300" : "text-amber-700"}>
+                  Query
+                </span>{" "}
+                of the row word with the{" "}
+                <span className={isDark ? "text-pink-300" : "text-pink-700"}>
+                  Key
+                </span>{" "}
+                of the column word.
                 <br />
                 Higher score = stronger attention.
               </div>
@@ -566,11 +705,13 @@ function AttentionStep({ active, tokens = [] }) {
                 <table className="text-[11px] border-collapse">
                   <thead>
                     <tr>
-                      <th className="px-2 py-1 text-slate-500"></th>
+                      <th className={`px-2 py-1 ${isDark ? "text-slate-500" : "text-slate-600"}`}></th>
                       {safeTokens.map((token, index) => (
                         <th
                           key={`col-${index}`}
-                          className="px-2 py-1 text-cyan-300 font-medium"
+                          className={`px-2 py-1 font-medium ${
+                            isDark ? "text-cyan-300" : "text-blue-800"
+                          }`}
                         >
                           {token}
                         </th>
@@ -581,25 +722,34 @@ function AttentionStep({ active, tokens = [] }) {
                   <tbody>
                     {attentionMatrix.map((row, rowIndex) => (
                       <tr key={`row-${rowIndex}`}>
-                        <td className="px-2 py-1 text-cyan-300 font-medium">
+                        <td
+                          className={`px-2 py-1 font-medium ${
+                            isDark ? "text-cyan-300" : "text-blue-800"
+                          }`}
+                        >
                           {safeTokens[rowIndex]}
                         </td>
 
                         {row.map((cell, colIndex) => {
                           const isDiagonal = rowIndex === colIndex;
                           const bgClass = isDiagonal
-                            ? "bg-slate-800/90 text-white"
+                            ? isDark
+                              ? "bg-slate-800/90 text-white"
+                              : "bg-slate-200 text-slate-900"
                             : cell.active
-                            ? "bg-cyan-400/10 text-cyan-200"
-                            : "bg-red-400/10 text-red-300";
+                            ? isDark
+                              ? "bg-cyan-400/10 text-cyan-200"
+                              : "bg-blue-100 text-blue-800"
+                            : isDark
+                            ? "bg-red-400/10 text-red-300"
+                            : "bg-red-100 text-red-700";
 
                           return (
-                            <td
-                              key={`cell-${rowIndex}-${colIndex}`}
-                              className="px-1 py-1"
-                            >
+                            <td key={`cell-${rowIndex}-${colIndex}`} className="px-1 py-1">
                               <div
-                                className={`min-w-[44px] text-center rounded border border-slate-700 px-2 py-1 ${bgClass}`}
+                                className={`min-w-[44px] text-center rounded border px-2 py-1 ${
+                                  isDark ? "border-slate-700" : "border-slate-300"
+                                } ${bgClass}`}
                               >
                                 {cell.score.toFixed(2)}
                               </div>
@@ -612,7 +762,11 @@ function AttentionStep({ active, tokens = [] }) {
                 </table>
               </div>
 
-              <div className="mt-3 text-[11px] text-slate-400 leading-5">
+              <div
+                className={`mt-3 text-[11px] leading-5 ${
+                  isDark ? "text-slate-400" : "text-slate-700"
+                }`}
+              >
                 Cyan cells = currently allowed graph connections.
                 <br />
                 Red cells = disconnected graph links, so that attention path is
@@ -620,47 +774,56 @@ function AttentionStep({ active, tokens = [] }) {
               </div>
             </div>
 
-            {/* How the graph, Q/K/V, and matrix relate */}
-            <div className="rounded-lg border border-slate-700 bg-slate-950/60 p-3 text-slate-300 leading-5">
-              <div className="text-cyan-300 font-medium mb-1">
+            <div
+              className={`rounded-lg border p-3 leading-5 ${
+                isDark
+                  ? "border-slate-700 bg-slate-950/60 text-slate-300"
+                  : "border-slate-300 bg-white text-slate-700"
+              }`}
+            >
+              <div
+                className={`font-medium mb-1 ${
+                  isDark ? "text-cyan-300" : "text-blue-800"
+                }`}
+              >
                 How the graph, Q/K/V, and matrix relate
               </div>
 
               1. The input vector creates{" "}
-              <span className="text-amber-300">Q</span>,{" "}
-              <span className="text-pink-300">K</span>, and{" "}
-              <span className="text-lime-300">V</span>.
+              <span className={isDark ? "text-amber-300" : "text-amber-700"}>Q</span>,{" "}
+              <span className={isDark ? "text-pink-300" : "text-pink-700"}>K</span>, and{" "}
+              <span className={isDark ? "text-lime-300" : "text-lime-700"}>V</span>.
               <br />
               <br />
               2. The matrix compares{" "}
-              <span className="text-amber-300">Q</span> of one word with{" "}
-              <span className="text-pink-300">K</span> of another word.
+              <span className={isDark ? "text-amber-300" : "text-amber-700"}>Q</span> of one word with{" "}
+              <span className={isDark ? "text-pink-300" : "text-pink-700"}>K</span> of another word.
               <br />
               <br />
               3. The graph shows these attention relationships visually.
               <br />
               <br />
               4. Disconnecting a graph edge does{" "}
-              <span className="text-white">not</span> change Q, K, or V.
+              <span className={isDark ? "text-white" : "text-slate-900"}>not</span> change Q, K, or V.
               It blocks that attention connection in the demo matrix instead.
             </div>
           </div>
         </div>
 
-        {/* ── 3. Scissor instruction (between panel and graph) ──────────────── */}
-        <p className="text-center text-slate-400 text-sm pb-3 px-4">
+        <p
+          className={`text-center text-sm pb-3 px-4 ${
+            isDark ? "text-slate-400" : "text-slate-700"
+          }`}
+        >
           Cut links with the scissor. Double-tap one word, then another, to
           reconnect a cut link.
         </p>
 
-        {/* ── 4. Graph area — relative container, fixed height ─────────────── */}
-        {/*      wrapRef lives here so scissor coords are local to this div     */}
         <div
           ref={wrapRef}
           className="relative w-full"
           style={{ height: GRAPH_AREA_H, touchAction: "none" }}
         >
-          {/* Scissor */}
           <motion.div
             drag={false}
             onPointerDown={(e) => {
@@ -675,18 +838,19 @@ function AttentionStep({ active, tokens = [] }) {
               scale: dragging ? 1.08 : 1,
             }}
             transition={{ duration: 0.15 }}
-            className="absolute z-20 w-[34px] h-[34px] rounded-full border border-cyan-400 bg-slate-900 flex items-center justify-center cursor-grab active:cursor-grabbing shadow-[0_0_12px_rgba(34,211,238,0.35)]"
+            className={`absolute z-20 w-[34px] h-[34px] rounded-full border flex items-center justify-center cursor-grab active:cursor-grabbing ${
+              isDark
+                ? "border-cyan-400 bg-slate-900 shadow-[0_0_12px_rgba(34,211,238,0.35)]"
+                : "border-blue-300 bg-white shadow-[0_0_12px_rgba(59,130,246,0.18)]"
+            }`}
             title="Drag to cut connections"
           >
-            <span className="text-cyan-300 text-lg leading-none">✂</span>
+            <span className={`text-lg leading-none ${isDark ? "text-cyan-300" : "text-blue-700"}`}>
+              ✂
+            </span>
           </motion.div>
 
-          {/* SVG graph */}
-          <svg
-            width={BOX_W}
-            height={GRAPH_AREA_H}
-            className="absolute inset-0"
-          >
+          <svg width={BOX_W} height={GRAPH_AREA_H} className="absolute inset-0">
             <defs>
               <linearGradient
                 id="attentionActiveLine"
@@ -700,7 +864,6 @@ function AttentionStep({ active, tokens = [] }) {
               </linearGradient>
             </defs>
 
-            {/* Lines */}
             {lineGeometries.map((line) => {
               if (line.active) {
                 return (
@@ -757,7 +920,6 @@ function AttentionStep({ active, tokens = [] }) {
             })}
           </svg>
 
-          {/* Nodes */}
           {positions.map((pos, index) => {
             const ratio = connectionRatioByNode[index];
             const color = getConnectionStateColor(ratio);
@@ -775,7 +937,9 @@ function AttentionStep({ active, tokens = [] }) {
                   scale: isSelected ? 1.08 : isFocused ? 1.05 : 1,
                 }}
                 transition={{ duration: 0.2 }}
-                className="absolute z-10 w-[56px] h-[56px] rounded-full border bg-slate-900 flex items-center justify-center text-sm font-semibold"
+                className={`absolute z-10 w-[56px] h-[56px] rounded-full border flex items-center justify-center text-sm font-semibold ${
+                  isDark ? "bg-slate-900" : "bg-white"
+                }`}
                 style={{
                   borderColor: color.border,
                   color: color.text,
@@ -793,8 +957,11 @@ function AttentionStep({ active, tokens = [] }) {
             );
           })}
 
-          {/* Legend — bottom-left of graph area */}
-          <div className="absolute bottom-4 left-4 text-[11px] text-slate-400 space-y-1">
+          <div
+            className={`absolute bottom-4 left-4 text-[11px] space-y-1 ${
+              isDark ? "text-slate-400" : "text-slate-700"
+            }`}
+          >
             <div>
               <span className="text-green-400">●</span> 70%–100% connected
             </div>
@@ -806,8 +973,6 @@ function AttentionStep({ active, tokens = [] }) {
             </div>
           </div>
         </div>
-        {/* ── end graph area ─────────────────────────────────────────────────── */}
-
       </div>
     </motion.div>
   );

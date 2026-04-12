@@ -3,7 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function TokenStep({ active, tokens = [] }) {
+function TokenStep({ active, tokens = [], theme }) {
+    const isDark = theme === "dark";
   const [isSplit, setIsSplit] = useState(false);
   const sentenceControls = useAnimation();
   const tokenControls = useAnimation();
@@ -109,13 +110,15 @@ function TokenStep({ active, tokens = [] }) {
         scale: active ? 1 : 0.95,
       }}
       transition={{ duration: 0.3 }}
-      className="p-6 border border-cyan-500 rounded-2xl w-[420px] h-[260px] flex flex-col items-center justify-center overflow-hidden"
+      className={`p-6 border rounded-2xl w-[420px] h-[260px] flex flex-col items-center justify-center overflow-hidden ${
+  isDark ? "border-cyan-500" : "border-blue-300 bg-white"
+}`}
     >
-      <h2 className="text-cyan-300 font-semibold text-center">
+      <h2 className={`${isDark ? "text-cyan-300" : "text-blue-800"} font-semibold text-center`}>
   Tokenization
 </h2>
 
-<p className="text-xs text-slate-400 text-center mb-6">
+<p className={`text-xs text-center mb-6 ${isDark ? "text-slate-400" : "text-slate-700"}`}>
   Splits the sentence into individual words
 </p>
 
@@ -123,14 +126,22 @@ function TokenStep({ active, tokens = [] }) {
       <div className="flex gap-3 mb-4">
         <button
           onClick={() => setIsSplit(true)}
-          className="px-4 py-1 text-xs border border-cyan-400 text-cyan-300 rounded hover:bg-cyan-400/10"
+          className={`px-4 py-1 text-xs border rounded transition ${
+  isDark
+    ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10"
+    : "border-blue-400 text-blue-800 hover:bg-blue-100"
+}`}
         >
           Split
         </button>
 
         <button
           onClick={() => setIsSplit(false)}
-          className="px-4 py-1 text-xs border border-red-400 text-red-300 rounded hover:bg-red-400/10"
+          className={`px-4 py-1 text-xs border rounded transition ${
+  isDark
+    ? "border-red-400 text-red-300 hover:bg-red-400/10"
+    : "border-red-400 text-red-700 hover:bg-red-100"
+}`}
         >
           Combine
         </button>
@@ -141,7 +152,11 @@ function TokenStep({ active, tokens = [] }) {
         <motion.div
           animate={sentenceControls}
           initial={{ opacity: 0 }}
-          className="absolute top-0 px-4 py-2 bg-slate-800 border border-cyan-400 text-white rounded-lg text-sm max-w-[340px] text-center"
+          className={`absolute top-0 px-4 py-2 border rounded-lg text-sm max-w-[340px] text-center ${
+  isDark
+    ? "bg-slate-800 border-cyan-400 text-white"
+    : "bg-blue-50 border-blue-300 text-slate-900"
+}`}
         >
           {safeTokens.join(" ")}
         </motion.div>
@@ -153,7 +168,11 @@ function TokenStep({ active, tokens = [] }) {
             custom={index}
             animate={tokenControls}
             initial={{ opacity: 0, x: 0, y: 0, scale: 0.95 }}
-            className="absolute top-0 px-3 py-2 bg-slate-900 border border-cyan-400 text-cyan-300 rounded-lg text-sm whitespace-nowrap"
+            className={`absolute top-0 px-3 py-2 border rounded-lg text-sm whitespace-nowrap ${
+  isDark
+    ? "bg-slate-900 border-cyan-400 text-cyan-300"
+    : "bg-white border-blue-300 text-blue-800"
+}`}
           >
             {word}
           </motion.div>
