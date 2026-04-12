@@ -9,7 +9,7 @@ function AnimationController({ step, setStep }) {
       </button>
 
       <button
-        onClick={() => setStep((s) => Math.min(s + 1, 5))}
+        onClick={() => setStep((s) => Math.min(s + 1, 4))}
         className="px-4 py-2 bg-cyan-500 text-black rounded"
       >
         Next →
