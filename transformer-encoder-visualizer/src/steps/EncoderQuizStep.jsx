@@ -2,27 +2,41 @@ import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import encoderQuiz from "../data/encoderQuiz";
 
+function shuffleQuestions(array) {
+  const copy = [...array];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
 function EncoderQuizStep({ active, setStep, theme }) {
   const isDark = theme === "dark";
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [quizSeed, setQuizSeed] = useState(0);
+
+  const selectedQuestions = useMemo(() => {
+    return shuffleQuestions(encoderQuiz).slice(0, 12);
+  }, [quizSeed]);
 
   const scoreData = useMemo(() => {
     let correct = 0;
 
-    encoderQuiz.forEach((q) => {
+    selectedQuestions.forEach((q) => {
       if (answers[q.id] === q.correctAnswer) {
         correct += 1;
       }
     });
 
-    const total = encoderQuiz.length;
+    const total = selectedQuestions.length;
     const percentage = Math.round((correct / total) * 100);
 
     return { correct, total, percentage };
-  }, [answers]);
+  }, [answers, selectedQuestions]);
 
-  const wrongQuestions = encoderQuiz.filter(
+  const wrongQuestions = selectedQuestions.filter(
     (q) => submitted && answers[q.id] !== q.correctAnswer
   );
 
@@ -46,15 +60,19 @@ function EncoderQuizStep({ active, setStep, theme }) {
       </h2>
 
       <p
-        className={`text-xs text-center mb-5 ${
+        className={`text-xs text-center mb-3 ${
           isDark ? "text-slate-400" : "text-slate-700"
         }`}
       >
-        Answer these questions to test whether you understood the encoder well
+         
       </p>
 
+      
+
+    
+
       <div className="w-full space-y-4">
-        {encoderQuiz.map((q, index) => (
+        {selectedQuestions.map((q, index) => (
           <div
             key={q.id}
             className={`rounded-xl border p-4 ${
@@ -233,7 +251,7 @@ function EncoderQuizStep({ active, setStep, theme }) {
             </div>
           )}
 
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-3">
             <button
               onClick={() => {
                 setAnswers({});
@@ -245,7 +263,22 @@ function EncoderQuizStep({ active, setStep, theme }) {
                   : "border-slate-300 text-slate-700 hover:bg-slate-100"
               }`}
             >
-              Try Quiz Again
+              Try Same Quiz Again
+            </button>
+
+            <button
+              onClick={() => {
+                setAnswers({});
+                setSubmitted(false);
+                setQuizSeed((prev) => prev + 1);
+              }}
+              className={`px-5 py-2 rounded-lg border transition ${
+                isDark
+                  ? "border-cyan-400 text-cyan-300 bg-cyan-400/10 hover:bg-cyan-400/20"
+                  : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+              }`}
+            >
+              Generate New 12 Questions
             </button>
           </div>
         </div>

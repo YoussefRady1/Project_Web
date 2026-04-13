@@ -76,7 +76,7 @@ function EncoderStackStep({ active, tokens, theme }) {
           ← Back to Encoder Stack
         </button>
 
-        <FeedForwardStep active={active} tokens={tokens} />
+        <FeedForwardStep active={active} tokens={tokens} theme={theme} />
       </div>
     );
   }
@@ -107,7 +107,29 @@ function EncoderStackStep({ active, tokens, theme }) {
       >
         The encoder stack is built from repeated encoder layers
       </p>
+<div
+  className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 ${
+    isDark
+      ? "border-cyan-400/30 bg-cyan-400/5"
+      : "border-blue-300 bg-blue-50"
+  }`}
+>
+  <div
+    className={`text-sm font-semibold mb-1 ${
+      isDark ? "text-cyan-300" : "text-blue-800"
+    }`}
+  >
+    Why we use this step
+  </div>
 
+  <p
+    className={`text-[11px] leading-5 ${
+      isDark ? "text-slate-300" : "text-slate-700"
+    }`}
+  >
+    We use the encoder stack because one layer is usually not enough to build deep understanding. Repeating encoder layers allows the model to refine context step by step and produce richer sentence representations.
+  </p>
+</div>
       <p
         className={`text-[11px] text-center mb-4 max-w-[760px] leading-5 ${
           isDark ? "text-slate-500" : "text-slate-600"
