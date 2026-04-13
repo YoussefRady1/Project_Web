@@ -110,7 +110,7 @@ function TokenStep({ active, tokens = [], theme }) {
         scale: active ? 1 : 0.95,
       }}
       transition={{ duration: 0.3 }}
-      className={`p-6 border rounded-2xl w-[420px] h-[260px] flex flex-col items-center justify-center overflow-hidden ${
+      className={`p-6 border rounded-2xl w-[520px] h-[340px] flex flex-col items-center justify-start overflow-hidden ${
   isDark ? "border-cyan-500" : "border-blue-300 bg-white"
 }`}
     >
@@ -118,12 +118,32 @@ function TokenStep({ active, tokens = [], theme }) {
   Tokenization
 </h2>
 
-<p className={`text-xs text-center mb-6 ${isDark ? "text-slate-400" : "text-slate-700"}`}>
-  Splits the sentence into individual words
-</p>
+<div
+  className={`w-full max-w-[420px] mb-6 rounded-xl border p-3 ${
+    isDark
+      ? "border-cyan-400/30 bg-cyan-400/5"
+      : "border-blue-300 bg-blue-50"
+  }`}
+>
+  <div
+    className={`text-sm font-semibold mb-1 ${
+      isDark ? "text-cyan-300" : "text-blue-800"
+    }`}
+  >
+    Why we use this step
+  </div>
+
+  <p
+    className={`text-[11px] leading-5 ${
+      isDark ? "text-slate-300" : "text-slate-700"
+    }`}
+  >
+    We use tokenization to break the sentence into smaller units that the Transformer can process one by one instead of treating the whole sentence as raw text.
+  </p>
+</div>
 
       {/* 🔥 BUTTONS */}
-      <div className="flex gap-3 mb-4">
+      <div className="flex gap-3 mb-5">
         <button
           onClick={() => setIsSplit(true)}
           className={`px-4 py-1 text-xs border rounded transition ${
@@ -147,7 +167,7 @@ function TokenStep({ active, tokens = [], theme }) {
         </button>
       </div>
 
-      <div className="relative w-full h-[120px] flex items-start justify-center">
+      <div className="relative w-full h-[170px] flex items-start justify-center">
         {/* Sentence */}
         <motion.div
           animate={sentenceControls}

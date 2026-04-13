@@ -59,7 +59,7 @@ function PositionalStep({ active, tokens, theme }) {
         opacity: active ? 1 : 0.2,
         scale: active ? 1 : 0.95,
       }}
-      className={`relative p-6 border rounded-2xl w-[900px] min-h-[260px] flex flex-col items-center ${
+      className={`relative p-6 border rounded-2xl w-[900px] min-h-[340px] flex flex-col items-center ${
         isDark ? "border-cyan-500" : "border-blue-300 bg-white"
       }`}
     >
@@ -78,10 +78,32 @@ function PositionalStep({ active, tokens, theme }) {
       >
         adds position information to each vector to keep the correct order
       </p>
+<div
+  className={`w-full max-w-[560px] mx-auto mb-5 rounded-xl border p-3 ${
+    isDark
+      ? "border-cyan-400/30 bg-cyan-400/5"
+      : "border-blue-300 bg-blue-50"
+  }`}
+>
+  <div
+    className={`text-sm font-semibold mb-1 ${
+      isDark ? "text-cyan-300" : "text-blue-800"
+    }`}
+  >
+    Why we use this step
+  </div>
 
-      <div className="absolute top-4 right-4 z-10">
-        <div
-          className={`rounded-lg border px-3 py-2 flex flex-col gap-2 text-[11px] ${
+  <p
+  className={`text-[11px] leading-5 max-w-[620px] ${
+      isDark ? "text-slate-300" : "text-slate-700"
+    }`}
+  >
+    We use positional encoding because the Transformer processes tokens in parallel, so it needs extra position information to know the order of words inside the sentence.
+  </p>
+</div>
+      <div className="absolute top-3 right-3 z-10">
+  <div
+    className={`rounded-lg border px-2.5 py-2 flex flex-col gap-1.5 text-[10px] ${
             isDark
               ? "border-slate-700 bg-slate-900/90"
               : "border-slate-300 bg-slate-50"

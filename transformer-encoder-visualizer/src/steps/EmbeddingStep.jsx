@@ -81,6 +81,30 @@ function EmbeddingStep({ active, tokens, theme }) {
         converts each word into a vector
       </p>
 
+<div
+  className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 ${
+    isDark
+      ? "border-cyan-400/30 bg-cyan-400/5"
+      : "border-blue-300 bg-blue-50"
+  }`}
+>
+  <div
+    className={`text-sm font-semibold mb-1 ${
+      isDark ? "text-cyan-300" : "text-blue-800"
+    }`}
+  >
+    Why we use this step
+  </div>
+
+  <p
+    className={`text-[11px] leading-5 ${
+      isDark ? "text-slate-300" : "text-slate-700"
+    }`}
+  >
+    We use embeddings because the model cannot understand words directly. Each token must first be converted into numbers so the Transformer can compare, transform, and learn relationships between words.
+  </p>
+</div>
+
       <div className="w-full flex flex-col gap-6 items-center">
         <motion.div
           initial={{ opacity: 0, y: -10 }}

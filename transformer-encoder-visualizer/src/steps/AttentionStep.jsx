@@ -393,6 +393,29 @@ function AttentionStep({ active, tokens = [], theme }) {
           >
             Each word compares itself with other words to decide what to focus on.
           </p>
+          <div
+  className={`mx-4 mb-4 rounded-xl border p-3 ${
+    isDark
+      ? "border-cyan-400/30 bg-cyan-400/5"
+      : "border-blue-300 bg-blue-50"
+  }`}
+>
+  <div
+    className={`text-sm font-semibold mb-1 ${
+      isDark ? "text-cyan-300" : "text-blue-800"
+    }`}
+  >
+    Why we use this step
+  </div>
+
+  <p
+    className={`text-[11px] leading-5 ${
+      isDark ? "text-slate-300" : "text-slate-700"
+    }`}
+  >
+    We use self-attention so each word can look at other words in the sentence and understand context. This helps the model know which words are important for interpreting meaning.
+  </p>
+</div>
         </div>
 
         <div
