@@ -15,7 +15,7 @@ function AnimationController({ step, setStep, theme }) {
       </button>
 
       <button
-        onClick={() => setStep((s) => Math.min(s + 1, 5))}
+        onClick={() => setStep((s) => Math.min(s + 1, 6))}
         className={`px-4 py-2 rounded transition ${
           isDark
             ? "bg-cyan-500 text-black hover:bg-cyan-400"
