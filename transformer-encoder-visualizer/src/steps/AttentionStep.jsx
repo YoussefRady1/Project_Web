@@ -341,29 +341,84 @@ function AttentionStep({ active, tokens = [], theme }) {
   };
 
   const focusedData = tokenVectors[focusedNode] || tokenVectors[0];
+const attentionMatrix = tokenVectors.map((sourceToken, rowIndex) =>
+  tokenVectors.map((targetToken, colIndex) => {
+    const rawScore = dotProduct(sourceToken.query, targetToken.key);
+    const normalized = normalizeScore(rawScore);
+    const key = edgeKey(rowIndex, colIndex);
 
-  const attentionMatrix = tokenVectors.map((sourceToken, rowIndex) =>
-    tokenVectors.map((targetToken, colIndex) => {
-      const rawScore = dotProduct(sourceToken.query, targetToken.key);
-      const normalized = normalizeScore(rawScore);
-      const key = edgeKey(rowIndex, colIndex);
-
-      if (rowIndex === colIndex) {
-        return {
-          raw: rawScore,
-          score: Number(normalized.toFixed(2)),
-          active: true,
-        };
-      }
-
+    if (rowIndex === colIndex) {
       return {
         raw: rawScore,
         score: Number(normalized.toFixed(2)),
-        active: !!edgeState[key],
+        active: true,
       };
-    })
-  );
+    }
 
+    return {
+      raw: rawScore,
+      score: Number(normalized.toFixed(2)),
+      active: !!edgeState[key],
+    };
+  })
+);
+const computeAverageVector = (indexes) => {
+  if (indexes.length === 0) return [0, 0, 0, 0];
+
+  const dim = tokenVectors[0].query.length;
+  const sum = new Array(dim).fill(0);
+
+  indexes.forEach((i) => {
+    tokenVectors[i].query.forEach((v, d) => {
+      sum[d] += v;
+    });
+  });
+
+  return sum.map((v) => Number((v / indexes.length).toFixed(2)));
+};
+  
+  const activeEdgeCount = baseEdges.filter((e) => edgeState[e.key]).length;
+  const totalEdgeCount = baseEdges.length;
+  const connectionPercent =
+    totalEdgeCount === 0
+      ? 100
+      : Math.round((activeEdgeCount / totalEdgeCount) * 100);
+  const sentencePreview = safeTokens.join(" ");    
+
+  const allConnected = activeEdgeCount === totalEdgeCount;
+  const partiallyDisconnected =
+    activeEdgeCount > 0 && activeEdgeCount < totalEdgeCount;
+  const heavilyDisconnected = activeEdgeCount === 0;
+
+  const focusedConnections = baseEdges.filter(
+    (e) =>
+      (e.a === focusedNode || e.b === focusedNode) &&
+      edgeState[e.key]
+  ).length;
+  const connectedTokenIndexes = safeTokens
+    .map((_, index) => {
+      if (index === focusedNode) return index;
+
+      const key = edgeKey(focusedNode, index);
+      return edgeState[key] ? index : null;
+    })
+    .filter((value) => value !== null);
+
+  const disconnectedTokenIndexes = safeTokens
+    .map((_, index) => {
+      if (index === focusedNode) return null;
+
+      const key = edgeKey(focusedNode, index);
+      return edgeState[key] ? null : index;
+    })
+    .filter((value) => value !== null);
+
+const focusedUnderstandingLabel =
+  focusedConnections >= Math.max(1, safeTokens.length - 2)
+    ? "Strong output context"
+    : focusedConnections >= 1
+    ? "Partial output context"
+    : "Weak output context";
   return (
     <motion.div
       animate={{
@@ -838,8 +893,8 @@ function AttentionStep({ active, tokens = [], theme }) {
             isDark ? "text-slate-400" : "text-slate-700"
           }`}
         >
-          Cut links with the scissor. Double-tap one word, then another, to
-          reconnect a cut link.
+          Cut links with the scissor to reduce word-to-word interaction in the demo.
+          Double-tap one word, then another, to reconnect a cut link and restore that attention path.
         </p>
 
         <div
@@ -996,6 +1051,133 @@ function AttentionStep({ active, tokens = [], theme }) {
             </div>
           </div>
         </div>
+                <div className="mx-4 mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div
+            className={`rounded-xl border p-4 ${
+              isDark
+                ? "border-slate-700 bg-slate-900/80"
+                : "border-slate-300 bg-slate-50"
+            }`}
+          >
+            <div
+              className={`text-sm font-semibold mb-2 ${
+                isDark ? "text-cyan-300" : "text-blue-800"
+              }`}
+            >
+              What this graph means
+            </div>
+
+            <div
+              className={`text-[11px] leading-5 space-y-2 ${
+                isDark ? "text-slate-300" : "text-slate-700"
+              }`}
+            >
+              <p>
+                Each circle is a word, and each link shows that one word can still
+                exchange attention information with another word in this demo.
+              </p>
+
+              <p>
+                When all links are connected, words can interact more freely across
+                the sentence.
+              </p>
+
+              <p>
+                When links are cut, some attention paths are blocked, so the graph
+                becomes a visual way to understand reduced interaction between words.
+              </p>
+            </div>
+          </div>
+
+          <div
+            className={`rounded-xl border p-4 ${
+              isDark
+                ? "border-slate-700 bg-slate-900/80"
+                : "border-slate-300 bg-slate-50"
+            }`}
+          >
+            <div
+              className={`text-sm font-semibold mb-2 ${
+                isDark ? "text-cyan-300" : "text-blue-800"
+              }`}
+            >
+              Live attention effect
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-3 text-xs">
+              <div
+                className={`px-3 py-1.5 rounded-lg border ${
+                  isDark
+                    ? "border-cyan-400 text-cyan-300 bg-cyan-400/10"
+                    : "border-blue-400 text-blue-800 bg-blue-100"
+                }`}
+              >
+                Active links: {activeEdgeCount} / {totalEdgeCount}
+              </div>
+
+              <div
+                className={`px-3 py-1.5 rounded-lg border ${
+                  isDark
+                    ? "border-green-400 text-green-300 bg-green-400/10"
+                    : "border-green-400 text-green-700 bg-green-100"
+                }`}
+              >
+                Connectivity: {connectionPercent}%
+              </div>
+
+              <div
+                className={`px-3 py-1.5 rounded-lg border ${
+                  isDark
+                    ? "border-purple-400 text-purple-300 bg-purple-400/10"
+                    : "border-violet-400 text-violet-700 bg-violet-100"
+                }`}
+              >
+                Focused word links: {focusedConnections}
+              </div>
+            </div>
+
+            <div
+              className={`text-[11px] leading-5 rounded-lg border p-3 ${
+                allConnected
+                  ? isDark
+                    ? "border-green-400/40 bg-green-400/5 text-slate-300"
+                    : "border-green-400 bg-green-50 text-slate-700"
+                  : partiallyDisconnected
+                  ? isDark
+                    ? "border-amber-400/40 bg-amber-400/5 text-slate-300"
+                    : "border-amber-400 bg-amber-50 text-slate-700"
+                  : isDark
+                  ? "border-red-400/40 bg-red-400/5 text-slate-300"
+                  : "border-red-400 bg-red-50 text-slate-700"
+              }`}
+            >
+              {allConnected && (
+                <p>
+                  All words are connected. In this state, the demo shows the richest
+                  interaction pattern, because every word can still keep attention
+                  paths to every other word.
+                </p>
+              )}
+
+              {partiallyDisconnected && (
+                <p>
+                  Some links are cut. This means attention interaction is now more
+                  limited: some word pairs can no longer exchange information through
+                  the graph, so the matrix shows blocked relationships in red.
+                </p>
+              )}
+
+              {heavilyDisconnected && (
+                <p>
+                  All links are cut. In this extreme case, the demo shows that words
+                  lose interaction paths with each other, so attention becomes highly
+                  restricted beyond self-connections.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
       </div>
     </motion.div>
   );
