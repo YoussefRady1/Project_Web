@@ -117,7 +117,13 @@ function TokenStep({ active, tokens = [], theme }) {
       <h2 className={`${isDark ? "text-cyan-300" : "text-blue-800"} font-semibold text-center`}>
   Tokenization
 </h2>
-
+<p
+  className={`text-xs text-center mb-4 ${
+    isDark ? "text-slate-400" : "text-slate-700"
+  }`}
+>
+  Splits the sentence into individual words
+</p>
 <div
   className={`w-full max-w-[420px] mb-6 rounded-xl border p-3 ${
     isDark
