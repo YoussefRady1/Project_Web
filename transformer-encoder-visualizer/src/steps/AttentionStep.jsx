@@ -419,6 +419,41 @@ const focusedUnderstandingLabel =
     : focusedConnections >= 1
     ? "Partial output context"
     : "Weak output context";
+      const focusedWord = safeTokens[focusedNode];
+
+  const connectedWords = connectedTokenIndexes
+    .filter((index) => index !== focusedNode)
+    .map((index) => safeTokens[index]);
+
+  const disconnectedWords = disconnectedTokenIndexes.map(
+    (index) => safeTokens[index]
+  );
+
+  const mistakeMessages = [];
+
+  if (disconnectedWords.length === 0) {
+    mistakeMessages.push(
+      "All important context links are available, so the focused word can build a richer encoder representation."
+    );
+  }
+
+  if (disconnectedWords.length > 0 && connectedWords.length > 0) {
+    mistakeMessages.push(
+      "Some useful context is missing, so the focused word is now built from only part of the sentence."
+    );
+  }
+
+  if (connectedWords.length === 0) {
+    mistakeMessages.push(
+      "The focused word is isolated from the rest of the sentence, so its output becomes much less contextual."
+    );
+  }
+
+  if (disconnectedWords.length >= 2) {
+    mistakeMessages.push(
+      "Because multiple links were removed, the model may miss important relationships between words."
+    );
+  }
   return (
     <motion.div
       animate={{
@@ -1177,7 +1212,150 @@ const focusedUnderstandingLabel =
             </div>
           </div>
         </div>
+        <div
+          className={`mx-4 mt-4 rounded-xl border p-4 ${
+            isDark
+              ? "border-slate-700 bg-slate-900/80"
+              : "border-slate-300 bg-slate-50"
+          }`}
+        >
+          <div
+            className={`text-sm font-semibold mb-3 ${
+              isDark ? "text-cyan-300" : "text-blue-800"
+            }`}
+          >
+            Token Perspective Mode
+          </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div
+              className={`rounded-lg border p-3 ${
+                isDark
+                  ? "border-cyan-400/30 bg-cyan-400/5"
+                  : "border-blue-300 bg-blue-50"
+              }`}
+            >
+              <div
+                className={`text-[10px] uppercase tracking-wide mb-2 ${
+                  isDark ? "text-cyan-300/80" : "text-blue-700"
+                }`}
+              >
+                I am this word
+              </div>
+              <div
+                className={`text-sm font-medium ${
+                  isDark ? "text-cyan-300" : "text-blue-800"
+                }`}
+              >
+                {focusedWord}
+              </div>
+            </div>
+
+            <div
+              className={`rounded-lg border p-3 ${
+                isDark
+                  ? "border-green-400/30 bg-green-400/5"
+                  : "border-green-400 bg-green-50"
+              }`}
+            >
+              <div
+                className={`text-[10px] uppercase tracking-wide mb-2 ${
+                  isDark ? "text-green-300/80" : "text-green-700"
+                }`}
+              >
+                I can still use
+              </div>
+              <div
+                className={`text-sm ${
+                  isDark ? "text-green-300" : "text-green-700"
+                }`}
+              >
+                {connectedWords.join(", ") || "No other words"}
+              </div>
+            </div>
+
+            <div
+              className={`rounded-lg border p-3 ${
+                isDark
+                  ? "border-red-400/30 bg-red-400/5"
+                  : "border-red-400 bg-red-50"
+              }`}
+            >
+              <div
+                className={`text-[10px] uppercase tracking-wide mb-2 ${
+                  isDark ? "text-red-300/80" : "text-red-700"
+                }`}
+              >
+                I lost access to
+              </div>
+              <div
+                className={`text-sm ${
+                  isDark ? "text-red-300" : "text-red-700"
+                }`}
+              >
+                {disconnectedWords.join(", ") || "None"}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            <div
+              className={`px-3 py-1.5 rounded-lg border text-xs ${
+                focusedUnderstandingLabel === "Strong output context"
+                  ? isDark
+                    ? "border-green-400 text-green-300 bg-green-400/10"
+                    : "border-green-400 text-green-700 bg-green-100"
+                  : focusedUnderstandingLabel === "Partial output context"
+                  ? isDark
+                    ? "border-amber-400 text-amber-300 bg-amber-400/10"
+                    : "border-amber-400 text-amber-700 bg-amber-100"
+                  : isDark
+                  ? "border-red-400 text-red-300 bg-red-400/10"
+                  : "border-red-400 text-red-700 bg-red-100"
+              }`}
+            >
+              {focusedUnderstandingLabel}
+            </div>
+          </div>
+        </div>
+                <div
+          className={`mx-4 mt-4 rounded-xl border p-4 ${
+            isDark
+              ? "border-slate-700 bg-slate-900/80"
+              : "border-slate-300 bg-slate-50"
+          }`}
+        >
+          <div
+            className={`text-sm font-semibold mb-3 ${
+              isDark ? "text-cyan-300" : "text-blue-800"
+            }`}
+          >
+            Attention Mistake Simulator
+          </div>
+
+          <div className="space-y-3">
+            {mistakeMessages.map((message, index) => (
+              <div
+                key={index}
+                className={`rounded-lg border p-3 text-[11px] leading-5 ${
+                  disconnectedWords.length === 0
+                    ? isDark
+                      ? "border-green-400/30 bg-green-400/5 text-slate-300"
+                      : "border-green-400 bg-green-50 text-slate-700"
+                    : connectedWords.length === 0
+                    ? isDark
+                      ? "border-red-400/30 bg-red-400/5 text-slate-300"
+                      : "border-red-400 bg-red-50 text-slate-700"
+                    : isDark
+                    ? "border-amber-400/30 bg-amber-400/5 text-slate-300"
+                    : "border-amber-400 bg-amber-50 text-slate-700"
+                }`}
+              >
+                {message}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </motion.div>
   );
