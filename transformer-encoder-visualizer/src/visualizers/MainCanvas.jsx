@@ -6,10 +6,10 @@ import PositionalStep from "../steps/PositionalStep";
 import EncoderStackStep from "../steps/EncoderStackStep";
 import EncoderOutputStep from "../steps/EncoderOutputStep";
 import EncoderQuizStep from "../steps/EncoderQuizStep";
-import TransformerIntroStep from "../steps/TransformerIntroStep";
+import TransformerArchitectureStep from "../steps/TransformerArchitectureStep";
 
 const stepComponents = [
-  TransformerIntroStep,
+  TransformerArchitectureStep,
   TokenStep,
   EmbeddingStep,
   PositionalStep,
@@ -19,7 +19,7 @@ const stepComponents = [
 ];
 
 const stepTitles = [
-  "What is Transformer?",
+  "Transformer Architecture",
   "Tokenization",
   "Embedding",
   "Positional Encoding",
