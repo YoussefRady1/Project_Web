@@ -1,8 +1,36 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { pipeline, env } from "@xenova/transformers";
 
-const HF_API =
-  "https://api-inference.huggingface.co/models/google/flan-t5-small";
+env.useBrowserCache = true;
+env.allowLocalModels = false;
+
+let generatorInstance = null;
+let generatorLoading = false;
+const waiters = [];
+
+async function getGenerator(onProgress) {
+  if (generatorInstance) return generatorInstance;
+  if (generatorLoading) {
+    return new Promise((resolve) => waiters.push(resolve));
+  }
+  generatorLoading = true;
+  generatorInstance = await pipeline(
+    "text-generation",
+    "Xenova/distilgpt2",
+    {
+      progress_callback: (data) => {
+        if (data.status === "progress" && onProgress) {
+          onProgress(Math.round(data.progress));
+        }
+      },
+    }
+  );
+  generatorLoading = false;
+  waiters.forEach((fn) => fn(generatorInstance));
+  waiters.length = 0;
+  return generatorInstance;
+}
 
 function bez(x1, y1, x2, y2, b1 = 0, b2 = 0) {
   const dx = (x2 - x1) * 0.38;
@@ -20,6 +48,7 @@ const PAL = {
     text: "#e2e8f0",
     sub: "#64748b",
     pill: "#0f172a",
+    res: "#f97316",
   },
   light: {
     embed: "#0891b2",
@@ -31,6 +60,7 @@ const PAL = {
     text: "#1e293b",
     sub: "#94a3b8",
     pill: "#f8fafc",
+    res: "#ea580c",
   },
 };
 
@@ -44,12 +74,12 @@ const STAGES = [
 ];
 
 const DESC = {
-  embed: "Converts tokens into dense vector representations",
-  selfAttn: "Each input token attends to every other input token",
-  encFFN: "Per-token nonlinear transformation in the encoder",
-  crossAttn: "Decoder attends to all encoder output positions",
-  decFFN: "Per-token nonlinear transformation in the decoder",
-  outProj: "Maps decoder state to vocabulary probabilities",
+  embed: "Converts words to vectors",
+  selfAttn: "Words attend to each other",
+  encFFN: "Transforms representations",
+  crossAttn: "Decoder attends to encoder output",
+  decFFN: "Transforms representations",
+  outProj: "Predicts next token probabilities",
 };
 
 const CY = 220;
@@ -60,49 +90,61 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
   const isDark = theme === "dark";
   const p = PAL[isDark ? "dark" : "light"];
 
-  const [input, setInput] = useState(
-    "Translate to French: The cat is on the mat"
-  );
+  const [prefix] = useState("The cat sat on the");
+  const [lastWord, setLastWord] = useState("mat");
   const [inToks, setInToks] = useState([]);
   const [outToks, setOutToks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [flowing, setFlowing] = useState(false);
   const [hov, setHov] = useState(null);
+  const [error, setError] = useState("");
+  const [modelStatus, setModelStatus] = useState("idle");
+  const [modelProgress, setModelProgress] = useState(0);
+  const loadingRef = useRef(false);
 
-  const run = useCallback(async () => {
-    const text = input.trim();
-    if (!text || loading) return;
-    const toks = text.split(/\s+/).slice(0, 10);
-    setInToks(toks);
-    setOutToks([]);
-    setLoading(true);
-    setFlowing(true);
-    try {
-      const res = await fetch(HF_API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          inputs: text,
-          options: { wait_for_model: true },
-        }),
-      });
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-      const out = (
-        data[0]?.generated_text ||
-        data?.generated_text ||
-        ""
-      ).trim();
-      if (out) setOutToks(out.split(/\s+/));
-      else throw new Error();
-    } catch {
-      const fake = text.toLowerCase().includes("french")
-        ? ["Le", "chat", "est", "sur", "le", "tapis"]
-        : text.split(/\s+/).slice(0, 4);
-      setOutToks(fake);
-    }
-    setLoading(false);
-  }, [input, loading]);
+  useEffect(() => {
+    setModelStatus("loading");
+    getGenerator(setModelProgress)
+      .then(() => setModelStatus("ready"))
+      .catch(() => setModelStatus("error"));
+  }, []);
+
+  const run = useCallback(
+    async (word) => {
+      const text = `${prefix} ${word}`.trim();
+      if (!text || loadingRef.current || modelStatus !== "ready") return;
+      const toks = text.split(/\s+/).slice(0, 10);
+      setInToks(toks);
+      setOutToks([]);
+      setError("");
+      loadingRef.current = true;
+      setLoading(true);
+      setFlowing(true);
+      try {
+        const generator = await getGenerator();
+        const result = await generator(text, {
+          max_new_tokens: 15,
+          temperature: 0.7,
+          do_sample: true,
+        });
+        const fullText = result[0].generated_text;
+        const gen = fullText.slice(text.length).trim();
+        if (gen) setOutToks(gen.split(/\s+/).slice(0, 8));
+        else throw new Error("Empty generation");
+      } catch (err) {
+        setError(err.message || "Generation failed");
+      }
+      loadingRef.current = false;
+      setLoading(false);
+    },
+    [prefix, modelStatus]
+  );
+
+  useEffect(() => {
+    if (!lastWord.trim() || modelStatus !== "ready") return;
+    const timer = setTimeout(() => run(lastWord), 600);
+    return () => clearTimeout(timer);
+  }, [lastWord, run, modelStatus]);
 
   const spacing = (n) => Math.min(34, 300 / Math.max(n, 1));
   const yPos = (i, n) =>
@@ -149,6 +191,26 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
     op: 0.25,
   });
 
+  // Encoder residual: encFFN → selfAttn (reverse, below)
+  flows.push({
+    d: `M${STAGES[2].x},${CY + 15} C${STAGES[2].x},${CY + 75} ${STAGES[1].x},${CY + 75} ${STAGES[1].x},${CY + 15}`,
+    c: p.res,
+    dl: 0.3,
+    w: 1.4,
+    op: 0.2,
+    rev: true,
+  });
+
+  // Decoder residual: decFFN → crossAttn (reverse, below)
+  flows.push({
+    d: `M${STAGES[4].x},${CY + 15} C${STAGES[4].x},${CY + 75} ${STAGES[3].x},${CY + 75} ${STAGES[3].x},${CY + 15}`,
+    c: p.res,
+    dl: 0.6,
+    w: 1.4,
+    op: 0.2,
+    rev: true,
+  });
+
   outToks.forEach((_, i) => {
     const bend = (i - (outToks.length - 1) / 2) * 10;
     flows.push({
@@ -169,28 +231,82 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
       }`}
     >
       <div className="flex items-center gap-2">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && run()}
-          placeholder="Type a prompt for FLAN-T5…"
-          className={`flex-1 px-4 py-2 rounded-xl text-sm outline-none transition ${
-            isDark
-              ? "bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-cyan-500"
-              : "bg-slate-50 border border-slate-300 text-slate-800 focus:border-blue-400"
-          }`}
-        />
-        <button
-          onClick={run}
-          disabled={loading}
-          className={`px-5 py-2 rounded-xl text-sm font-bold transition whitespace-nowrap ${
-            isDark
-              ? "bg-cyan-500 text-slate-950 hover:bg-cyan-400 disabled:opacity-40"
-              : "bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-40"
-          }`}
-        >
-          {loading ? "Processing…" : "Run Model"}
-        </button>
+        {modelStatus === "loading" ? (
+          <div
+            className={`flex-1 flex items-center gap-3 px-4 py-2 rounded-xl text-sm ${
+              isDark
+                ? "bg-slate-900 border border-slate-700"
+                : "bg-slate-50 border border-slate-300"
+            }`}
+          >
+            <span
+              className={`animate-pulse ${
+                isDark ? "text-cyan-400" : "text-blue-600"
+              }`}
+            >
+              Loading DistilGPT-2…
+            </span>
+            <div
+              className={`flex-1 h-2 rounded-full overflow-hidden ${
+                isDark ? "bg-slate-800" : "bg-slate-200"
+              }`}
+            >
+              <div
+                className={`h-full rounded-full transition-all duration-300 ${
+                  isDark ? "bg-cyan-500" : "bg-blue-500"
+                }`}
+                style={{ width: `${modelProgress}%` }}
+              />
+            </div>
+            <span
+              className={`text-xs ${
+                isDark ? "text-slate-500" : "text-slate-400"
+              }`}
+            >
+              {modelProgress}%
+            </span>
+          </div>
+        ) : modelStatus === "error" ? (
+          <div
+            className={`flex-1 px-4 py-2 rounded-xl text-sm text-red-500 ${
+              isDark
+                ? "bg-slate-900 border border-red-500/30"
+                : "bg-red-50 border border-red-200"
+            }`}
+          >
+            Failed to load model — refresh to retry
+          </div>
+        ) : (
+          <div
+            className={`flex-1 flex items-center gap-1 px-4 py-2 rounded-xl text-sm ${
+              isDark
+                ? "bg-slate-900 border border-slate-700"
+                : "bg-slate-50 border border-slate-300"
+            }`}
+          >
+            <span className={isDark ? "text-slate-400" : "text-slate-500"}>
+              {prefix}
+            </span>
+            <input
+              value={lastWord}
+              onChange={(e) => setLastWord(e.target.value)}
+              className={`w-24 px-2 py-0.5 rounded-lg text-sm font-bold outline-none transition border ${
+                isDark
+                  ? "bg-cyan-500/10 border-cyan-500/40 text-cyan-300 focus:border-cyan-400"
+                  : "bg-blue-50 border-blue-300 text-blue-700 focus:border-blue-500"
+              }`}
+            />
+          </div>
+        )}
+        {loading && (
+          <span
+            className={`text-xs animate-pulse ${
+              isDark ? "text-slate-500" : "text-slate-400"
+            }`}
+          >
+            generating…
+          </span>
+        )}
       </div>
 
       <svg
@@ -198,7 +314,12 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
         className="w-full"
         style={{ minHeight: 380 }}
       >
-        <style>{`@keyframes df{to{stroke-dashoffset:-32}}`}</style>
+        <style>{`
+          @keyframes df{to{stroke-dashoffset:-32}}
+          @keyframes dr{to{stroke-dashoffset:32}}
+          @keyframes dff{to{stroke-dashoffset:-32}}
+          @keyframes drf{to{stroke-dashoffset:32}}
+        `}</style>
 
         <text
           x={265}
@@ -210,7 +331,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           opacity={0.5}
           letterSpacing="4"
         >
-          ENCODER
+          ENCODER STACK
         </text>
         <text
           x={690}
@@ -222,7 +343,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           opacity={0.5}
           letterSpacing="4"
         >
-          DECODER
+          DECODER STACK
         </text>
         <text
           x={(STAGES[2].x + STAGES[3].x) / 2}
@@ -234,6 +355,30 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           opacity={0.45}
         >
           encoder output
+        </text>
+        <text
+          x={(STAGES[1].x + STAGES[2].x) / 2}
+          y={CY + 88}
+          textAnchor="middle"
+          fontSize={7.5}
+          fontWeight="700"
+          fill={p.res}
+          opacity={0.55}
+          letterSpacing="1"
+        >
+          ENCODER STACK
+        </text>
+        <text
+          x={(STAGES[3].x + STAGES[4].x) / 2}
+          y={CY + 88}
+          textAnchor="middle"
+          fontSize={7.5}
+          fontWeight="700"
+          fill={p.res}
+          opacity={0.55}
+          letterSpacing="1"
+        >
+          DECODER STACK
         </text>
         <text
           x={45}
@@ -285,11 +430,12 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
                 d={f.d}
                 fill="none"
                 stroke={f.c}
-                strokeWidth={(f.w || 1.2) + 0.5}
-                strokeOpacity={0.45}
-                strokeDasharray="6 10"
+                strokeWidth={(f.w || 1.2) + (loading ? 1 : 0.5)}
+                strokeOpacity={loading ? (f.rev ? 0.55 : 0.7) : (f.rev ? 0.35 : 0.45)}
+                strokeDasharray={f.rev ? "4 8" : "6 10"}
                 style={{
-                  animation: `df 1.8s ${f.dl}s linear infinite`,
+                  animation: `${f.rev ? "dr" : "df"} ${loading ? (f.rev ? "1.0" : "0.8") : (f.rev ? "2.2" : "1.8")}s ${f.dl}s linear infinite`,
+                  transition: "stroke-opacity 0.3s, stroke-width 0.3s",
                 }}
               />
             </g>
@@ -340,11 +486,11 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
                   cy={CY}
                   fill={col}
                   animate={{
-                    r: [14, 24, 14],
-                    opacity: [0.06, 0.02, 0.06],
+                    r: loading ? [16, 30, 16] : [14, 24, 14],
+                    opacity: loading ? [0.12, 0.04, 0.12] : [0.06, 0.02, 0.06],
                   }}
                   transition={{
-                    duration: 2.5,
+                    duration: loading ? 1.2 : 2.5,
                     delay: si * 0.25,
                     repeat: Infinity,
                   }}
@@ -450,8 +596,20 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
             animate={{ opacity: [0.3, 0.8, 0.3] }}
             transition={{ duration: 1.2, repeat: Infinity }}
           >
-            FLAN-T5 processing…
+            DistilGPT-2 generating…
           </motion.text>
+        )}
+
+        {error && !loading && (
+          <text
+            x={SVG_W / 2}
+            y={SVG_H - 15}
+            textAnchor="middle"
+            fontSize={10}
+            fill="#ef4444"
+          >
+            {error}
+          </text>
         )}
       </svg>
 
@@ -461,7 +619,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
             isDark ? "text-slate-600" : "text-slate-400"
           }`}
         >
-          google/flan-t5-small · Hover stages for info
+          DistilGPT-2 (in-browser) · Edit last word to see output change
         </span>
         <button
           onClick={() => setStep(1)}

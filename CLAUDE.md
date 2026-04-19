@@ -32,7 +32,7 @@ npm test         # Jest + React Testing Library
 
 | Index | Component | What it visualizes |
 |-------|-----------|-------------------|
-| 0 | TransformerArchitectureStep | High-level transformer architecture overview |
+| 0 | TransformerArchitectureStep | Full encoder+decoder architecture with live GPT-2 output |
 | 1 | TokenStep | Sentence splitting into tokens |
 | 2 | EmbeddingStep | Token-to-vector embedding |
 | 3 | PositionalStep | Positional encoding addition |
