@@ -32,7 +32,7 @@ npm test         # Jest + React Testing Library
 
 | Index | Component | What it visualizes |
 |-------|-----------|-------------------|
-| 0 | TransformerArchitectureStep | Full encoder+decoder architecture with live GPT-2 output |
+| 0 | TransformerArchitectureStep | Full encoder+decoder architecture with live T5-Small inference |
 | 1 | TokenStep | Sentence splitting into tokens |
 | 2 | EmbeddingStep | Token-to-vector embedding |
 | 3 | PositionalStep | Positional encoding addition |
@@ -47,6 +47,59 @@ npm test         # Jest + React Testing Library
 - Animations use Framer Motion's `useAnimation` + async `sleep()` sequences within `useEffect`.
 - The AttentionStep (rendered inside EncoderStackStep) uses SVG with manual coordinate math for the attention graph — constants like `GRAPH_W`, `NODE_R`, `BOX_W` control layout.
 - Tokens are capped at 10 (`safeTokens = tokens.slice(0, 10)`).
+
+### TransformerArchitectureStep (Step 0) — detailed design
+
+This is the most complex step. It was redesigned from a simple encoder-only diagram into a full encoder+decoder architecture visualization with a real ML model running in-browser.
+
+#### Layout & SVG
+
+- Full-width SVG (`960×440`) with 6 stage nodes arranged horizontally at `CY=220`.
+- Stages: Embed → Self-Attention → Feed-Forward (encoder) | Cross-Attention → Feed-Forward → Output (decoder).
+- Encoder and decoder halves separated by a dashed vertical divider at `x=475`.
+- Bezier curves (`bez()` helper) connect stages with animated flowing dashes (CSS `@keyframes df/dr`).
+- Residual connections shown as reverse-flowing arcs below the main path (orange color, `rev: true`).
+- Cross-attention arc connects encoder FFN to decoder cross-attention above the main path.
+- Input tokens displayed as pills on the left; output tokens with probability percentages on the right.
+- Hover tooltips on each stage node show a short description.
+- Color palette object `PAL` has `dark` and `light` variants with keys: `embed`, `selfAttn`, `ffn`, `crossAttn`, `output`, `dim`, `text`, `sub`, `pill`, `res`.
+
+#### In-browser ML model
+
+- Uses `@xenova/transformers` (Transformers.js) to run `Xenova/t5-small` entirely in the browser via ONNX Runtime / WebAssembly.
+- Lazy singleton pattern: `getGenerator()` loads the model once with a progress callback, subsequent calls return the cached instance. Waiters queue handles concurrent load requests.
+- Progressive loading bar shown while model downloads (~60MB on first visit, cached after).
+- Model was switched from HuggingFace Inference API → `@xenova/transformers` to avoid CORS/auth issues.
+
+#### User interaction
+
+- Three preset translation examples (English → French/German/Romanian) selectable via buttons.
+- Full sentence is editable in a text input field — user can type any sentence.
+- The task prefix (e.g., `translate English to French:`) is shown as a label; the sentence is the editable part.
+- Generation auto-triggers 600ms after the user stops typing (debounced via `useEffect` + `setTimeout`).
+
+#### Generation controls (sliders)
+
+- **Beam Search** slider (1–6): When >1, uses `num_beams` with `num_return_sequences` to generate multiple candidates. Probability is calculated as agreement ratio across sequences. Disables Top-P when active.
+- **Top-P** slider (0.1–1.0): When beam=1, uses `do_sample: true` with `top_p`. Low values = predictable output, high values = creative/varied. Probability is synthetic based on top_p and position.
+- Dynamic description text explains the current slider effect in plain language.
+
+#### Output display
+
+- Output tokens are `{tok, prob}[]` where `prob` is 0–1.
+- Probability affects: pill border thickness/opacity, text weight/opacity, flow line opacity, and a percentage label.
+- Tokens animate in sequentially with Framer Motion.
+
+#### State variables
+
+- `task` — the T5 task prefix string (e.g., `"translate English to French:"`)
+- `inputText` — the user's editable sentence
+- `activeExample` — index of selected preset example
+- `numBeams` / `topP` — slider values
+- `inToks` / `outToks` — displayed input/output token arrays
+- `modelStatus` — `"idle"` | `"loading"` | `"ready"` | `"error"`
+- `modelProgress` — 0–100 download progress
+- `loading` / `flowing` — animation state flags
 
 ## Deployment
 

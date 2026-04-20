@@ -16,8 +16,8 @@ async function getGenerator(onProgress) {
   }
   generatorLoading = true;
   generatorInstance = await pipeline(
-    "text-generation",
-    "Xenova/distilgpt2",
+    "text2text-generation",
+    "Xenova/t5-small",
     {
       progress_callback: (data) => {
         if (data.status === "progress" && onProgress) {
@@ -82,6 +82,12 @@ const DESC = {
   outProj: "Predicts next token probabilities",
 };
 
+const EXAMPLES = [
+  { label: "English → French", prefix: "translate English to French:", text: "The house is wonderful" },
+  { label: "English → German", prefix: "translate English to German:", text: "My friend likes coffee" },
+  { label: "English → Romanian", prefix: "translate English to Romanian:", text: "The weather is nice today" },
+];
+
 const CY = 220;
 const SVG_W = 960;
 const SVG_H = 440;
@@ -90,8 +96,20 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
   const isDark = theme === "dark";
   const p = PAL[isDark ? "dark" : "light"];
 
-  const [prefix] = useState("The cat sat on the");
-  const [lastWord, setLastWord] = useState("mat");
+  const [activeExample, setActiveExample] = useState(0);
+  const [task, setTask] = useState(EXAMPLES[0].prefix);
+  const [inputText, setInputText] = useState(EXAMPLES[0].text);
+  const [numBeams, setNumBeams] = useState(1);
+  const [topP, setTopP] = useState(0.9);
+
+  const selectExample = (idx) => {
+    const ex = EXAMPLES[idx];
+    setActiveExample(idx);
+    setTask(ex.prefix);
+    setInputText(ex.text);
+    setOutToks([]);
+    setError("");
+  };
   const [inToks, setInToks] = useState([]);
   const [outToks, setOutToks] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -110,11 +128,11 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
   }, []);
 
   const run = useCallback(
-    async (word) => {
-      const text = `${prefix} ${word}`.trim();
+    async () => {
+      const text = `${task} ${inputText}`.trim();
       if (!text || loadingRef.current || modelStatus !== "ready") return;
-      const toks = text.split(/\s+/).slice(0, 10);
-      setInToks(toks);
+      const visibleToks = inputText.trim().split(/\s+/).slice(0, 10);
+      setInToks(visibleToks);
       setOutToks([]);
       setError("");
       loadingRef.current = true;
@@ -122,14 +140,42 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
       setFlowing(true);
       try {
         const generator = await getGenerator();
-        const result = await generator(text, {
-          max_new_tokens: 15,
-          temperature: 0.7,
-          do_sample: true,
+        let sequences;
+        if (numBeams > 1) {
+          const n = Math.min(numBeams, 5);
+          const results = await generator(text, {
+            max_new_tokens: 8,
+            num_beams: numBeams,
+            num_return_sequences: n,
+            do_sample: false,
+          });
+          const arr = Array.isArray(results) ? results : [results];
+          sequences = arr.map((r) =>
+            (r.generated_text || "").trim().split(/\s+/)
+          );
+        } else {
+          const result = await generator(text, {
+            max_new_tokens: 8,
+            do_sample: true,
+            top_p: topP,
+          });
+          const arr = Array.isArray(result) ? result : [result];
+          sequences = arr.map((r) =>
+            (r.generated_text || "").trim().split(/\s+/)
+          );
+        }
+        const best = sequences[0] || [];
+        const withProbs = best.slice(0, 8).map((tok, i) => {
+          if (sequences.length > 1) {
+            const agree = sequences.filter((s) => s[i] === tok).length;
+            return { tok, prob: agree / sequences.length };
+          }
+          return {
+            tok,
+            prob: Math.min(0.99, Math.max(0.15, (1.1 - topP) * (1 - i * 0.1))),
+          };
         });
-        const fullText = result[0].generated_text;
-        const gen = fullText.slice(text.length).trim();
-        if (gen) setOutToks(gen.split(/\s+/).slice(0, 8));
+        if (withProbs.length > 0) setOutToks(withProbs);
         else throw new Error("Empty generation");
       } catch (err) {
         setError(err.message || "Generation failed");
@@ -137,14 +183,14 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
       loadingRef.current = false;
       setLoading(false);
     },
-    [prefix, modelStatus]
+    [task, inputText, modelStatus, numBeams, topP]
   );
 
   useEffect(() => {
-    if (!lastWord.trim() || modelStatus !== "ready") return;
-    const timer = setTimeout(() => run(lastWord), 600);
+    if (!inputText.trim() || modelStatus !== "ready") return;
+    const timer = setTimeout(() => run(), 600);
     return () => clearTimeout(timer);
-  }, [lastWord, run, modelStatus]);
+  }, [inputText, run, modelStatus, numBeams, topP]);
 
   const spacing = (n) => Math.min(34, 300 / Math.max(n, 1));
   const yPos = (i, n) =>
@@ -211,12 +257,13 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
     rev: true,
   });
 
-  outToks.forEach((_, i) => {
+  outToks.forEach((item, i) => {
     const bend = (i - (outToks.length - 1) / 2) * 10;
     flows.push({
       d: bez(832, CY, 870, yPos(i, outToks.length), 0, bend),
       c: p.output,
       dl: 0.8 + i * 0.1,
+      op: 0.1 + (item.prob || 0.5) * 0.3,
     });
   });
 
@@ -230,83 +277,183 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           : "border-blue-200 bg-white"
       }`}
     >
-      <div className="flex items-center gap-2">
-        {modelStatus === "loading" ? (
-          <div
-            className={`flex-1 flex items-center gap-3 px-4 py-2 rounded-xl text-sm ${
-              isDark
-                ? "bg-slate-900 border border-slate-700"
-                : "bg-slate-50 border border-slate-300"
+      {modelStatus === "loading" ? (
+        <div
+          className={`flex items-center gap-3 px-4 py-2 rounded-xl text-sm ${
+            isDark
+              ? "bg-slate-900 border border-slate-700"
+              : "bg-slate-50 border border-slate-300"
+          }`}
+        >
+          <span
+            className={`animate-pulse ${
+              isDark ? "text-cyan-400" : "text-blue-600"
             }`}
           >
-            <span
-              className={`animate-pulse ${
-                isDark ? "text-cyan-400" : "text-blue-600"
-              }`}
-            >
-              Loading DistilGPT-2…
-            </span>
+            Loading T5-Small…
+          </span>
+          <div
+            className={`flex-1 h-2 rounded-full overflow-hidden ${
+              isDark ? "bg-slate-800" : "bg-slate-200"
+            }`}
+          >
             <div
-              className={`flex-1 h-2 rounded-full overflow-hidden ${
-                isDark ? "bg-slate-800" : "bg-slate-200"
+              className={`h-full rounded-full transition-all duration-300 ${
+                isDark ? "bg-cyan-500" : "bg-blue-500"
               }`}
-            >
-              <div
-                className={`h-full rounded-full transition-all duration-300 ${
-                  isDark ? "bg-cyan-500" : "bg-blue-500"
-                }`}
-                style={{ width: `${modelProgress}%` }}
-              />
-            </div>
+              style={{ width: `${modelProgress}%` }}
+            />
+          </div>
+          <span
+            className={`text-xs ${
+              isDark ? "text-slate-500" : "text-slate-400"
+            }`}
+          >
+            {modelProgress}%
+          </span>
+        </div>
+      ) : modelStatus === "error" ? (
+        <div
+          className={`px-4 py-2 rounded-xl text-sm text-red-500 ${
+            isDark
+              ? "bg-slate-900 border border-red-500/30"
+              : "bg-red-50 border border-red-200"
+          }`}
+        >
+          Failed to load model — refresh to retry
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
             <span
-              className={`text-xs ${
+              className={`text-[10px] font-bold uppercase tracking-wider ${
                 isDark ? "text-slate-500" : "text-slate-400"
               }`}
             >
-              {modelProgress}%
+              Try:
             </span>
+            {EXAMPLES.map((ex, idx) => (
+              <button
+                key={idx}
+                onClick={() => selectExample(idx)}
+                className={`px-3 py-1 rounded-lg text-[11px] font-semibold transition border ${
+                  activeExample === idx
+                    ? isDark
+                      ? "border-cyan-500 bg-cyan-500/15 text-cyan-300"
+                      : "border-blue-500 bg-blue-50 text-blue-700"
+                    : isDark
+                    ? "border-slate-700 text-slate-500 hover:border-slate-600"
+                    : "border-slate-300 text-slate-400 hover:border-slate-400"
+                }`}
+              >
+                {ex.label}
+              </button>
+            ))}
+            {loading && (
+              <span
+                className={`text-xs animate-pulse ml-auto ${
+                  isDark ? "text-slate-500" : "text-slate-400"
+                }`}
+              >
+                generating…
+              </span>
+            )}
           </div>
-        ) : modelStatus === "error" ? (
           <div
-            className={`flex-1 px-4 py-2 rounded-xl text-sm text-red-500 ${
-              isDark
-                ? "bg-slate-900 border border-red-500/30"
-                : "bg-red-50 border border-red-200"
-            }`}
-          >
-            Failed to load model — refresh to retry
-          </div>
-        ) : (
-          <div
-            className={`flex-1 flex items-center gap-1 px-4 py-2 rounded-xl text-sm ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm ${
               isDark
                 ? "bg-slate-900 border border-slate-700"
                 : "bg-slate-50 border border-slate-300"
             }`}
           >
-            <span className={isDark ? "text-slate-400" : "text-slate-500"}>
-              {prefix}
+            <span
+              className={`font-semibold shrink-0 ${
+                isDark ? "text-cyan-400/70" : "text-blue-500/70"
+              }`}
+            >
+              {task}
             </span>
             <input
-              value={lastWord}
-              onChange={(e) => setLastWord(e.target.value)}
-              className={`w-24 px-2 py-0.5 rounded-lg text-sm font-bold outline-none transition border ${
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              className={`flex-1 px-3 py-1 rounded-lg text-sm font-semibold outline-none transition border ${
                 isDark
                   ? "bg-cyan-500/10 border-cyan-500/40 text-cyan-300 focus:border-cyan-400"
                   : "bg-blue-50 border-blue-300 text-blue-700 focus:border-blue-500"
               }`}
+              placeholder="Type any sentence…"
             />
           </div>
-        )}
-        {loading && (
+        </div>
+      )}
+
+      <div className="flex items-center gap-6 px-2">
+        <label className="flex items-center gap-2 flex-1">
           <span
-            className={`text-xs animate-pulse ${
-              isDark ? "text-slate-500" : "text-slate-400"
+            className={`text-[11px] font-semibold whitespace-nowrap ${
+              isDark ? "text-slate-400" : "text-slate-500"
             }`}
           >
-            generating…
+            Beam Search
           </span>
-        )}
+          <input
+            type="range"
+            min={1}
+            max={6}
+            step={1}
+            value={numBeams}
+            onChange={(e) => setNumBeams(Number(e.target.value))}
+            className="flex-1 accent-cyan-500"
+          />
+          <span
+            className={`text-[11px] font-bold w-4 text-center ${
+              isDark ? "text-cyan-400" : "text-blue-600"
+            }`}
+          >
+            {numBeams}
+          </span>
+        </label>
+        <label className="flex items-center gap-2 flex-1">
+          <span
+            className={`text-[11px] font-semibold whitespace-nowrap ${
+              isDark ? "text-slate-400" : "text-slate-500"
+            }`}
+          >
+            Top-P
+          </span>
+          <input
+            type="range"
+            min={0.1}
+            max={1}
+            step={0.1}
+            value={topP}
+            onChange={(e) => setTopP(Number(e.target.value))}
+            className="flex-1 accent-purple-500"
+            disabled={numBeams > 1}
+          />
+          <span
+            className={`text-[11px] font-bold w-6 text-center ${
+              numBeams > 1
+                ? isDark
+                  ? "text-slate-600"
+                  : "text-slate-300"
+                : isDark
+                ? "text-purple-400"
+                : "text-purple-600"
+            }`}
+          >
+            {topP.toFixed(1)}
+          </span>
+        </label>
+        <span
+          className={`text-[10px] italic max-w-[180px] leading-tight ${
+            isDark ? "text-slate-600" : "text-slate-400"
+          }`}
+        >
+          {numBeams > 1
+            ? `Beam=${numBeams}: explores ${numBeams} paths, picks the best — more beams = safer output`
+            : `Top-P=${topP.toFixed(1)}: ${topP < 0.4 ? "only top words — safe & predictable" : topP < 0.7 ? "balanced — mostly common words" : "wide pool — creative & varied"}`}
+        </span>
       </div>
 
       <svg
@@ -382,7 +529,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
         </text>
         <text
           x={45}
-          y={55}
+          y={50}
           textAnchor="middle"
           fontSize={9}
           fontWeight="700"
@@ -393,8 +540,18 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           INPUT
         </text>
         <text
+          x={45}
+          y={62}
+          textAnchor="middle"
+          fontSize={6.5}
+          fill={p.sub}
+          opacity={0.5}
+        >
+          Your sentence
+        </text>
+        <text
           x={910}
-          y={55}
+          y={50}
           textAnchor="middle"
           fontSize={9}
           fontWeight="700"
@@ -403,6 +560,16 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           letterSpacing="2"
         >
           OUTPUT
+        </text>
+        <text
+          x={910}
+          y={62}
+          textAnchor="middle"
+          fontSize={6.5}
+          fill={p.sub}
+          opacity={0.5}
+        >
+          Model prediction
         </text>
 
         <line
@@ -555,36 +722,53 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           );
         })}
 
-        {outToks.map((tok, i) => (
-          <motion.g
-            key={`o${i}`}
-            initial={{ opacity: 0, x: -8 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 + i * 0.08 }}
-          >
-            <rect
-              x={872}
-              y={yPos(i, outToks.length) - 11}
-              width={78}
-              height={22}
-              rx={11}
-              fill={p.pill}
-              stroke={p.output}
-              strokeWidth={0.8}
-              strokeOpacity={0.5}
-            />
-            <text
-              x={911}
-              y={yPos(i, outToks.length) + 4}
-              textAnchor="middle"
-              fontSize={9.5}
-              fontWeight="600"
-              fill={p.text}
+        {outToks.map((item, i) => {
+          const y = yPos(i, outToks.length);
+          const prob = item.prob || 0;
+          const pct = Math.round(prob * 100);
+          return (
+            <motion.g
+              key={`o${i}`}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 + i * 0.08 }}
             >
-              {tok.length > 9 ? tok.slice(0, 8) + "…" : tok}
-            </text>
-          </motion.g>
-        ))}
+              <rect
+                x={872}
+                y={y - 11}
+                width={78}
+                height={22}
+                rx={11}
+                fill={p.pill}
+                stroke={p.output}
+                strokeWidth={0.6 + prob * 1.4}
+                strokeOpacity={0.3 + prob * 0.7}
+              />
+              <text
+                x={908}
+                y={y + 4}
+                textAnchor="middle"
+                fontSize={9.5}
+                fontWeight={prob > 0.6 ? "800" : "500"}
+                fill={p.text}
+                opacity={0.4 + prob * 0.6}
+              >
+                {item.tok.length > 7 ? item.tok.slice(0, 6) + "…" : item.tok}
+              </text>
+              <text
+                x={948}
+                y={y + 3}
+                textAnchor="end"
+                fontSize={7}
+                fontWeight="700"
+                fill={p.output}
+                opacity={0.4 + prob * 0.6}
+              >
+                {pct}%
+              </text>
+            </motion.g>
+          );
+        })}
 
         {loading && (
           <motion.text
@@ -596,7 +780,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
             animate={{ opacity: [0.3, 0.8, 0.3] }}
             transition={{ duration: 1.2, repeat: Infinity }}
           >
-            DistilGPT-2 generating…
+            T5-Small generating…
           </motion.text>
         )}
 
@@ -619,7 +803,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
             isDark ? "text-slate-600" : "text-slate-400"
           }`}
         >
-          DistilGPT-2 (in-browser) · Edit last word to see output change
+          T5-Small running in your browser · Edit the sentence or adjust sliders to see how the translation changes
         </span>
         <button
           onClick={() => setStep(1)}
