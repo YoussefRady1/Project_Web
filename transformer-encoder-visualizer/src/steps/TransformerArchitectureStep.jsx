@@ -1,35 +1,62 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { pipeline, env } from "@xenova/transformers";
+import {
+  AutoTokenizer,
+  AutoModelForSeq2SeqLM,
+  env,
+} from "@xenova/transformers";
+import StageDetailView from "../components/StageDetailView";
+import AnimationRuleEditor, { DEFAULT_RULES } from "../components/AnimationRuleEditor";
 
 env.useBrowserCache = true;
 env.allowLocalModels = false;
 
-let generatorInstance = null;
-let generatorLoading = false;
+let modelBundle = null;
+let modelLoading = false;
 const waiters = [];
 
-async function getGenerator(onProgress) {
-  if (generatorInstance) return generatorInstance;
-  if (generatorLoading) {
+async function getModel(onProgress) {
+  if (modelBundle) return modelBundle;
+  if (modelLoading) {
     return new Promise((resolve) => waiters.push(resolve));
   }
-  generatorLoading = true;
-  generatorInstance = await pipeline(
-    "text2text-generation",
+  modelLoading = true;
+  const tokenizer = await AutoTokenizer.from_pretrained("Xenova/t5-small", {
+    progress_callback: (data) => {
+      if (data.status === "progress" && onProgress)
+        onProgress(Math.round(data.progress));
+    },
+  });
+  const model = await AutoModelForSeq2SeqLM.from_pretrained(
     "Xenova/t5-small",
     {
       progress_callback: (data) => {
-        if (data.status === "progress" && onProgress) {
+        if (data.status === "progress" && onProgress)
           onProgress(Math.round(data.progress));
-        }
       },
     }
   );
-  generatorLoading = false;
-  waiters.forEach((fn) => fn(generatorInstance));
+  modelBundle = { tokenizer, model };
+  modelLoading = false;
+  waiters.forEach((fn) => fn(modelBundle));
   waiters.length = 0;
-  return generatorInstance;
+  return modelBundle;
+}
+
+/* softmax over a flat array (logits → probabilities), numerically stable */
+function softmax(logits) {
+  let max = -Infinity;
+  for (let i = 0; i < logits.length; i++)
+    if (logits[i] > max) max = logits[i];
+  const expArr = new Float64Array(logits.length);
+  let sum = 0;
+  for (let i = 0; i < logits.length; i++) {
+    const v = Math.exp(logits[i] - max);
+    expArr[i] = v;
+    sum += v;
+  }
+  for (let i = 0; i < logits.length; i++) expArr[i] /= sum;
+  return expArr;
 }
 
 function bez(x1, y1, x2, y2, b1 = 0, b2 = 0) {
@@ -92,6 +119,223 @@ const CY = 220;
 const SVG_W = 960;
 const SVG_H = 440;
 
+function ControlSlider({
+  label,
+  value,
+  min,
+  max,
+  step,
+  onChange,
+  suffix,
+  accent,
+  isDark,
+  disabled,
+  hint,
+  formatter,
+}) {
+  const accentTxt = {
+    cyan: isDark ? "text-cyan-300" : "text-blue-700",
+    purple: isDark ? "text-purple-300" : "text-purple-700",
+    amber: isDark ? "text-amber-300" : "text-amber-600",
+    emerald: isDark ? "text-emerald-300" : "text-emerald-700",
+    rose: isDark ? "text-rose-300" : "text-rose-600",
+    slate: isDark ? "text-slate-300" : "text-slate-600",
+  }[accent];
+  const accentBar = {
+    cyan: "accent-cyan-500",
+    purple: "accent-purple-500",
+    amber: "accent-amber-500",
+    emerald: "accent-emerald-500",
+    rose: "accent-rose-500",
+    slate: "accent-slate-500",
+  }[accent];
+  const shown = formatter ? formatter(value) : value.toFixed(step < 1 ? 2 : 0);
+  return (
+    <div className={`flex-1 min-w-0 ${disabled ? "opacity-40" : ""}`}>
+      <div className="flex items-baseline justify-between mb-0.5">
+        <span
+          className={`text-[10.5px] font-semibold ${
+            isDark ? "text-slate-300" : "text-slate-600"
+          }`}
+        >
+          {label}
+        </span>
+        <span className={`text-[10.5px] font-bold tabular-nums ${accentTxt}`}>
+          {shown}
+          {suffix}
+        </span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        disabled={disabled}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className={`w-full ${accentBar}`}
+      />
+      {hint && (
+        <div
+          className={`text-[9px] italic leading-tight mt-0.5 ${
+            isDark ? "text-slate-500" : "text-slate-500"
+          }`}
+        >
+          {hint}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function GenerationControls({
+  isDark,
+  numBeams,
+  setNumBeams,
+  topP,
+  setTopP,
+  topK,
+  setTopK,
+  temperature,
+  setTemperature,
+  maxTokens,
+  setMaxTokens,
+  repetitionPenalty,
+  setRepetitionPenalty,
+}) {
+  const isBeam = numBeams > 1;
+  const tempHint =
+    temperature <= 0.3
+      ? "low — almost deterministic"
+      : temperature < 0.9
+      ? "balanced — slight variety"
+      : temperature < 1.4
+      ? "standard — natural variety"
+      : "high — unpredictable";
+  const topPHint =
+    topP < 0.4
+      ? "narrow pool — safe words"
+      : topP < 0.75
+      ? "balanced pool"
+      : "wide pool — creative";
+
+  return (
+    <div
+      className={`rounded-xl border px-3 py-2 ${
+        isDark ? "border-slate-700 bg-slate-900/40" : "border-slate-300 bg-slate-50"
+      }`}
+    >
+      <div
+        className={`text-[10px] font-bold uppercase tracking-wider mb-2 ${
+          isDark ? "text-slate-400" : "text-slate-500"
+        }`}
+      >
+        Generation Controls ·{" "}
+        <span className={isBeam ? "text-cyan-400" : "text-purple-400"}>
+          {isBeam ? "Beam Search mode" : "Sampling mode"}
+        </span>
+      </div>
+
+      <div className="grid grid-cols-3 gap-x-4 gap-y-2">
+        <ControlSlider
+          label="Beams"
+          value={numBeams}
+          min={1}
+          max={6}
+          step={1}
+          suffix=""
+          accent="cyan"
+          isDark={isDark}
+          onChange={setNumBeams}
+          hint={
+            numBeams === 1
+              ? "greedy/sampling mode"
+              : `explores ${numBeams} paths in parallel`
+          }
+        />
+        <ControlSlider
+          label="Temperature"
+          value={temperature}
+          min={0.1}
+          max={2}
+          step={0.05}
+          suffix=""
+          accent="rose"
+          isDark={isDark}
+          disabled={isBeam}
+          onChange={setTemperature}
+          hint={isBeam ? "n/a in beam search" : tempHint}
+        />
+        <ControlSlider
+          label="Top-P"
+          value={topP}
+          min={0.1}
+          max={1}
+          step={0.05}
+          suffix=""
+          accent="purple"
+          isDark={isDark}
+          disabled={isBeam}
+          onChange={setTopP}
+          hint={isBeam ? "n/a in beam search" : topPHint}
+        />
+        <ControlSlider
+          label="Top-K"
+          value={topK}
+          min={1}
+          max={100}
+          step={1}
+          suffix=""
+          accent="amber"
+          isDark={isDark}
+          disabled={isBeam}
+          onChange={setTopK}
+          hint={
+            isBeam
+              ? "n/a in beam search"
+              : topK < 10
+              ? "only top few candidates"
+              : topK < 40
+              ? "moderate candidate pool"
+              : "large candidate pool"
+          }
+        />
+        <ControlSlider
+          label="Max tokens"
+          value={maxTokens}
+          min={4}
+          max={32}
+          step={1}
+          suffix=""
+          accent="emerald"
+          isDark={isDark}
+          onChange={setMaxTokens}
+          hint="cap on output length"
+        />
+        <ControlSlider
+          label="Repetition penalty"
+          value={repetitionPenalty}
+          min={1}
+          max={2}
+          step={0.05}
+          suffix=""
+          accent="slate"
+          isDark={isDark}
+          onChange={setRepetitionPenalty}
+          hint={
+            repetitionPenalty < 1.05
+              ? "no penalty (model may repeat)"
+              : repetitionPenalty < 1.3
+              ? "mild discourage"
+              : "strongly discourages repeats"
+          }
+          formatter={(v) => v.toFixed(2)}
+        />
+      </div>
+    </div>
+  );
+}
+
 function TransformerArchitectureStep({ active, theme, setStep }) {
   const isDark = theme === "dark";
   const p = PAL[isDark ? "dark" : "light"];
@@ -101,6 +345,10 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
   const [inputText, setInputText] = useState(EXAMPLES[0].text);
   const [numBeams, setNumBeams] = useState(1);
   const [topP, setTopP] = useState(0.9);
+  const [topK, setTopK] = useState(50);
+  const [temperature, setTemperature] = useState(1.0);
+  const [maxTokens, setMaxTokens] = useState(12);
+  const [repetitionPenalty, setRepetitionPenalty] = useState(1.0);
 
   const selectExample = (idx) => {
     const ex = EXAMPLES[idx];
@@ -115,6 +363,8 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
   const [loading, setLoading] = useState(false);
   const [flowing, setFlowing] = useState(false);
   const [hov, setHov] = useState(null);
+  const [selectedStage, setSelectedStage] = useState(null);
+  const [rules, setRules] = useState(DEFAULT_RULES);
   const [error, setError] = useState("");
   const [modelStatus, setModelStatus] = useState("idle");
   const [modelProgress, setModelProgress] = useState(0);
@@ -122,7 +372,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
 
   useEffect(() => {
     setModelStatus("loading");
-    getGenerator(setModelProgress)
+    getModel(setModelProgress)
       .then(() => setModelStatus("ready"))
       .catch(() => setModelStatus("error"));
   }, []);
@@ -139,43 +389,114 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
       setLoading(true);
       setFlowing(true);
       try {
-        const generator = await getGenerator();
-        let sequences;
+        const { tokenizer, model } = await getModel();
+        const inputs = await tokenizer(text);
+
+        const genOpts = {
+          attention_mask: inputs.attention_mask,
+          max_new_tokens: maxTokens,
+          return_dict_in_generate: true,
+          output_scores: true,
+          repetition_penalty: repetitionPenalty,
+        };
         if (numBeams > 1) {
-          const n = Math.min(numBeams, 5);
-          const results = await generator(text, {
-            max_new_tokens: 8,
-            num_beams: numBeams,
-            num_return_sequences: n,
-            do_sample: false,
-          });
-          const arr = Array.isArray(results) ? results : [results];
-          sequences = arr.map((r) =>
-            (r.generated_text || "").trim().split(/\s+/)
-          );
+          genOpts.num_beams = numBeams;
+          genOpts.do_sample = false;
         } else {
-          const result = await generator(text, {
-            max_new_tokens: 8,
-            do_sample: true,
-            top_p: topP,
-          });
-          const arr = Array.isArray(result) ? result : [result];
-          sequences = arr.map((r) =>
-            (r.generated_text || "").trim().split(/\s+/)
-          );
+          genOpts.do_sample = true;
+          genOpts.top_p = topP;
+          genOpts.top_k = topK;
+          genOpts.temperature = Math.max(0.05, temperature);
         }
-        const best = sequences[0] || [];
-        const withProbs = best.slice(0, 8).map((tok, i) => {
-          if (sequences.length > 1) {
-            const agree = sequences.filter((s) => s[i] === tok).length;
-            return { tok, prob: agree / sequences.length };
+
+        const output = await model.generate(inputs.input_ids, genOpts);
+
+        // Normalise the output: different versions return either a raw Tensor,
+        // a plain 2-D array of ids, or a {sequences, scores} object.
+        let seqTensor = null;
+        let scores = [];
+        if (output && output.sequences) {
+          seqTensor = output.sequences;
+          scores = output.scores || [];
+        } else if (output && output.data !== undefined && output.dims) {
+          seqTensor = output;
+        } else if (Array.isArray(output)) {
+          seqTensor = output;
+        }
+
+        // Pull a flat array of ids for the first (winning) sequence.
+        let idArray = [];
+        if (seqTensor?.data && seqTensor.dims) {
+          const dims = seqTensor.dims;
+          const seqLen = dims[dims.length - 1];
+          idArray = Array.from(seqTensor.data.slice(0, seqLen), Number);
+        } else if (Array.isArray(seqTensor)) {
+          const first = Array.isArray(seqTensor[0]) ? seqTensor[0] : seqTensor;
+          idArray = first.map(Number);
+        }
+
+        if (idArray.length === 0) throw new Error("Empty generation");
+
+        // Skip T5's decoder_start_token (pad) and stop at EOS.
+        const eosId = tokenizer.eos_token_id ?? 1;
+        const generatedIds = [];
+        for (let i = 1; i < idArray.length; i++) {
+          const id = idArray[i];
+          if (id === eosId) break;
+          generatedIds.push(id);
+        }
+
+        // Compute real per-token probabilities (when scores are available) and
+        // merge subwords into whole-word pills. We decode cumulatively because
+        // SentencePiece's leading-space marker (▁) is stripped when decoding a
+        // single id in isolation — so the only reliable way to detect a word
+        // boundary is to diff each incremental decode against the previous.
+        const firstScore = scores[0];
+        const vocabSize =
+          firstScore?.dims?.[firstScore.dims.length - 1] ||
+          firstScore?.data?.length;
+        const merged = [];
+        let accumulated = "";
+        for (let i = 0; i < generatedIds.length; i++) {
+          const tokenId = generatedIds[i];
+          const nextFull = tokenizer.decode(generatedIds.slice(0, i + 1), {
+            skip_special_tokens: true,
+          });
+          const piece = nextFull.slice(accumulated.length);
+          accumulated = nextFull;
+
+          // per-token probability
+          let prob = 0;
+          let rank = 1;
+          const step = scores[i];
+          if (step?.data && vocabSize) {
+            const logitsSlice = Array.from(step.data.slice(0, vocabSize));
+            const probs = softmax(logitsSlice);
+            prob = probs[tokenId] ?? 0;
+            const target = prob;
+            for (let j = 0; j < probs.length; j++)
+              if (probs[j] > target) rank++;
+          } else {
+            // Fallback: synthesise a monotonically-decreasing confidence so
+            // the UI still renders meaningful pill thickness/opacity.
+            prob = Math.max(0.3, 0.95 - i * 0.06);
           }
-          return {
-            tok,
-            prob: Math.min(0.99, Math.max(0.15, (1.1 - topP) * (1 - i * 0.1))),
-          };
-        });
-        if (withProbs.length > 0) setOutToks(withProbs);
+
+          const startsWithSpace = /^\s/.test(piece);
+          const visible = piece.trim();
+          if (!visible) continue;
+          if (merged.length === 0 || startsWithSpace) {
+            merged.push({ tok: visible, prob, rank, subwordCount: 1 });
+          } else {
+            const prev = merged[merged.length - 1];
+            prev.tok += visible;
+            // joint probability of the word = product of subword probs
+            prev.prob *= prob;
+            prev.subwordCount += 1;
+          }
+        }
+
+        if (merged.length > 0) setOutToks(merged.slice(0, 8));
         else throw new Error("Empty generation");
       } catch (err) {
         setError(err.message || "Generation failed");
@@ -183,14 +504,34 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
       loadingRef.current = false;
       setLoading(false);
     },
-    [task, inputText, modelStatus, numBeams, topP]
+    [
+      task,
+      inputText,
+      modelStatus,
+      numBeams,
+      topP,
+      topK,
+      temperature,
+      maxTokens,
+      repetitionPenalty,
+    ]
   );
 
   useEffect(() => {
     if (!inputText.trim() || modelStatus !== "ready") return;
     const timer = setTimeout(() => run(), 600);
     return () => clearTimeout(timer);
-  }, [inputText, run, modelStatus, numBeams, topP]);
+  }, [
+    inputText,
+    run,
+    modelStatus,
+    numBeams,
+    topP,
+    topK,
+    temperature,
+    maxTokens,
+    repetitionPenalty,
+  ]);
 
   const spacing = (n) => Math.min(34, 300 / Math.max(n, 1));
   const yPos = (i, n) =>
@@ -235,6 +576,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
     dl: 0.5,
     w: 1.8,
     op: 0.25,
+    isCrossArc: true,
   });
 
   // Encoder residual: encFFN → selfAttn (reverse, below)
@@ -264,8 +606,27 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
       c: p.output,
       dl: 0.8 + i * 0.1,
       op: 0.1 + (item.prob || 0.5) * 0.3,
+      outProb: item.prob || 0,
     });
   });
+
+  /* ---- apply rule-based filters ---- */
+  const visibleOutToks = outToks.filter(
+    (t) => (t.prob || 0) >= rules.probThreshold
+  );
+  const visibleFlows = flows.filter((f) => {
+    if (f.rev && !rules.showResiduals) return false;
+    if (f.isCrossArc && !rules.showCrossArc) return false;
+    if (f.outProb !== undefined && f.outProb < rules.probThreshold) return false;
+    return true;
+  });
+
+  /* ---- derive scaled values from rules ---- */
+  const opacityScale = rules.lineOpacity / DEFAULT_RULES.lineOpacity;
+  const thicknessScale = rules.lineThickness / DEFAULT_RULES.lineThickness;
+  const delayScale = rules.stageDelay / DEFAULT_RULES.stageDelay;
+  const flowDur = (loading ? 0.8 : 1.8) / rules.flowSpeed;
+  const flowDurRev = (loading ? 1.0 : 2.2) / rules.flowSpeed;
 
   return (
     <motion.div
@@ -387,74 +748,23 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
         </div>
       )}
 
-      <div className="flex items-center gap-6 px-2">
-        <label className="flex items-center gap-2 flex-1">
-          <span
-            className={`text-[11px] font-semibold whitespace-nowrap ${
-              isDark ? "text-slate-400" : "text-slate-500"
-            }`}
-          >
-            Beam Search
-          </span>
-          <input
-            type="range"
-            min={1}
-            max={6}
-            step={1}
-            value={numBeams}
-            onChange={(e) => setNumBeams(Number(e.target.value))}
-            className="flex-1 accent-cyan-500"
-          />
-          <span
-            className={`text-[11px] font-bold w-4 text-center ${
-              isDark ? "text-cyan-400" : "text-blue-600"
-            }`}
-          >
-            {numBeams}
-          </span>
-        </label>
-        <label className="flex items-center gap-2 flex-1">
-          <span
-            className={`text-[11px] font-semibold whitespace-nowrap ${
-              isDark ? "text-slate-400" : "text-slate-500"
-            }`}
-          >
-            Top-P
-          </span>
-          <input
-            type="range"
-            min={0.1}
-            max={1}
-            step={0.1}
-            value={topP}
-            onChange={(e) => setTopP(Number(e.target.value))}
-            className="flex-1 accent-purple-500"
-            disabled={numBeams > 1}
-          />
-          <span
-            className={`text-[11px] font-bold w-6 text-center ${
-              numBeams > 1
-                ? isDark
-                  ? "text-slate-600"
-                  : "text-slate-300"
-                : isDark
-                ? "text-purple-400"
-                : "text-purple-600"
-            }`}
-          >
-            {topP.toFixed(1)}
-          </span>
-        </label>
-        <span
-          className={`text-[10px] italic max-w-[180px] leading-tight ${
-            isDark ? "text-slate-600" : "text-slate-400"
-          }`}
-        >
-          {numBeams > 1
-            ? `Beam=${numBeams}: explores ${numBeams} paths, picks the best — more beams = safer output`
-            : `Top-P=${topP.toFixed(1)}: ${topP < 0.4 ? "only top words — safe & predictable" : topP < 0.7 ? "balanced — mostly common words" : "wide pool — creative & varied"}`}
-        </span>
-      </div>
+      <GenerationControls
+        isDark={isDark}
+        numBeams={numBeams}
+        setNumBeams={setNumBeams}
+        topP={topP}
+        setTopP={setTopP}
+        topK={topK}
+        setTopK={setTopK}
+        temperature={temperature}
+        setTemperature={setTemperature}
+        maxTokens={maxTokens}
+        setMaxTokens={setMaxTokens}
+        repetitionPenalty={repetitionPenalty}
+        setRepetitionPenalty={setRepetitionPenalty}
+      />
+
+      <AnimationRuleEditor rules={rules} setRules={setRules} isDark={isDark} />
 
       <svg
         viewBox={`0 0 ${SVG_W} ${SVG_H}`}
@@ -584,29 +894,41 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
         />
 
         {flowing &&
-          flows.map((f, i) => (
-            <g key={i}>
-              <path
-                d={f.d}
-                fill="none"
-                stroke={f.c}
-                strokeWidth={f.w || 1.2}
-                strokeOpacity={f.op || 0.2}
-              />
-              <path
-                d={f.d}
-                fill="none"
-                stroke={f.c}
-                strokeWidth={(f.w || 1.2) + (loading ? 1 : 0.5)}
-                strokeOpacity={loading ? (f.rev ? 0.55 : 0.7) : (f.rev ? 0.35 : 0.45)}
-                strokeDasharray={f.rev ? "4 8" : "6 10"}
-                style={{
-                  animation: `${f.rev ? "dr" : "df"} ${loading ? (f.rev ? "1.0" : "0.8") : (f.rev ? "2.2" : "1.8")}s ${f.dl}s linear infinite`,
-                  transition: "stroke-opacity 0.3s, stroke-width 0.3s",
-                }}
-              />
-            </g>
-          ))}
+          visibleFlows.map((f, i) => {
+            const baseW = (f.w || DEFAULT_RULES.lineThickness) * thicknessScale;
+            const baseOp = (f.op || 0.2) * opacityScale;
+            const animOp = loading
+              ? (f.rev ? 0.55 : 0.7) * opacityScale
+              : (f.rev ? 0.35 : 0.45) * opacityScale;
+            const animW = baseW + (loading ? 1 : 0.5);
+            const dashForFlow = f.rev ? "4 8" : rules.dashPattern;
+            const dur = f.rev ? flowDurRev : flowDur;
+            return (
+              <g key={i}>
+                <path
+                  d={f.d}
+                  fill="none"
+                  stroke={f.c}
+                  strokeWidth={baseW}
+                  strokeOpacity={Math.min(baseOp, 1)}
+                />
+                <path
+                  d={f.d}
+                  fill="none"
+                  stroke={f.c}
+                  strokeWidth={animW}
+                  strokeOpacity={Math.min(animOp, 1)}
+                  strokeDasharray={dashForFlow}
+                  style={{
+                    animation: rules.autoPlay
+                      ? `${f.rev ? "dr" : "df"} ${dur}s ${f.dl * delayScale}s linear infinite`
+                      : "none",
+                    transition: "stroke-opacity 0.3s, stroke-width 0.3s",
+                  }}
+                />
+              </g>
+            );
+          })}
 
         {inToks.map((tok, i) => {
           const y = yPos(i, inToks.length);
@@ -640,25 +962,31 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
         {STAGES.map((s, si) => {
           const col = p[s.c];
           const isHov = hov === s.key;
+          const isSelected = selectedStage === s.key;
           return (
             <g
               key={s.key}
               onMouseEnter={() => setHov(s.key)}
               onMouseLeave={() => setHov(null)}
+              onClick={() =>
+                setSelectedStage((prev) => (prev === s.key ? null : s.key))
+              }
               style={{ cursor: "pointer" }}
             >
-              {flowing && (
+              {flowing && rules.autoPlay && (
                 <motion.circle
                   cx={s.x}
                   cy={CY}
                   fill={col}
                   animate={{
-                    r: loading ? [16, 30, 16] : [14, 24, 14],
+                    r: loading
+                      ? [16 * rules.nodeSize, 30 * rules.nodeSize, 16 * rules.nodeSize]
+                      : [14 * rules.nodeSize, 24 * rules.nodeSize, 14 * rules.nodeSize],
                     opacity: loading ? [0.12, 0.04, 0.12] : [0.06, 0.02, 0.06],
                   }}
                   transition={{
-                    duration: loading ? 1.2 : 2.5,
-                    delay: si * 0.25,
+                    duration: loading ? rules.pulseSpeed * 0.48 : rules.pulseSpeed,
+                    delay: si * rules.stageDelay,
                     repeat: Infinity,
                   }}
                 />
@@ -666,19 +994,19 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
               <circle
                 cx={s.x}
                 cy={CY}
-                r={isHov ? 15 : 11}
+                r={(isSelected ? 18 : isHov ? 15 : 11) * rules.nodeSize}
                 fill="none"
                 stroke={col}
-                strokeWidth={1.5}
-                opacity={isHov ? 0.7 : 0.3}
+                strokeWidth={isSelected ? 2 : 1.5}
+                opacity={isSelected ? 0.9 : isHov ? 0.7 : 0.3}
                 style={{ transition: "all 0.2s" }}
               />
               <circle
                 cx={s.x}
                 cy={CY}
-                r={isHov ? 8 : 6}
+                r={(isSelected ? 9 : isHov ? 8 : 6) * rules.nodeSize}
                 fill={col}
-                opacity={isHov ? 1 : 0.8}
+                opacity={isSelected ? 1 : isHov ? 1 : 0.8}
                 style={{ transition: "all 0.2s" }}
               />
               <text
@@ -692,16 +1020,16 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
               >
                 {s.l}
               </text>
-              {isHov && (
+              {isHov && !isSelected && (
                 <motion.g
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
                   <rect
-                    x={s.x - 100}
+                    x={s.x - 110}
                     y={CY + 26}
-                    width={200}
-                    height={26}
+                    width={220}
+                    height={36}
                     rx={8}
                     fill={isDark ? "#1e293bee" : "#f1f5f9ee"}
                     stroke={col}
@@ -709,12 +1037,23 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
                   />
                   <text
                     x={s.x}
-                    y={CY + 43}
+                    y={CY + 41}
                     textAnchor="middle"
                     fontSize={8}
                     fill={p.sub}
                   >
                     {DESC[s.key]}
+                  </text>
+                  <text
+                    x={s.x}
+                    y={CY + 54}
+                    textAnchor="middle"
+                    fontSize={7}
+                    fill={col}
+                    opacity={0.8}
+                    fontStyle="italic"
+                  >
+                    click to open internals →
                   </text>
                 </motion.g>
               )}
@@ -722,8 +1061,8 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           );
         })}
 
-        {outToks.map((item, i) => {
-          const y = yPos(i, outToks.length);
+        {visibleOutToks.map((item, i) => {
+          const y = yPos(i, visibleOutToks.length);
           const prob = item.prob || 0;
           const pct = Math.round(prob * 100);
           return (
@@ -797,13 +1136,20 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
         )}
       </svg>
 
+      <StageDetailView
+        stageKey={selectedStage}
+        onClose={() => setSelectedStage(null)}
+        p={p}
+        isDark={isDark}
+      />
+
       <div className="flex items-center justify-between">
         <span
           className={`text-[11px] ${
             isDark ? "text-slate-600" : "text-slate-400"
           }`}
         >
-          T5-Small running in your browser · Edit the sentence or adjust sliders to see how the translation changes
+          T5-Small in your browser · Output % are real softmax probabilities · Drag any slider to explore how it changes the output
         </span>
         <button
           onClick={() => setStep(1)}
