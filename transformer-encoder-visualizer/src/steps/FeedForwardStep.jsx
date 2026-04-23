@@ -74,7 +74,10 @@ function FeedForwardStep({ active, tokens = [], theme }) {
   const [showOutput, setShowOutput] = useState(false);
   const isDark = theme === "dark";
 
-  const safeTokens = tokens.length ? tokens.slice(0, 10) : ["token"];
+  const safeTokens = useMemo(
+    () => (tokens.length ? tokens.slice(0, 10) : ["token"]),
+    [tokens]
+  );
 
   const rows = useMemo(() => {
     return safeTokens.map((word, index) => ({
