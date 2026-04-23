@@ -8,7 +8,9 @@
       "Bash(timeout 5 node server.js)",
       "Bash(npm uninstall *)",
       "Bash(npm ls *)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(npm run *)",
+      "Bash(echo \"EXIT_CODE=$?\")"
     ]
   },
   "model": "claude-opus-4-7"
