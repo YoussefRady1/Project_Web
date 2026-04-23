@@ -11,7 +11,9 @@
       "Bash(node -e ' *)",
       "Bash(npm run *)",
       "Bash(echo \"EXIT_CODE=$?\")",
-      "Bash(vercel --version)"
+      "Bash(vercel --version)",
+      "Bash(npm view *)",
+      "Bash(gh pr *)"
     ]
   },
   "model": "claude-opus-4-7"
