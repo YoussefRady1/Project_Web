@@ -13,7 +13,16 @@
       "Bash(echo \"EXIT_CODE=$?\")",
       "Bash(vercel --version)",
       "Bash(npm view *)",
-      "Bash(gh pr *)"
+      "Bash(gh pr *)",
+      "Bash(vercel ls *)",
+      "Bash(vercel inspect *)",
+      "Bash(node diagnose-db.js)",
+      "Bash(curl -sS -w \"\\\\nHTTP_STATUS:%{http_code}\\\\n\" -X POST \"https://transformer-encoder-decoder-visualizer.vercel.app/api/save-pre-quiz\" -H \"Content-Type: application/json\" -d '{\"name\":\"diagnostic-test-1\",\"preQuizScore\":7}')",
+      "Bash(vercel env *)",
+      "Bash(vercel redeploy *)",
+      "Bash(vercel --prod --yes)",
+      "Bash(curl -sS -w \"\\\\nHTTP_STATUS:%{http_code}\\\\n\" -X POST \"https://transformer-encoder-decoder-visualizer.vercel.app/api/save-pre-quiz\" -H \"Content-Type: application/json\" -d '{\"name\":\"diagnostic-after-fix\",\"preQuizScore\":8}')",
+      "Bash(curl -sS -w \"\\\\nHTTP_STATUS:%{http_code}\\\\n\" -X POST \"https://transformer-encoder-decoder-visualizer.vercel.app/api/save-post-quiz\" -H \"Content-Type: application/json\" -d '{\"id\":\"69ea27fc9fcf54809ca93864\",\"postQuizScore\":11}')"
     ]
   },
   "model": "claude-opus-4-7"
