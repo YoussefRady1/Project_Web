@@ -17,11 +17,11 @@ function EncoderQuizStep({ active, setStep, theme, postQuizCompleted, postQuizSc
   const isDark = theme === "dark";
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [quizSeed] = useState(0);
 
   const selectedQuestions = useMemo(() => {
     return shuffleQuestions(encoderQuiz).slice(0, 12);
-  }, [quizSeed]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const scoreData = useMemo(() => {
     let correct = 0;

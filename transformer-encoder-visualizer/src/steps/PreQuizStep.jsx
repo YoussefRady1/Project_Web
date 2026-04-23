@@ -18,11 +18,11 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
   const [nameConfirmed, setNameConfirmed] = useState(!!userName);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [quizSeed] = useState(0);
 
   const questions = useMemo(() => {
     return shuffleArray(preQuiz).slice(0, 10);
-  }, [quizSeed]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const scoreData = useMemo(() => {
     let correct = 0;

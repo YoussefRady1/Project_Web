@@ -362,28 +362,12 @@ const attentionMatrix = tokenVectors.map((sourceToken, rowIndex) =>
     };
   })
 );
-const computeAverageVector = (indexes) => {
-  if (indexes.length === 0) return [0, 0, 0, 0];
-
-  const dim = tokenVectors[0].query.length;
-  const sum = new Array(dim).fill(0);
-
-  indexes.forEach((i) => {
-    tokenVectors[i].query.forEach((v, d) => {
-      sum[d] += v;
-    });
-  });
-
-  return sum.map((v) => Number((v / indexes.length).toFixed(2)));
-};
-  
   const activeEdgeCount = baseEdges.filter((e) => edgeState[e.key]).length;
   const totalEdgeCount = baseEdges.length;
   const connectionPercent =
     totalEdgeCount === 0
       ? 100
       : Math.round((activeEdgeCount / totalEdgeCount) * 100);
-  const sentencePreview = safeTokens.join(" ");    
 
   const allConnected = activeEdgeCount === totalEdgeCount;
   const partiallyDisconnected =
