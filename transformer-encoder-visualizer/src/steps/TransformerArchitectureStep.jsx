@@ -15,7 +15,7 @@ let modelBundle = null;
 let modelLoading = false;
 const waiters = [];
 
-async function getModel(onProgress) {
+export async function getModel(onProgress) {
   if (modelBundle) return modelBundle;
   if (modelLoading) {
     return new Promise((resolve) => waiters.push(resolve));
@@ -1152,7 +1152,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           T5-Small in your browser · Output % are real softmax probabilities · Drag any slider to explore how it changes the output
         </span>
         <button
-          onClick={() => setStep(1)}
+          onClick={() => setStep(3)}
           className={`px-5 py-1.5 rounded-full text-[11px] font-bold transition ${
             isDark
               ? "bg-cyan-500 text-slate-950 hover:bg-cyan-400"

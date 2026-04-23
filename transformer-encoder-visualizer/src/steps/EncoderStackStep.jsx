@@ -6,6 +6,8 @@ import FeedForwardStep from "./FeedForwardStep";
 function EncoderStackStep({ active, tokens, theme }) {
   const [layerCount, setLayerCount] = useState(1);
   const [view, setView] = useState("overview");
+  const [encoderLayers, setEncoderLayers] = useState(1);
+  const [decoderTopP, setDecoderTopP] = useState(0.9);
   const isDark = theme === "dark";
 
   const layerStyles = [
@@ -130,6 +132,97 @@ function EncoderStackStep({ active, tokens, theme }) {
     We use the encoder stack because one layer is usually not enough to build deep understanding. Repeating encoder layers allows the model to refine context step by step and produce richer sentence representations.
   </p>
 </div>
+      <div
+        className={`w-full max-w-[760px] mb-5 rounded-xl border p-4 ${
+          isDark
+            ? "border-amber-400/30 bg-amber-400/5"
+            : "border-amber-300 bg-amber-50"
+        }`}
+      >
+        <div
+          className={`text-sm font-semibold mb-3 ${
+            isDark ? "text-amber-300" : "text-amber-700"
+          }`}
+        >
+          Mapping: Architecture Controls
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <div className="flex justify-between items-center mb-1">
+              <span
+                className={`text-xs font-medium ${
+                  isDark ? "text-cyan-300" : "text-blue-700"
+                }`}
+              >
+                Encoder Layers (num_beams)
+              </span>
+              <span
+                className={`text-xs font-bold ${
+                  isDark ? "text-cyan-300" : "text-blue-700"
+                }`}
+              >
+                {encoderLayers}
+              </span>
+            </div>
+            <input
+              type="range"
+              min={1}
+              max={6}
+              step={1}
+              value={encoderLayers}
+              onChange={(e) => setEncoderLayers(Number(e.target.value))}
+              className="w-full accent-cyan-400"
+            />
+            <p
+              className={`text-[10px] mt-1 leading-4 ${
+                isDark ? "text-slate-500" : "text-slate-600"
+              }`}
+            >
+              Maps to <span className="font-semibold">num_beams</span> in the
+              Architecture Overview. More beams = more parallel search paths
+              through the encoder.
+            </p>
+          </div>
+
+          <div>
+            <div className="flex justify-between items-center mb-1">
+              <span
+                className={`text-xs font-medium ${
+                  isDark ? "text-purple-300" : "text-purple-700"
+                }`}
+              >
+                Decoder Layers (top_p)
+              </span>
+              <span
+                className={`text-xs font-bold ${
+                  isDark ? "text-purple-300" : "text-purple-700"
+                }`}
+              >
+                {decoderTopP.toFixed(1)}
+              </span>
+            </div>
+            <input
+              type="range"
+              min={0.1}
+              max={1.0}
+              step={0.1}
+              value={decoderTopP}
+              onChange={(e) => setDecoderTopP(Number(e.target.value))}
+              className="w-full accent-purple-400"
+            />
+            <p
+              className={`text-[10px] mt-1 leading-4 ${
+                isDark ? "text-slate-500" : "text-slate-600"
+              }`}
+            >
+              Maps to <span className="font-semibold">top_p</span> (nucleus
+              sampling). Lower values = more focused decoder output; higher =
+              broader sampling. Requires <code className="font-mono">do_sample: true</code>.
+            </p>
+          </div>
+        </div>
+      </div>
       <p
         className={`text-[11px] text-center mb-4 max-w-[760px] leading-5 ${
           isDark ? "text-slate-500" : "text-slate-600"
