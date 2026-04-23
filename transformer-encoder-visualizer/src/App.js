@@ -68,7 +68,6 @@ function App() {
 
   const isDark = theme === "dark";
   const showTokenInput = step >= FIRST_PAGE_NEEDING_TOKENS;
-  const needsTokens = step >= FIRST_PAGE_NEEDING_TOKENS;
 
   return (
     <div
@@ -141,32 +140,20 @@ function App() {
       </div>
 
       <div className="flex-1 flex items-center justify-center">
-        {needsTokens && tokens.length === 0 ? (
-          <div
-            className={
-              isDark
-                ? "text-slate-400 text-center"
-                : "text-slate-700 text-center"
-            }
-          >
-            Enter a sentence above to start the visualization
-          </div>
-        ) : (
-          <MainCanvas
-            step={step}
-            setStep={setStep}
-            tokens={tokens}
-            theme={theme}
-            userName={userName}
-            setUserName={setUserName}
-            preQuizCompleted={preQuizCompleted}
-            postQuizCompleted={postQuizCompleted}
-            preQuizScore={preQuizScore}
-            postQuizScore={postQuizScore}
-            submitPreQuiz={submitPreQuiz}
-            submitPostQuiz={submitPostQuiz}
-          />
-        )}
+        <MainCanvas
+          step={step}
+          setStep={setStep}
+          tokens={tokens}
+          theme={theme}
+          userName={userName}
+          setUserName={setUserName}
+          preQuizCompleted={preQuizCompleted}
+          postQuizCompleted={postQuizCompleted}
+          preQuizScore={preQuizScore}
+          postQuizScore={postQuizScore}
+          submitPreQuiz={submitPreQuiz}
+          submitPostQuiz={submitPostQuiz}
+        />
       </div>
     </div>
   );

@@ -1,147 +1,145 @@
+// Pre-Quiz: 10 fixed challenging questions designed to surface gaps before learning.
+// Questions probe specifics (mechanism details, ordering, math) so an untrained user
+// will typically score low — that's intentional, the post-quiz then measures growth.
 const preQuiz = [
   {
     id: "pre-1",
-    question: "What do you think a Transformer does with a sentence?",
+    question:
+      "Inside scaled dot-product attention, how is the raw score between Query Q and Key K computed before softmax?",
     options: [
-      "It translates text by looking up words in a dictionary",
-      "It processes the sentence through multiple stages to understand and generate text",
-      "It simply memorizes sentences it has seen before",
-      "It counts the number of words in the sentence",
+      "Q × K^T, then divided by √(d_k)",
+      "softmax(Q + K)",
+      "Element-wise subtraction Q − K",
+      "Dot product of Q and V",
     ],
-    correctAnswer:
-      "It processes the sentence through multiple stages to understand and generate text",
+    correctAnswer: "Q × K^T, then divided by √(d_k)",
     explanation:
-      "A Transformer uses a pipeline of stages (tokenization, embedding, attention, etc.) to build understanding of the input and generate output.",
+      "Attention scores are the dot product of Q and K^T, scaled by √(d_k) to keep softmax gradients stable.",
   },
   {
     id: "pre-2",
     question:
-      "Before a model can work with words, what do you think needs to happen first?",
-    options: [
-      "The sentence must be split into smaller pieces (tokens)",
-      "The sentence must be translated to another language",
-      "The sentence must be shortened to 3 words",
-      "Nothing — the model reads the full sentence at once",
-    ],
-    correctAnswer:
-      "The sentence must be split into smaller pieces (tokens)",
+      "In the original 'Attention Is All You Need' paper, how many attention heads does the base encoder use?",
+    options: ["4", "6", "8", "12"],
+    correctAnswer: "8",
     explanation:
-      "Tokenization splits the sentence into individual tokens so the model can process each one separately.",
+      "The base Transformer uses h = 8 parallel attention heads, each with d_k = d_v = 64.",
   },
   {
     id: "pre-3",
-    question: "Why can't a neural network directly understand the word \"hello\"?",
+    question:
+      "What does the 'Add' in 'Add & Normalize' refer to inside an encoder layer?",
     options: [
-      "Because neural networks only work with numbers, not text",
-      "Because \"hello\" is too short",
-      "Because neural networks only understand images",
-      "Because \"hello\" is not a real word",
+      "Adding learned bias terms",
+      "A residual (skip) connection: input + sublayer output",
+      "Adding random Gaussian noise",
+      "Adding the embedding to itself again",
     ],
-    correctAnswer:
-      "Because neural networks only work with numbers, not text",
+    correctAnswer: "A residual (skip) connection: input + sublayer output",
     explanation:
-      "Words must be converted into numeric vectors (embeddings) before a neural network can process them.",
+      "The 'Add' is a residual connection that adds the sublayer's input to its output, preserving information across depth.",
   },
   {
     id: "pre-4",
     question:
-      "If a model processes all words at the same time (in parallel), what information might it lose?",
+      "Which positional encoding scheme is introduced in the original Transformer paper?",
     options: [
-      "The order of words in the sentence",
-      "The number of letters in each word",
-      "The color of the text",
-      "The font size",
+      "Learned absolute embeddings only",
+      "Sine and cosine functions at different frequencies",
+      "One-hot position vectors",
+      "Random Gaussian noise per position",
     ],
-    correctAnswer: "The order of words in the sentence",
+    correctAnswer: "Sine and cosine functions at different frequencies",
     explanation:
-      "Parallel processing means the model doesn't naturally know which word came first — that's why positional encoding is needed.",
+      "Vaswani et al. use fixed sinusoids of varying frequencies so the model can extrapolate to longer sequences.",
   },
   {
     id: "pre-5",
     question:
-      "In the sentence \"The bank by the river\", how should the word \"bank\" be understood?",
+      "How is the position-wise Feed-Forward Network applied inside the encoder?",
     options: [
-      "It depends on the surrounding words (context matters)",
-      "It always means a financial institution",
-      "It always means the side of a river",
-      "The model ignores ambiguous words",
+      "Once per layer, mixing all token positions together",
+      "Independently at each token position with shared weights",
+      "Only to the first token of the sequence",
+      "Only at the residual connections",
     ],
     correctAnswer:
-      "It depends on the surrounding words (context matters)",
+      "Independently at each token position with shared weights",
     explanation:
-      "Self-attention allows each word to look at other words in the sentence to resolve ambiguity — this is a key idea in Transformers.",
+      "The FFN is applied to each position separately and identically — that's why it's called 'position-wise'.",
   },
   {
     id: "pre-6",
-    question: "What do you think \"self-attention\" means in a Transformer?",
+    question:
+      "What concrete advantage does multi-head attention give over a single attention head?",
     options: [
-      "Each word looks at other words in the same sentence to understand context",
-      "The model pays attention only to itself and ignores input",
-      "The model removes unimportant words",
-      "The model only focuses on the first word",
+      "It runs faster on a CPU",
+      "Each head attends to a different learned subspace of the representation",
+      "Each head sees a different subset of tokens",
+      "All heads share weights to reduce parameters",
     ],
     correctAnswer:
-      "Each word looks at other words in the same sentence to understand context",
+      "Each head attends to a different learned subspace of the representation",
     explanation:
-      "Self-attention is the mechanism that lets every token compare itself with every other token in the sentence.",
+      "Multi-head attention projects Q/K/V into multiple subspaces so the model can jointly attend to different relations.",
   },
   {
     id: "pre-7",
-    question: "Why might a model need multiple layers instead of just one?",
+    question:
+      "In an encoder–decoder Transformer, where is the encoder's final output consumed?",
     options: [
-      "Each layer refines understanding, building deeper context step by step",
-      "More layers make the model run faster",
-      "Extra layers are just for decoration",
-      "One layer is always enough",
+      "By another stack of encoder layers",
+      "By the decoder's cross-attention (encoder-decoder attention) sublayers",
+      "By the tokenizer for re-tokenization",
+      "By the loss function directly, with no further processing",
     ],
     correctAnswer:
-      "Each layer refines understanding, building deeper context step by step",
+      "By the decoder's cross-attention (encoder-decoder attention) sublayers",
     explanation:
-      "Stacking encoder layers lets the model progressively build richer representations of the input.",
+      "Each decoder layer attends to the encoder's outputs through a cross-attention sublayer.",
   },
   {
     id: "pre-8",
     question:
-      "What is the relationship between an encoder and a decoder in a Transformer?",
+      "What happens to a Transformer encoder if positional encodings are removed entirely?",
     options: [
-      "The encoder understands the input; the decoder generates the output using that understanding",
-      "They are the same thing with different names",
-      "The decoder runs first, then the encoder",
-      "The encoder and decoder never communicate",
+      "Nothing — attention already encodes order",
+      "It becomes permutation-invariant: word order stops mattering",
+      "It crashes because shapes no longer match",
+      "It produces the exact same outputs but slower",
     ],
     correctAnswer:
-      "The encoder understands the input; the decoder generates the output using that understanding",
+      "It becomes permutation-invariant: word order stops mattering",
     explanation:
-      "The encoder processes the input sentence into context-aware representations, and the decoder uses those to generate output (e.g., a translation).",
+      "Self-attention by itself is order-agnostic; without positional information, shuffling the input gives the same outputs.",
   },
   {
     id: "pre-9",
     question:
-      "If you remove all connections between words in a model, what happens?",
+      "After embedding and positional encoding, what is the shape of the input fed into the encoder stack?",
     options: [
-      "Each word is processed in isolation, losing sentence-level meaning",
-      "The model works perfectly fine",
-      "The model becomes faster and more accurate",
-      "Nothing changes",
+      "A single d-dimensional vector summarizing the whole sentence",
+      "One d-dimensional vector per token in the sequence",
+      "A scalar per token",
+      "A 2-D image-like tensor per token",
     ],
-    correctAnswer:
-      "Each word is processed in isolation, losing sentence-level meaning",
+    correctAnswer: "One d-dimensional vector per token in the sequence",
     explanation:
-      "Without attention connections, words can't share information, so the model loses contextual understanding.",
+      "The encoder receives a sequence of vectors — one d-dimensional vector per token position.",
   },
   {
     id: "pre-10",
-    question: "What do you think the final output of an encoder represents?",
+    question:
+      "Within a single encoder layer, what is the exact order of sub-operations?",
     options: [
-      "A context-aware numeric representation for each input token",
-      "The translated sentence in another language",
-      "A single number summarizing the whole sentence",
-      "The original sentence unchanged",
+      "FFN → Add & Norm → Self-Attention → Add & Norm",
+      "Self-Attention → Add & Norm → FFN → Add & Norm",
+      "Self-Attention → FFN → Add & Norm",
+      "Add & Norm → Self-Attention → Add & Norm → FFN",
     ],
-    correctAnswer:
-      "A context-aware numeric representation for each input token",
+    correctAnswer: "Self-Attention → Add & Norm → FFN → Add & Norm",
     explanation:
-      "The encoder outputs one vector per token, each enriched with information from the surrounding context.",
+      "Each encoder layer is: multi-head self-attention, residual+LayerNorm, position-wise FFN, residual+LayerNorm.",
   },
 ];
 

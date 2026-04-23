@@ -2,15 +2,6 @@ import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import preQuiz from "../data/preQuiz";
 
-function shuffleArray(array) {
-  const copy = [...array];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
-
 function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, preQuizScore, submitPreQuiz }) {
   const isDark = theme === "dark";
   const [nameInput, setNameInput] = useState(userName || "");
@@ -19,10 +10,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
 
-  const questions = useMemo(() => {
-    return shuffleArray(preQuiz).slice(0, 10);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const questions = useMemo(() => preQuiz, []);
 
   const scoreData = useMemo(() => {
     let correct = 0;

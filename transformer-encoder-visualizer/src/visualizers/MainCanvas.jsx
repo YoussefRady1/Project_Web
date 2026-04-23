@@ -86,10 +86,13 @@ function MainCanvas({
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -100 }}
-            transition={{ duration: 0.4 }}
+            initial={{ opacity: 0, y: 20, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.98 }}
+            transition={{
+              duration: 0.55,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             className="w-full flex items-center justify-center"
           >
             <StepComponent
