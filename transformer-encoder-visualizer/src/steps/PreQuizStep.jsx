@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
-import encoderQuiz from "../data/encoderQuiz";
+import preQuiz from "../data/preQuiz";
 
-function shuffleQuestions(array) {
+function shuffleArray(array) {
   const copy = [...array];
   for (let i = copy.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -11,48 +11,56 @@ function shuffleQuestions(array) {
   return copy;
 }
 
-const STEP_INDEX_TO_PAGE = { 0: 3, 1: 4, 2: 5, 3: 6, 4: 7 };
-
-function EncoderQuizStep({ active, setStep, theme, postQuizCompleted, postQuizScore, submitPostQuiz }) {
+function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, preQuizScore, submitPreQuiz }) {
   const isDark = theme === "dark";
+  const [nameInput, setNameInput] = useState(userName || "");
+  const [nameError, setNameError] = useState(false);
+  const [nameConfirmed, setNameConfirmed] = useState(!!userName);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [quizSeed] = useState(0);
 
-  const selectedQuestions = useMemo(() => {
-    return shuffleQuestions(encoderQuiz).slice(0, 12);
+  const questions = useMemo(() => {
+    return shuffleArray(preQuiz).slice(0, 10);
   }, [quizSeed]);
 
   const scoreData = useMemo(() => {
     let correct = 0;
-
-    selectedQuestions.forEach((q) => {
-      if (answers[q.id] === q.correctAnswer) {
-        correct += 1;
-      }
+    questions.forEach((q) => {
+      if (answers[q.id] === q.correctAnswer) correct += 1;
     });
-
-    const total = selectedQuestions.length;
+    const total = questions.length;
     const percentage = Math.round((correct / total) * 100);
-
     return { correct, total, percentage };
-  }, [answers, selectedQuestions]);
+  }, [answers, questions]);
 
-  const wrongQuestions = selectedQuestions.filter(
+  const wrongQuestions = questions.filter(
     (q) => submitted && answers[q.id] !== q.correctAnswer
   );
+
+  const handleNameConfirm = () => {
+    const trimmed = nameInput.trim();
+    if (!trimmed) {
+      setNameError(true);
+      return;
+    }
+    setNameError(false);
+    setUserName(trimmed);
+    localStorage.setItem("userName", trimmed);
+    setNameConfirmed(true);
+  };
 
   const handleSubmit = () => {
     setSubmitted(true);
     let correct = 0;
-    selectedQuestions.forEach((q) => {
+    questions.forEach((q) => {
       if (answers[q.id] === q.correctAnswer) correct += 1;
     });
-    const percentage = Math.round((correct / selectedQuestions.length) * 100);
-    submitPostQuiz(percentage);
+    const percentage = Math.round((correct / questions.length) * 100);
+    submitPreQuiz(percentage);
   };
 
-  if (postQuizCompleted) {
+  if (preQuizCompleted) {
     return (
       <motion.div
         animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
@@ -71,18 +79,92 @@ function EncoderQuizStep({ active, setStep, theme, postQuizCompleted, postQuizSc
             isDark ? "text-cyan-300" : "text-blue-800"
           }`}
         >
-          Post-Quiz Already Completed
+          Pre-Quiz Already Completed
         </h2>
         <div className="text-3xl font-bold mb-2">
           <span className={isDark ? "text-white" : "text-slate-900"}>
-            Your score: {postQuizScore}%
+            Your score: {preQuizScore}%
           </span>
         </div>
         <p
           className={`text-sm mt-2 ${isDark ? "text-slate-400" : "text-slate-600"}`}
         >
-          You have already submitted this quiz. Your results have been saved.
+          You have already submitted this quiz. Use the Next button to continue.
         </p>
+      </motion.div>
+    );
+  }
+
+  if (!nameConfirmed) {
+    return (
+      <motion.div
+        animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
+        transition={{ duration: 0.3 }}
+        className={`p-6 border rounded-2xl w-[980px] min-h-[400px] flex flex-col items-center justify-center ${
+          isDark ? "border-cyan-500 bg-transparent" : "border-blue-300 bg-white"
+        }`}
+      >
+        <h2
+          className={`text-xl font-semibold mb-2 ${
+            isDark ? "text-cyan-300" : "text-blue-800"
+          }`}
+        >
+          Pre-Quiz: What Do You Already Know?
+        </h2>
+        <p
+          className={`text-xs text-center mb-6 ${
+            isDark ? "text-slate-400" : "text-slate-700"
+          }`}
+        >
+          Please enter your name before starting the quiz.
+        </p>
+
+        <div
+          className={`w-full max-w-[400px] rounded-xl border p-5 ${
+            isDark
+              ? "border-cyan-400/30 bg-cyan-400/5"
+              : "border-blue-300 bg-blue-50"
+          }`}
+        >
+          <label
+            className={`block text-sm font-semibold mb-2 text-center ${
+              isDark ? "text-cyan-300" : "text-blue-800"
+            }`}
+          >
+            Your Name
+          </label>
+          <input
+            type="text"
+            value={nameInput}
+            onChange={(e) => {
+              setNameInput(e.target.value);
+              if (nameError) setNameError(false);
+            }}
+            onKeyDown={(e) => e.key === "Enter" && handleNameConfirm()}
+            placeholder="Enter your name..."
+            className={`w-full px-4 py-2.5 rounded-lg border text-sm transition outline-none ${
+              isDark
+                ? "bg-slate-900 border-slate-700 text-white placeholder-slate-500 focus:border-cyan-400"
+                : "bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-blue-400"
+            } ${nameError ? (isDark ? "border-red-400" : "border-red-500") : ""}`}
+          />
+          {nameError && (
+            <p className={`text-xs mt-1 ${isDark ? "text-red-400" : "text-red-600"}`}>
+              Please enter your name to continue.
+            </p>
+          )}
+        </div>
+
+        <button
+          onClick={handleNameConfirm}
+          className={`mt-5 px-6 py-2.5 rounded-full text-sm font-bold transition ${
+            isDark
+              ? "bg-cyan-500 text-slate-950 hover:bg-cyan-400"
+              : "bg-blue-600 text-white hover:bg-blue-500"
+          }`}
+        >
+          Start Quiz
+        </button>
       </motion.div>
     );
   }
@@ -103,19 +185,28 @@ function EncoderQuizStep({ active, setStep, theme, postQuizCompleted, postQuizSc
           isDark ? "text-cyan-300" : "text-blue-800"
         }`}
       >
-        Post-Quiz: Test Your Understanding
+        Pre-Quiz: What Do You Already Know?
       </h2>
 
       <p
-        className={`text-xs text-center mb-3 ${
+        className={`text-xs text-center mb-1 ${
           isDark ? "text-slate-400" : "text-slate-700"
         }`}
       >
-        Now that you've explored every step, let's see how much you've learned!
+        Test your intuition before diving into the visualizations.
+      </p>
+
+      <p
+        className={`text-[11px] text-center mb-4 max-w-[700px] leading-5 ${
+          isDark ? "text-slate-500" : "text-slate-600"
+        }`}
+      >
+        Don't worry if you don't know the answers yet — this quiz is designed to
+        activate your thinking before you explore each step in detail.
       </p>
 
       <div className="w-full space-y-4">
-        {selectedQuestions.map((q, index) => (
+        {questions.map((q, index) => (
           <div
             key={q.id}
             className={`rounded-xl border p-4 ${
@@ -144,10 +235,7 @@ function EncoderQuizStep({ active, setStep, theme, postQuizCompleted, postQuizSc
                     key={option}
                     onClick={() =>
                       !submitted &&
-                      setAnswers((prev) => ({
-                        ...prev,
-                        [q.id]: option,
-                      }))
+                      setAnswers((prev) => ({ ...prev, [q.id]: option }))
                     }
                     className={`text-left px-4 py-3 rounded-lg border transition ${
                       isCorrect
@@ -186,7 +274,7 @@ function EncoderQuizStep({ active, setStep, theme, postQuizCompleted, postQuizSc
               : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
           }`}
         >
-          Submit Quiz
+          Submit Pre-Quiz
         </button>
       ) : (
         <div className="w-full mt-6 space-y-5">
@@ -202,7 +290,7 @@ function EncoderQuizStep({ active, setStep, theme, postQuizCompleted, postQuizSc
                 isDark ? "text-cyan-300" : "text-blue-800"
               }`}
             >
-              Your Grade
+              Your Pre-Quiz Score
             </div>
             <div className="text-3xl font-bold">
               <span className={isDark ? "text-white" : "text-slate-900"}>
@@ -216,6 +304,15 @@ function EncoderQuizStep({ active, setStep, theme, postQuizCompleted, postQuizSc
             >
               {scoreData.percentage}%
             </div>
+            <p
+              className={`mt-3 text-sm ${
+                isDark ? "text-slate-400" : "text-slate-600"
+              }`}
+            >
+              {scoreData.percentage >= 70
+                ? "Great foundation! Let's see how the visualizations deepen your understanding."
+                : "No worries — the upcoming steps will teach you everything. Press Next to continue!"}
+            </p>
           </div>
 
           {wrongQuestions.length > 0 && (
@@ -231,7 +328,7 @@ function EncoderQuizStep({ active, setStep, theme, postQuizCompleted, postQuizSc
                   isDark ? "text-cyan-300" : "text-blue-800"
                 }`}
               >
-                Review Wrong Answers
+                Review Answers
               </div>
 
               <div className="space-y-4">
@@ -244,7 +341,13 @@ function EncoderQuizStep({ active, setStep, theme, postQuizCompleted, postQuizSc
                         : "border-slate-300 bg-white"
                     }`}
                   >
-                    <div className={isDark ? "text-red-300 font-medium mb-2" : "text-red-700 font-medium mb-2"}>
+                    <div
+                      className={
+                        isDark
+                          ? "text-red-300 font-medium mb-2"
+                          : "text-red-700 font-medium mb-2"
+                      }
+                    >
                       {q.question}
                     </div>
 
@@ -265,29 +368,20 @@ function EncoderQuizStep({ active, setStep, theme, postQuizCompleted, postQuizSc
                       }`}
                     >
                       Correct answer:{" "}
-                      <span className={isDark ? "text-green-300" : "text-green-700"}>
+                      <span
+                        className={isDark ? "text-green-300" : "text-green-700"}
+                      >
                         {q.correctAnswer}
                       </span>
                     </div>
 
                     <div
-                      className={`text-sm mb-3 ${
+                      className={`text-sm ${
                         isDark ? "text-slate-400" : "text-slate-600"
                       }`}
                     >
                       {q.explanation}
                     </div>
-
-                    <button
-                      onClick={() => setStep(STEP_INDEX_TO_PAGE[q.stepIndex] ?? q.stepIndex)}
-                      className={`px-4 py-2 rounded-lg border transition text-sm ${
-                        isDark
-                          ? "border-cyan-400 text-cyan-300 bg-cyan-400/10 hover:bg-cyan-400/20"
-                          : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
-                      }`}
-                    >
-                      Go to {q.stepLabel} Again
-                    </button>
                   </div>
                 ))}
               </div>
@@ -299,4 +393,4 @@ function EncoderQuizStep({ active, setStep, theme, postQuizCompleted, postQuizSc
   );
 }
 
-export default EncoderQuizStep;
+export default PreQuizStep;
