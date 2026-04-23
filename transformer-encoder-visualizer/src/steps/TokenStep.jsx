@@ -9,7 +9,10 @@ function TokenStep({ active, tokens = [], theme }) {
   const sentenceControls = useAnimation();
   const tokenControls = useAnimation();
 
-  const safeTokens = tokens.length ? tokens.slice(0, 10) : ["hello"];
+  const safeTokens = useMemo(
+    () => (tokens.length ? tokens.slice(0, 10) : ["hello"]),
+    [tokens]
+  );
 
   const positions = useMemo(() => {
     const count = safeTokens.length;

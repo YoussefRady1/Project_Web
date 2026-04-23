@@ -155,7 +155,10 @@ function normalizeScore(score) {
 
 function AttentionStep({ active, tokens = [], theme }) {
   const isDark = theme === "dark";
-  const safeTokens = tokens.length ? tokens.slice(0, 10) : ["token"];
+  const safeTokens = useMemo(
+    () => (tokens.length ? tokens.slice(0, 10) : ["token"]),
+    [tokens]
+  );
   const positions = useMemo(
     () => getNodePositions(safeTokens.length),
     [safeTokens.length]
@@ -308,6 +311,7 @@ function AttentionStep({ active, tokens = [], theme }) {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dragging, lineGeometries]);
 
   const handleNodeTap = (nodeIndex) => {

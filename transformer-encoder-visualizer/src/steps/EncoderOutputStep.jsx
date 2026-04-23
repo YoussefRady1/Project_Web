@@ -67,7 +67,10 @@ function generateEncoderOutputVector(word, index, tokenCount) {
 
 function EncoderOutputStep({ active, tokens = [], theme }) {
   const isDark = theme === "dark";
-  const safeTokens = tokens.length ? tokens.slice(0, 10) : ["token"];
+  const safeTokens = useMemo(
+    () => (tokens.length ? tokens.slice(0, 10) : ["token"]),
+    [tokens]
+  );
 
   const rows = useMemo(() => {
     return safeTokens.map((word, index) => ({
