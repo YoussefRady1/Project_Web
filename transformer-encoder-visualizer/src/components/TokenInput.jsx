@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 
+const DEFAULT_SENTENCE = "The transformer reads the sentence";
+
 function TokenInput({ setTokens, theme }) {
-  const [sentence, setSentence] = useState("");
+  const [sentence, setSentence] = useState(DEFAULT_SENTENCE);
   const isDark = theme === "dark";
 
   useEffect(() => {
@@ -26,21 +28,6 @@ function TokenInput({ setTokens, theme }) {
             : "border-slate-400 bg-white text-slate-900"
         }`}
       />
-
-      <div className="flex gap-2 flex-wrap justify-center">
-        {sentence.split(" ").filter(Boolean).map((t, i) => (
-          <span
-            key={i}
-            className={`px-3 py-1 rounded-full text-sm border ${
-              isDark
-                ? "bg-cyan-500/10 border-cyan-400 text-cyan-300"
-                : "bg-blue-100 border-blue-300 text-blue-800"
-            }`}
-          >
-            {t}
-          </span>
-        ))}
-      </div>
     </div>
   );
 }
