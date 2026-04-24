@@ -182,8 +182,12 @@ function PositionalStep({ active, tokens, theme }) {
             <motion.div
               key={index}
               layout
-              animate={{
-                x: 0,
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                layout: { type: "spring", stiffness: 320, damping: 32 },
+                opacity: { duration: 0.35, delay: index * 0.06 },
+                y: { type: "spring", stiffness: 240, damping: 24, delay: index * 0.06 },
               }}
               className="flex items-center gap-3 justify-center"
             >
@@ -229,7 +233,13 @@ function PositionalStep({ active, tokens, theme }) {
 
               {usePosition && (
                 <>
-                  <span className={isDark ? "text-cyan-400" : "text-blue-600"}>+</span>
+                  <motion.span
+                    animate={{ scale: [1, 1.25, 1], opacity: [0.7, 1, 0.7] }}
+                    transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut", delay: index * 0.12 }}
+                    className={isDark ? "text-cyan-400" : "text-blue-600"}
+                  >
+                    +
+                  </motion.span>
 
                   <div className="flex flex-col items-center gap-1">
                     <div
@@ -255,7 +265,13 @@ function PositionalStep({ active, tokens, theme }) {
                     </div>
                   </div>
 
-                  <span className={isDark ? "text-cyan-400" : "text-blue-600"}>→</span>
+                  <motion.span
+                    animate={{ x: [0, 6, 0], opacity: [0.6, 1, 0.6] }}
+                    transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut", delay: index * 0.12 + 0.2 }}
+                    className={isDark ? "text-cyan-400" : "text-blue-600"}
+                  >
+                    →
+                  </motion.span>
 
                   <div className="flex flex-col items-center gap-1">
                     <div
@@ -267,16 +283,24 @@ function PositionalStep({ active, tokens, theme }) {
                     </div>
                     <div className="flex gap-1">
                       {emb.map((v, i) => (
-                        <span
+                        <motion.span
                           key={i}
+                          initial={{ opacity: 0, scale: 0.6, y: 6 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 360,
+                            damping: 22,
+                            delay: index * 0.06 + i * 0.07 + 0.2,
+                          }}
                           className={`px-2 py-1 text-xs border rounded ${
                             isDark
-                              ? "border-green-400 text-green-300"
+                              ? "border-green-400 text-green-300 shadow-[0_0_10px_rgba(74,222,128,0.18)]"
                               : "border-green-400 text-green-700 bg-green-100"
                           }`}
                         >
                           {(parseFloat(v) + parseFloat(pos[i])).toFixed(2)}
-                        </span>
+                        </motion.span>
                       ))}
                     </div>
                   </div>

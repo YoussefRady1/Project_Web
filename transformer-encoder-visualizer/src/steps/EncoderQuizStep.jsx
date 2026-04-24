@@ -1,9 +1,28 @@
-import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
 import encoderQuiz from "../data/encoderQuiz";
 
 const STEP_INDEX_TO_PAGE = { 0: 3, 1: 4, 2: 5, 3: 6, 4: 7 };
 const POST_QUIZ_ANSWERS_KEY = "postQuizAnswers";
+
+function CountUp({ value, isDark, delay = 0, duration = 1.4 }) {
+  const mv = useMotionValue(0);
+  const rounded = useTransform(mv, (v) => Math.round(v));
+  useEffect(() => {
+    const controls = animate(mv, value, {
+      duration,
+      delay,
+      ease: [0.16, 1, 0.3, 1],
+    });
+    return () => controls.stop();
+  }, [value, delay, duration, mv]);
+  return (
+    <span className={`text-3xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>
+      <motion.span>{rounded}</motion.span>
+      <span className={`text-base ml-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>%</span>
+    </span>
+  );
+}
 
 function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizCompleted, postQuizScore, submitPostQuiz }) {
   const isDark = theme === "dark";
@@ -110,7 +129,12 @@ function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizComplet
       const R = 52;
       const C = 2 * Math.PI * R;
       return (
-        <div className="flex flex-col items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay, type: "spring", stiffness: 200, damping: 22 }}
+          className="flex flex-col items-center"
+        >
           <div className="relative w-[140px] h-[140px]">
             <svg width="140" height="140" viewBox="0 0 140 140" className="-rotate-90">
               <circle
@@ -128,28 +152,38 @@ function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizComplet
                 strokeDasharray={C}
                 initial={{ strokeDashoffset: C }}
                 animate={{ strokeDashoffset: C - (C * value) / 100 }}
-                transition={{ duration: 1.4, delay, ease: "easeOut" }}
+                transition={{ duration: 1.6, delay, ease: [0.16, 1, 0.3, 1] }}
               />
             </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: delay + 0.4 }}
-                className={`text-3xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}
-              >
-                {value}
-                <span className={`text-base ml-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>%</span>
-              </motion.span>
+            <motion.div
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{
+                scale: [0.85, 1.05, 1],
+                opacity: 1,
+              }}
+              transition={{
+                delay: delay + 0.3,
+                duration: 0.7,
+                times: [0, 0.6, 1],
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="absolute inset-0 flex flex-col items-center justify-center"
+            >
+              <CountUp
+                value={value}
+                isDark={isDark}
+                delay={delay + 0.2}
+                duration={1.6}
+              />
               <span className={`text-[10px] uppercase tracking-wider mt-0.5 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
                 {sublabel}
               </span>
-            </div>
+            </motion.div>
           </div>
           <div className={`mt-3 text-sm font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>
             {label}
           </div>
-        </div>
+        </motion.div>
       );
     };
 
@@ -163,15 +197,19 @@ function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizComplet
             : "border-blue-300 bg-gradient-to-br from-white via-blue-50/40 to-white"
         }`}
       >
-        <div
+        <motion.div
           aria-hidden
-          className={`pointer-events-none absolute -top-20 -right-20 w-72 h-72 rounded-full blur-3xl opacity-30 ${
+          animate={{ scale: [1, 1.08, 1], opacity: [0.25, 0.4, 0.25] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+          className={`pointer-events-none absolute -top-20 -right-20 w-72 h-72 rounded-full blur-3xl ${
             isDark ? "bg-cyan-500" : "bg-blue-300"
           }`}
         />
-        <div
+        <motion.div
           aria-hidden
-          className={`pointer-events-none absolute -bottom-24 -left-16 w-72 h-72 rounded-full blur-3xl opacity-20 ${
+          animate={{ scale: [1, 1.1, 1], opacity: [0.18, 0.3, 0.18] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
+          className={`pointer-events-none absolute -bottom-24 -left-16 w-72 h-72 rounded-full blur-3xl ${
             isImprovement ? (isDark ? "bg-green-500" : "bg-green-300")
             : isSame ? (isDark ? "bg-slate-500" : "bg-slate-300")
             : isDark ? "bg-amber-500" : "bg-amber-300"
@@ -238,17 +276,27 @@ function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizComplet
 
               <div className="flex flex-col items-center">
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1.0, type: "spring", stiffness: 120 }}
+                  initial={{ opacity: 0, scale: 0.4, rotate: -10 }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    rotate: 0,
+                    y: [0, -4, 0],
+                  }}
+                  transition={{
+                    opacity: { delay: 1.0, duration: 0.45 },
+                    scale: { delay: 1.0, type: "spring", stiffness: 180, damping: 12 },
+                    rotate: { delay: 1.0, type: "spring", stiffness: 180, damping: 12 },
+                    y: { delay: 1.6, duration: 2.4, repeat: Infinity, ease: "easeInOut" },
+                  }}
                   className={`text-7xl font-extrabold leading-none ${accentText}`}
                 >
                   {isImprovement ? "↑" : isSame ? "→" : "↓"}
                 </motion.div>
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.2 }}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.2, type: "spring", stiffness: 220, damping: 22 }}
                   className="mt-2 flex items-baseline gap-1"
                 >
                   <span className={`text-4xl font-extrabold ${accentText}`}>

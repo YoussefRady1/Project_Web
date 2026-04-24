@@ -433,13 +433,20 @@ function EncoderStackStep({ active, tokens, theme }) {
         {layers.map((layer, index) => (
           <div key={index} className="flex flex-col items-center w-full">
             <motion.div
-              initial={{ opacity: 0, y: -14, scale: 0.96 }}
+              initial={{ opacity: 0, y: -22, scale: 0.94, filter: "blur(4px)" }}
               animate={{
                 opacity: active ? 1 : 0.3,
                 y: 0,
                 scale: 1,
+                filter: "blur(0px)",
               }}
-              transition={{ delay: index * 0.2, duration: 0.35 }}
+              transition={{
+                delay: index * 0.18,
+                type: "spring",
+                stiffness: 220,
+                damping: 22,
+                mass: 0.9,
+              }}
               className={`w-full px-4 py-3 rounded-xl border ${layer.border} ${layer.glow} ${
                 isDark ? "bg-slate-900" : "bg-white"
               }`}
@@ -558,12 +565,15 @@ function EncoderStackStep({ active, tokens, theme }) {
             {index !== layers.length - 1 && (
               <motion.div
                 animate={{
-                  y: active ? [0, 6, 0] : 0,
-                  opacity: active ? 1 : 0,
+                  y: active ? [0, 8, 0] : 0,
+                  opacity: active ? [0.5, 1, 0.5] : 0,
+                  scale: active ? [1, 1.18, 1] : 1,
                 }}
                 transition={{
-                  duration: 1,
+                  duration: 1.4,
                   repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: index * 0.18 + 0.2,
                 }}
                 className={`text-lg my-2 ${isDark ? "text-cyan-400" : "text-blue-600"}`}
               >

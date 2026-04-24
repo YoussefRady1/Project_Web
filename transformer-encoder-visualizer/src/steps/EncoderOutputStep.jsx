@@ -222,12 +222,18 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
         {rows.map((row, rowIndex) => (
           <motion.div
             key={row.word + rowIndex}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 16, scale: 0.98 }}
             animate={{
               opacity: active ? 1 : 0.3,
               y: active ? 0 : 10,
+              scale: 1,
             }}
-            transition={{ delay: rowIndex * 0.08, duration: 0.25 }}
+            transition={{
+              delay: rowIndex * 0.09,
+              type: "spring",
+              stiffness: 220,
+              damping: 24,
+            }}
             className={`rounded-xl border p-4 ${
               isDark
                 ? "border-slate-700 bg-slate-900/70"
@@ -315,14 +321,35 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
                 {row.output.map((v, i) => (
                   <motion.span
                     key={`out-${rowIndex}-${i}`}
+                    initial={{ opacity: 0, scale: 0.7, y: 6 }}
                     animate={{
                       opacity: active ? 1 : 0.3,
-                      y: active ? [0, -2, 0] : 0,
+                      scale: 1,
+                      y: active ? [0, -3, 0] : 0,
+                      boxShadow: active
+                        ? isDark
+                          ? [
+                              "0 0 0px rgba(74,222,128,0)",
+                              "0 0 14px rgba(74,222,128,0.45)",
+                              "0 0 0px rgba(74,222,128,0)",
+                            ]
+                          : [
+                              "0 0 0px rgba(34,197,94,0)",
+                              "0 0 12px rgba(34,197,94,0.3)",
+                              "0 0 0px rgba(34,197,94,0)",
+                            ]
+                        : "0 0 0px rgba(0,0,0,0)",
                     }}
                     transition={{
-                      duration: 1.2,
-                      repeat: Infinity,
-                      delay: i * 0.06,
+                      opacity: { duration: 0.35, delay: rowIndex * 0.09 + i * 0.07 },
+                      scale: {
+                        type: "spring",
+                        stiffness: 360,
+                        damping: 22,
+                        delay: rowIndex * 0.09 + i * 0.07,
+                      },
+                      y: { duration: 1.4, repeat: Infinity, ease: "easeInOut", delay: i * 0.08 },
+                      boxShadow: { duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: i * 0.12 },
                     }}
                     className={`px-3 py-1 text-xs rounded border ${
                       isDark

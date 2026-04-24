@@ -977,29 +977,31 @@ const focusedUnderstandingLabel =
                       stroke="#22d3ee"
                       strokeWidth="1.8"
                       strokeDasharray="5 5"
+                      strokeLinecap="round"
                       animate={{
-                        opacity: active ? 0.9 : 0.2,
+                        opacity: active ? [0.75, 1, 0.75] : 0.25,
                         strokeDashoffset: active ? [0, -12] : 0,
                       }}
                       transition={{
-                        duration: 1.2,
-                        repeat: Infinity,
-                        ease: "linear",
+                        opacity: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
+                        strokeDashoffset: { duration: 1.2, repeat: Infinity, ease: "linear" },
                       }}
                     />
                     <motion.circle
-                      r="2.6"
+                      r="3"
                       fill="#22d3ee"
                       animate={{
                         cx: active ? [line.x1, line.x2] : line.x1,
                         cy: active ? [line.y1, line.y2] : line.y1,
-                        opacity: active ? [0, 1, 0] : 0,
+                        opacity: active ? [0, 1, 1, 0] : 0,
+                        r: active ? [2, 3.4, 2.6, 2] : 2,
                       }}
                       transition={{
-                        duration: 1.5,
+                        duration: 1.6,
                         repeat: Infinity,
-                        ease: "linear",
+                        ease: "easeInOut",
                       }}
+                      style={{ filter: "drop-shadow(0 0 4px rgba(34,211,238,0.7))" }}
                     />
                   </g>
                 );
