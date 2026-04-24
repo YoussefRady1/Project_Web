@@ -19,11 +19,16 @@ const preQuiz = [
   {
     id: "pre-2",
     question:
-      "In the original 'Attention Is All You Need' paper, how many attention heads does the base encoder use?",
-    options: ["4", "6", "8", "12"],
-    correctAnswer: "8",
+      "In the base Transformer's position-wise feed-forward network, how does the inner hidden dimension d_ff relate to the model dimension d_model?",
+    options: [
+      "d_ff is the same as d_model",
+      "d_ff is roughly 4 times d_model (e.g. 2048 vs 512)",
+      "d_ff is half of d_model",
+      "d_ff equals the number of attention heads",
+    ],
+    correctAnswer: "d_ff is roughly 4 times d_model (e.g. 2048 vs 512)",
     explanation:
-      "The base Transformer uses h = 8 parallel attention heads, each with d_k = d_v = 64.",
+      "The original Transformer uses d_model = 512 and an FFN inner size d_ff = 2048, a 4× expansion that gives the position-wise MLP enough capacity to transform each token.",
   },
   {
     id: "pre-3",

@@ -25,7 +25,7 @@ function TransformerIntroStep({ active, theme, setStep, userName, setUserName })
         scale: active ? 1 : 0.95,
       }}
       transition={{ duration: 0.3 }}
-      className={`p-6 border rounded-2xl w-[980px] min-h-[620px] flex flex-col items-center overflow-y-auto max-h-[85vh] ${
+      className={`p-6 border rounded-2xl w-[980px] min-h-[620px] flex flex-col items-center ${
         isDark ? "border-cyan-500" : "border-blue-300 bg-white"
       }`}
     >
@@ -57,17 +57,21 @@ function TransformerIntroStep({ active, theme, setStep, userName, setUserName })
               isDark ? "text-slate-300" : "text-slate-700"
             }`}
           >
-            Transformer models are a type of neural network designed to process
-            sequences—especially language—by focusing on relationships between words
-            rather than reading them one by one. Introduced in the paper{" "}
-            <em>Attention Is All You Need</em>, the key idea is attention, which allows
-            the model to weigh how important each word is relative to others in a
-            sentence. Instead of relying on recurrence like older models (RNNs),
-            transformers process all words in parallel, making them faster and better at
-            capturing long-range dependencies. Every word is first converted into a
-            numerical vector (embedding), and then positional information is added so
-            the model understands word order. This combination allows the model to
-            represent both meaning and structure effectively.
+            A Transformer is a kind of neural network built to work with sequences
+            of data, and it really shines on language. Instead of reading words one
+            after another, it looks at the whole sentence at once and figures out
+            which words connect to which. The idea was first laid out in the paper{" "}
+            <em>Attention Is All You Need</em>, and the heart of it is something
+            called attention. Attention is just a way for the model to ask, for each
+            word, "how much should I care about every other word here?" Older models
+            like RNNs had to walk through a sentence step by step, which made them
+            slow and forgetful over long passages. Transformers skip that bottleneck
+            by processing every word in parallel, so they handle long sentences with
+            far less trouble. Before any of that happens, each word gets turned into
+            a vector of numbers (an embedding), and a bit of position information is
+            mixed in so the model still knows the order. With those two pieces in
+            place, the model can capture both what the words mean and how they sit
+            together.
           </p>
         </div>
 
@@ -90,17 +94,19 @@ function TransformerIntroStep({ active, theme, setStep, userName, setUserName })
               isDark ? "text-slate-300" : "text-slate-700"
             }`}
           >
-            The encoder part of the transformer is responsible for understanding the
-            input. It consists of multiple identical layers, each containing two main
-            components: self-attention and a feed-forward neural network. In
-            self-attention, each word compares itself with every other word in the
-            sentence to determine which ones are most relevant. For example, in "The
-            animal didn't cross the street because it was tired," the word "it" learns
-            to focus more on "animal" than "street." This process produces a
-            contextualized representation of each word—meaning each word's vector now
-            reflects its meaning within the full sentence, not just in isolation.
-            Stacking multiple encoder layers allows the model to refine this
-            understanding progressively, capturing deeper linguistic patterns.
+            The encoder is the side of the Transformer that handles understanding.
+            It is built from several identical layers stacked on top of each other,
+            and inside each layer you will find two main parts: a self-attention
+            block and a small feed-forward network. In self-attention, every word
+            takes a quick look at every other word in the sentence and decides which
+            ones actually matter for it. Take the sentence "The animal didn't cross
+            the street because it was tired." The word "it" needs to figure out what
+            it refers to, and through self-attention it learns to lean toward
+            "animal" rather than "street." After this back and forth, each word
+            ends up with a vector that carries not just its own meaning but also a
+            sense of the surrounding context. By stacking encoder layers, the model
+            keeps refining these vectors, and it gradually picks up on patterns that
+            a single layer would miss.
           </p>
         </div>
 
@@ -123,18 +129,21 @@ function TransformerIntroStep({ active, theme, setStep, userName, setUserName })
               isDark ? "text-slate-300" : "text-slate-700"
             }`}
           >
-            The decoder uses the encoder's output to generate a new sequence, such as a
-            translation or a response. It also has multiple layers but includes an
-            additional mechanism: masked self-attention, which ensures that when
-            predicting a word, the model can only look at previously generated words
-            (not future ones). This makes the generation process step-by-step and
-            realistic. Another attention layer, called encoder–decoder attention, allows
-            the decoder to focus on the most relevant parts of the input while
-            producing each word. For example, when generating an Arabic translation, the
-            decoder dynamically attends to different English words depending on what it
-            is currently producing. Models like BERT use only the encoder for
-            understanding tasks, while GPT uses only the decoder for generation, and
-            models like T5 combine both for full sequence-to-sequence tasks.
+            The decoder takes the encoder's output and uses it to write a new
+            sequence, like a translation or an answer. It also stacks multiple
+            layers, but it adds one extra trick called masked self-attention. The
+            mask makes sure that when the model is predicting the next word, it can
+            only look at the words it has already produced and not peek at future
+            ones. This keeps the generation honest and lets the model write one word
+            at a time. The decoder also has another attention block, often called
+            cross attention, that lets it look back at the encoder's output. So when
+            the decoder is producing, say, an Arabic translation, it can focus on
+            different English words depending on what it is writing at that moment.
+            Different families of models pick different sides of this design. BERT
+            only uses the encoder because it cares about understanding text. GPT
+            only uses the decoder because it cares about generating it. Models like
+            T5 keep both halves, which is why they work well on full
+            sequence-to-sequence tasks.
           </p>
         </div>
       </div>

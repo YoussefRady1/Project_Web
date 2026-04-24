@@ -101,12 +101,12 @@ const STAGES = [
 ];
 
 const DESC = {
-  embed: "Converts words to vectors",
-  selfAttn: "Words attend to each other",
-  encFFN: "Transforms representations",
-  crossAttn: "Decoder attends to encoder output",
-  decFFN: "Transforms representations",
-  outProj: "Predicts next token probabilities",
+  embed: "Turns each word into a numeric vector",
+  selfAttn: "Every word looks at the others",
+  encFFN: "Refines each token on its own",
+  crossAttn: "Decoder looks back at the encoder",
+  decFFN: "Polishes the decoder's vectors",
+  outProj: "Picks the next word by probability",
 };
 
 const EXAMPLES = [
@@ -206,18 +206,18 @@ function GenerationControls({
   const isBeam = numBeams > 1;
   const tempHint =
     temperature <= 0.3
-      ? "low — almost deterministic"
+      ? "low, almost deterministic"
       : temperature < 0.9
-      ? "balanced — slight variety"
+      ? "balanced, slight variety"
       : temperature < 1.4
-      ? "standard — natural variety"
-      : "high — unpredictable";
+      ? "standard, natural variety"
+      : "high, unpredictable";
   const topPHint =
     topP < 0.4
-      ? "narrow pool — safe words"
+      ? "narrow pool, safe words"
       : topP < 0.75
       ? "balanced pool"
-      : "wide pool — creative";
+      : "wide pool, creative";
 
   return (
     <div
@@ -681,7 +681,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
               : "bg-red-50 border border-red-200"
           }`}
         >
-          Failed to load model — refresh to retry
+          Failed to load model, refresh to retry
         </div>
       ) : (
         <div className="flex flex-col gap-2">
@@ -1020,6 +1020,26 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
               >
                 {s.l}
               </text>
+              <g style={{ pointerEvents: "none" }}>
+                <circle
+                  cx={s.x + 14}
+                  cy={CY - 14}
+                  r={7}
+                  fill={isDark ? "#0f172a" : "#ffffff"}
+                  stroke={col}
+                  strokeWidth={1.2}
+                />
+                <text
+                  x={s.x + 14}
+                  y={CY - 11}
+                  textAnchor="middle"
+                  fontSize={8}
+                  fontWeight="800"
+                  fill={col}
+                >
+                  {si + 1}
+                </text>
+              </g>
               {isHov && !isSelected && (
                 <motion.g
                   initial={{ opacity: 0 }}
@@ -1149,7 +1169,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
             isDark ? "text-slate-600" : "text-slate-400"
           }`}
         >
-          T5-Small in your browser · Output % are real softmax probabilities · Drag any slider to explore how it changes the output
+          Running T5-Small right here in your browser. The output percentages come from real softmax probabilities, so try dragging a slider and watch the output shift.
         </span>
         <button
           onClick={() => setStep(3)}
