@@ -69,15 +69,35 @@ function MainCanvas({
         </div>
 
         <div
-          className={`w-full h-2 rounded-full overflow-hidden ${
+          className={`relative w-full h-2 rounded-full overflow-hidden ${
             isDark ? "bg-slate-800" : "bg-slate-300"
           }`}
         >
           <motion.div
-            className="h-full bg-cyan-400"
+            className={`h-full ${
+              isDark
+                ? "bg-gradient-to-r from-cyan-500 via-cyan-400 to-blue-400"
+                : "bg-gradient-to-r from-blue-500 via-blue-400 to-cyan-400"
+            }`}
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          />
+          <motion.div
+            aria-hidden
+            className="absolute top-0 h-full w-16 pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.45) 50%, rgba(255,255,255,0) 100%)",
+              mixBlendMode: "overlay",
+            }}
+            animate={{ left: ["-10%", "110%"] }}
+            transition={{
+              duration: 2.2,
+              repeat: Infinity,
+              ease: "easeInOut",
+              repeatDelay: 0.6,
+            }}
           />
         </div>
       </div>
@@ -86,12 +106,12 @@ function MainCanvas({
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
-            initial={{ opacity: 0, y: 20, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.98 }}
+            initial={{ opacity: 0, y: 28, scale: 0.965, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -28, scale: 0.965, filter: "blur(8px)" }}
             transition={{
-              duration: 0.55,
-              ease: [0.22, 1, 0.36, 1],
+              duration: 0.65,
+              ease: [0.16, 1, 0.3, 1],
             }}
             className="w-full flex items-center justify-center"
           >

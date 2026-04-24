@@ -388,12 +388,17 @@ function EmbeddingStep({ active, tokens, theme }) {
             return (
               <div key={index} className="flex items-center gap-3">
                 <motion.div
-                  initial={{ opacity: 0, x: -10 }}
+                  initial={{ opacity: 0, x: -14 }}
                   animate={{
                     opacity: active ? 1 : 0.3,
                     x: active ? 0 : -10,
                   }}
-                  transition={{ delay: index * 0.15 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 220,
+                    damping: 22,
+                    delay: index * 0.12,
+                  }}
                   className={`text-sm w-16 text-right font-medium ${
                     isDark ? "text-cyan-300" : "text-blue-800"
                   }`}
@@ -403,12 +408,14 @@ function EmbeddingStep({ active, tokens, theme }) {
 
                 <motion.div
                   animate={{
-                    x: active ? [0, 6, 0] : 0,
-                    opacity: active ? 1 : 0,
+                    x: active ? [0, 8, 0] : 0,
+                    opacity: active ? [0.6, 1, 0.6] : 0,
+                    scale: active ? [1, 1.15, 1] : 1,
                   }}
                   transition={{
-                    duration: 1,
+                    duration: 1.4,
                     repeat: Infinity,
+                    ease: "easeInOut",
                     delay: index * 0.15,
                   }}
                   className={isDark ? "text-cyan-400" : "text-blue-600"}
@@ -435,14 +442,17 @@ function EmbeddingStep({ active, tokens, theme }) {
                     {vector.map((v, i) => (
                       <motion.span
                         key={i}
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 14, scale: 0.6 }}
                         animate={{
                           opacity: active ? 1 : 0,
                           y: active ? 0 : 10,
+                          scale: active ? 1 : 0.6,
                         }}
                         transition={{
-                          delay: index * 0.15 + i * 0.08,
-                          duration: 0.25,
+                          delay: index * 0.12 + i * 0.07,
+                          type: "spring",
+                          stiffness: 340,
+                          damping: 22,
                         }}
                         className={isDark ? "text-white text-xs" : "text-slate-900 text-xs"}
                       >

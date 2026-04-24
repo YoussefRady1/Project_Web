@@ -39,33 +39,60 @@ function TokenStep({ active, tokens = [], theme }) {
       }
 
       while (!cancelled) {
-        // Combined sentence visible
-        await sentenceControls.set({ opacity: 1, y: 0, scale: 1 });
-        await tokenControls.set(() => ({ opacity: 0, x: 0, y: 0, scale: 0.95 }));
-        await sleep(3000);
+        // Sentence breathes in
+        await sentenceControls.set({ opacity: 0, y: 8, scale: 0.96 });
+        await tokenControls.set(() => ({ opacity: 0, x: 0, y: 0, scale: 0.92 }));
+        await sentenceControls.start({
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] },
+        });
+        if (cancelled) return;
+        await sleep(2700);
         if (cancelled) return;
 
-        // Hide sentence, show tokens at center, then split outward
-        await sentenceControls.start({ opacity: 0, transition: { duration: 0.25 } });
+        // Sentence drops away with subtle fade
+        await sentenceControls.start({
+          opacity: 0,
+          y: -6,
+          scale: 0.97,
+          transition: { duration: 0.32, ease: [0.4, 0, 0.7, 0.2] },
+        });
         if (cancelled) return;
+
+        // Tokens spring outward with stagger and a tiny pop on landing
         await tokenControls.set(() => ({ opacity: 1, x: 0, y: 0, scale: 1 }));
         await tokenControls.start((i) => ({
           x: positions[i].x,
           y: positions[i].y,
-          transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+          scale: [1, 1.18, 1],
+          transition: {
+            x: { type: "spring", stiffness: 170, damping: 18, mass: 0.85, delay: i * 0.05 },
+            y: { type: "spring", stiffness: 170, damping: 18, mass: 0.85, delay: i * 0.05 },
+            scale: { duration: 0.55, times: [0, 0.55, 1], delay: i * 0.05 + 0.25 },
+          },
         }));
         if (cancelled) return;
-        await sleep(3000);
+        await sleep(2900);
         if (cancelled) return;
 
-        // Combine: tokens slide back to center then fade
-        await tokenControls.start({
+        // Combine: tokens slide back with a slight squash, then fade together
+        await tokenControls.start((i) => ({
           x: 0,
           y: 0,
-          transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-        });
+          scale: [1, 0.94, 1],
+          transition: {
+            x: { duration: 0.55, ease: [0.65, 0, 0.35, 1], delay: i * 0.025 },
+            y: { duration: 0.55, ease: [0.65, 0, 0.35, 1], delay: i * 0.025 },
+            scale: { duration: 0.55, times: [0, 0.7, 1], delay: i * 0.025 },
+          },
+        }));
         if (cancelled) return;
-        await tokenControls.start({ opacity: 0, transition: { duration: 0.2 } });
+        await tokenControls.start({
+          opacity: 0,
+          transition: { duration: 0.25, ease: "easeOut" },
+        });
         if (cancelled) return;
       }
     };
@@ -143,10 +170,10 @@ function TokenStep({ active, tokens = [], theme }) {
             custom={index}
             animate={tokenControls}
             initial={{ opacity: 0, x: 0, y: 0, scale: 0.95 }}
-            className={`absolute top-0 px-3 py-2 border rounded-lg text-sm whitespace-nowrap ${
+            className={`absolute top-0 px-3 py-2 border rounded-lg text-sm whitespace-nowrap will-change-transform ${
   isDark
-    ? "bg-slate-900 border-cyan-400 text-cyan-300"
-    : "bg-white border-blue-300 text-blue-800"
+    ? "bg-slate-900 border-cyan-400 text-cyan-300 shadow-[0_0_18px_rgba(34,211,238,0.18)]"
+    : "bg-white border-blue-300 text-blue-800 shadow-[0_4px_14px_rgba(59,130,246,0.12)]"
 }`}
           >
             {word}
