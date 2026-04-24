@@ -377,7 +377,7 @@ const EXPLANATIONS = {
   embed: {
     title: "Embed · Inside the Block",
     intuition:
-      "Imagine a giant dictionary where every word has its own 'profile card' with 512 numbers on it. The embedding step is just looking up that card. Two words with similar meaning end up with similar cards — 'cat' and 'kitten' live near each other in this 512-dimensional space.",
+      "Imagine a giant dictionary where every word has its own 'profile card' with 512 numbers on it. The embedding step is just looking up that card. Two words with similar meaning end up with similar cards, 'cat' and 'kitten' live near each other in this 512-dimensional space.",
     math: [
       {
         step: "1. Turn the word into an ID",
@@ -401,7 +401,7 @@ const EXPLANATIONS = {
       },
     ],
     insights: [
-      "Embedding values are learned during training — not computed from the letters of the word.",
+      "Embedding values are learned during training, not computed from the letters of the word.",
       "Without positional encoding the model cannot distinguish 'dog bites man' from 'man bites dog'.",
       "Each of the 512 dimensions encodes some learned abstract feature of the word.",
     ],
@@ -409,7 +409,7 @@ const EXPLANATIONS = {
   selfAttn: {
     title: "Self-Attention · Inside the Block",
     intuition:
-      "Think of a library. Every token is simultaneously a reader, a book-label, and a book. As a reader it has a Query (Q) — what it's looking for. As a label it has a Key (K) — what it advertises. As a book it has a Value (V) — the actual content. Each token compares its Q to every K in the sentence to decide how much of each V to read.",
+      "Think of a library. Every token is simultaneously a reader, a book-label, and a book. As a reader it has a Query (Q): what it's looking for. As a label it has a Key (K): what it advertises. As a book it has a Value (V): the actual content. Each token compares its Q to every K in the sentence to decide how much of each V to read.",
     math: [
       {
         step: "1. Create Q, K, V from the input",
@@ -445,7 +445,7 @@ const EXPLANATIONS = {
     insights: [
       "This is the ONLY stage where tokens share information with each other.",
       "The attention matrix is what people visualize when they talk about 'what the model is looking at'.",
-      "Self-attention is position-blind — that's why we added positional encoding earlier.",
+      "Self-attention is position-blind, that's why we added positional encoding earlier.",
     ],
   },
   encFFN: {
@@ -470,7 +470,7 @@ const EXPLANATIONS = {
       },
     ],
     insights: [
-      "This is where the model does most of its 'thinking' per token — FFNs hold ~2/3 of all transformer parameters.",
+      "This is where the model does most of its 'thinking' per token, FFNs hold ~2/3 of all transformer parameters.",
       "Every position is processed independently in parallel (no mixing across tokens here).",
       "Without ReLU (or some nonlinearity) the whole FFN would collapse to a single linear layer and lose its power.",
     ],
@@ -510,7 +510,7 @@ const EXPLANATIONS = {
       {
         step: "1. Query from decoder state",
         formula: "Q = X_decoder · W_Q",
-        detail: "X_decoder is the current decoder layer's output — the partial translation being built so far.",
+        detail: "X_decoder is the current decoder layer's output, the partial translation being built so far.",
       },
       {
         step: "2. Key and Value from encoder output",
@@ -525,7 +525,7 @@ const EXPLANATIONS = {
     ],
     insights: [
       "Cross-attention is what lets the decoder 'read' the input. Without it, the decoder would be generating text blindly.",
-      "Q has shape (seq_dec × 64) but K, V have shape (seq_enc × 64) — the sequence lengths can differ.",
+      "Q has shape (seq_dec × 64) but K, V have shape (seq_enc × 64), the sequence lengths can differ.",
       "This only exists in encoder-decoder models like T5. GPT-style models skip it since they only have a decoder.",
     ],
   },
@@ -551,7 +551,7 @@ const EXPLANATIONS = {
       },
     ],
     insights: [
-      "The output matrix W_out is huge (512 × 32,128 ≈ 16M parameters) — often tied to the input embedding matrix to save memory.",
+      "The output matrix W_out is huge (512 × 32,128 ≈ 16M parameters), often tied to the input embedding matrix to save memory.",
       "Softmax amplifies differences: a logit of 5 vs 3 gives probabilities ~0.88 vs ~0.12, not 5/8 vs 3/8.",
       "The Top-P and Beam Search sliders above the diagram control which word actually gets picked each step.",
     ],
