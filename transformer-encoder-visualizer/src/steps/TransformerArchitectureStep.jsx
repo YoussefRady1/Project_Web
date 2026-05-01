@@ -116,8 +116,43 @@ const EXAMPLES = [
 ];
 
 const CY = 220;
-const SVG_W = 960;
+const SVG_W = 1020;
 const SVG_H = 440;
+
+function InfoTip({ text, isDark }) {
+  const [show, setShow] = useState(false);
+  return (
+    <span className="relative inline-flex items-center">
+      <span
+        role="button"
+        tabIndex={0}
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        onFocus={() => setShow(true)}
+        onBlur={() => setShow(false)}
+        className={`inline-flex items-center justify-center w-3 h-3 rounded-full text-[8px] font-bold cursor-help leading-none transition select-none ${
+          isDark
+            ? "bg-slate-700 text-slate-300 hover:bg-cyan-500 hover:text-slate-950"
+            : "bg-slate-300 text-slate-600 hover:bg-blue-500 hover:text-white"
+        }`}
+        aria-label="More info"
+      >
+        ?
+      </span>
+      {show && (
+        <span
+          className={`absolute z-50 bottom-full mb-1 left-1/2 -translate-x-1/2 w-52 p-2 rounded-lg shadow-xl text-[10px] leading-snug border pointer-events-none normal-case font-normal tracking-normal ${
+            isDark
+              ? "bg-slate-900 border-slate-600 text-slate-200"
+              : "bg-white border-slate-300 text-slate-700"
+          }`}
+        >
+          {text}
+        </span>
+      )}
+    </span>
+  );
+}
 
 function ControlSlider({
   label,
@@ -132,6 +167,7 @@ function ControlSlider({
   disabled,
   hint,
   formatter,
+  tooltip,
 }) {
   const accentTxt = {
     cyan: isDark ? "text-cyan-300" : "text-blue-700",
@@ -151,14 +187,15 @@ function ControlSlider({
   }[accent];
   const shown = formatter ? formatter(value) : value.toFixed(step < 1 ? 2 : 0);
   return (
-    <div className={`flex-1 min-w-0 ${disabled ? "opacity-40" : ""}`}>
+    <div className={`flex-1 min-w-0 relative ${disabled ? "opacity-40" : ""}`}>
       <div className="flex items-baseline justify-between mb-0.5">
         <span
-          className={`text-[10.5px] font-semibold ${
+          className={`text-[10.5px] font-semibold flex items-center gap-1 ${
             isDark ? "text-slate-300" : "text-slate-600"
           }`}
         >
           {label}
+          {tooltip && <InfoTip text={tooltip} isDark={isDark} />}
         </span>
         <span className={`text-[10.5px] font-bold tabular-nums ${accentTxt}`}>
           {shown}
@@ -226,14 +263,22 @@ function GenerationControls({
       }`}
     >
       <div
-        className={`text-[10px] font-bold uppercase tracking-wider mb-2 ${
+        className={`text-[10px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1 ${
           isDark ? "text-slate-400" : "text-slate-500"
         }`}
       >
-        Generation Controls ·{" "}
+        <span>Generation Controls ·</span>
         <span className={isBeam ? "text-cyan-400" : "text-purple-400"}>
           {isBeam ? "Beam Search mode" : "Sampling mode"}
         </span>
+        <InfoTip
+          isDark={isDark}
+          text={
+            isBeam
+              ? "Beam Search keeps several candidate translations alive at once and picks the best full path. Deterministic — same input gives the same output. Temperature, Top-P and Top-K are ignored."
+              : "Sampling picks each next word with controlled randomness using Temperature, Top-P and Top-K. Set Beams = 1 to enable. Different runs can give different outputs."
+          }
+        />
       </div>
 
       <div className="grid grid-cols-3 gap-x-4 gap-y-2">
@@ -252,6 +297,7 @@ function GenerationControls({
               ? "greedy/sampling mode"
               : `explores ${numBeams} paths in parallel`
           }
+          tooltip="How many candidate translations the model keeps alive at the same time. 1 = greedy/sampling (fastest). Higher values explore several full paths in parallel and pick the best — more careful but slower. Disables Temperature/Top-P/Top-K."
         />
         <ControlSlider
           label="Temperature"
@@ -265,6 +311,7 @@ function GenerationControls({
           disabled={isBeam}
           onChange={setTemperature}
           hint={isBeam ? "n/a in beam search" : tempHint}
+          tooltip="How adventurous the model is. Low (~0.3) makes it stick to the safest, most likely word. High (~1.5) makes it pick surprising, creative words. 1.0 is natural variety."
         />
         <ControlSlider
           label="Top-P"
@@ -278,6 +325,7 @@ function GenerationControls({
           disabled={isBeam}
           onChange={setTopP}
           hint={isBeam ? "n/a in beam search" : topPHint}
+          tooltip="Nucleus sampling. The model only chooses from the smallest group of words whose probabilities add up to P. Lower = focused on safe choices; higher = wider creative pool."
         />
         <ControlSlider
           label="Top-K"
@@ -299,6 +347,7 @@ function GenerationControls({
               ? "moderate candidate pool"
               : "large candidate pool"
           }
+          tooltip="Only the K most likely words are considered at each step, the rest are thrown away. Smaller K = focused/safer; larger K = more variety."
         />
         <ControlSlider
           label="Max tokens"
@@ -311,6 +360,7 @@ function GenerationControls({
           isDark={isDark}
           onChange={setMaxTokens}
           hint="cap on output length"
+          tooltip="Maximum number of subword pieces the model can output before it must stop. Higher values let the translation be longer; lower values force it to cut short."
         />
         <ControlSlider
           label="Repetition penalty"
@@ -330,6 +380,7 @@ function GenerationControls({
               : "strongly discourages repeats"
           }
           formatter={(v) => v.toFixed(2)}
+          tooltip="Discourages the model from repeating the same word. 1.0 = no penalty (the model may loop). Higher values reduce the score of words it has already used."
         />
       </div>
     </div>
@@ -602,7 +653,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
   outToks.forEach((item, i) => {
     const bend = (i - (outToks.length - 1) / 2) * 10;
     flows.push({
-      d: bez(832, CY, 870, yPos(i, outToks.length), 0, bend),
+      d: bez(832, CY, 863, yPos(i, outToks.length), 0, bend),
       c: p.output,
       dl: 0.8 + i * 0.1,
       op: 0.1 + (item.prob || 0.5) * 0.3,
@@ -632,7 +683,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
     <motion.div
       animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
       transition={{ duration: 0.3 }}
-      className={`w-[980px] flex flex-col gap-2 p-5 rounded-2xl border ${
+      className={`w-[1080px] flex flex-col gap-2 p-5 rounded-2xl border ${
         isDark
           ? "border-cyan-500/20 bg-slate-950/90"
           : "border-blue-200 bg-white"
@@ -860,7 +911,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           Your sentence
         </text>
         <text
-          x={910}
+          x={922}
           y={50}
           textAnchor="middle"
           fontSize={9}
@@ -872,7 +923,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           OUTPUT
         </text>
         <text
-          x={910}
+          x={922}
           y={62}
           textAnchor="middle"
           fontSize={6.5}
@@ -1093,9 +1144,9 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
               transition={{ delay: 0.3 + i * 0.08 }}
             >
               <rect
-                x={872}
+                x={865}
                 y={y - 11}
-                width={78}
+                width={115}
                 height={22}
                 rx={11}
                 fill={p.pill}
@@ -1104,7 +1155,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
                 strokeOpacity={0.3 + prob * 0.7}
               />
               <text
-                x={908}
+                x={912}
                 y={y + 4}
                 textAnchor="middle"
                 fontSize={9.5}
@@ -1112,10 +1163,10 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
                 fill={p.text}
                 opacity={0.4 + prob * 0.6}
               >
-                {item.tok.length > 7 ? item.tok.slice(0, 6) + "…" : item.tok}
+                {item.tok.length > 11 ? item.tok.slice(0, 10) + "…" : item.tok}
               </text>
               <text
-                x={948}
+                x={974}
                 y={y + 3}
                 textAnchor="end"
                 fontSize={7}

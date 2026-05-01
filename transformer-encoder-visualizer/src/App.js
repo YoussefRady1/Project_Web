@@ -3,7 +3,8 @@ import TokenInput from "./components/TokenInput";
 import AnimationController from "./controllers/AnimationController";
 import MainCanvas, { FIRST_PAGE_NEEDING_TOKENS } from "./visualizers/MainCanvas";
 import { getModel } from "./steps/TransformerArchitectureStep";
-import logo from "./assets/logo.png";
+import logoLight from "./assets/transformer-nexus-logo.svg";
+import logoDark from "./assets/transformer-nexus-logo-dark.svg";
 
 function App() {
   useEffect(() => {
@@ -84,9 +85,13 @@ function App() {
       >
         <div className="flex items-center gap-3">
           <img
-            src={logo}
+            src={isDark ? logoDark : logoLight}
             alt="Transformer Logo"
-            className="h-10 w-auto object-contain"
+            className={`h-10 w-10 object-contain rounded-lg transition-shadow duration-300 ${
+              isDark
+                ? "ring-1 ring-cyan-400/30 shadow-[0_0_18px_rgba(34,211,238,0.35)]"
+                : "ring-1 ring-white/40 bg-white/10 shadow-[0_0_14px_rgba(255,255,255,0.25)]"
+            }`}
           />
 
           <span

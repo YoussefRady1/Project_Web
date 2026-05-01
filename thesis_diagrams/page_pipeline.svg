@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1860 320" width="1860" height="320" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect width="1860" height="320" fill="#ffffff"/>
+
+  <text x="930" y="44" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">Page Pipeline · 9-step user journey</text>
+  <text x="930" y="68" text-anchor="middle" font-size="12.5" fill="#64748b">linear navigation; pre-quiz gates the lesson, post-quiz measures the gain</text>
+
+  <!-- Group categories label band -->
+  <g font-size="10.5" font-weight="700" fill="#94a3b8" letter-spacing="2">
+    <text x="100" y="118" text-anchor="middle">ASSESS · IN</text>
+    <text x="640" y="118" text-anchor="middle">LEARN</text>
+    <text x="1500" y="118" text-anchor="middle">ASSESS · OUT</text>
+  </g>
+  <line x1="40" y1="128" x2="160" y2="128" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="200" y1="128" x2="1080" y2="128" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="1440" y1="128" x2="1560" y2="128" stroke="#cbd5e1" stroke-width="1"/>
+
+  <!-- Step generator: each step is a 180x110 card centred at y=215 -->
+  <!-- Layout: card width 180, gap 20, start x=40 -->
+
+  <!-- 0: Intro -->
+  <g filter="url(#cardShadow)">
+    <rect x="40" y="160" width="180" height="110" rx="14" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+    <rect x="40" y="160" width="180" height="6" rx="3" fill="#64748b"/>
+    <circle cx="68" cy="200" r="16" fill="#64748b"/>
+    <text x="68" y="206" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">0</text>
+    <text x="92" y="195" font-size="13" font-weight="700" fill="#0f172a">Intro</text>
+    <text x="92" y="212" font-size="10.5" fill="#475569">welcome &amp; sign-in</text>
+    <text x="60" y="248" font-size="10" fill="#64748b">prepares the learner</text>
+  </g>
+
+  <!-- 1: Pre-Quiz -->
+  <g filter="url(#cardShadow)">
+    <rect x="240" y="160" width="180" height="110" rx="14" fill="#ffffff" stroke="#a78bfa" stroke-width="1.5"/>
+    <rect x="240" y="160" width="180" height="6" rx="3" fill="#8b5cf6"/>
+    <circle cx="268" cy="200" r="16" fill="#8b5cf6"/>
+    <text x="268" y="206" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">1</text>
+    <text x="292" y="195" font-size="13" font-weight="700" fill="#0f172a">Pre-Quiz</text>
+    <text x="292" y="212" font-size="10.5" fill="#475569">baseline knowledge</text>
+    <text x="260" y="248" font-size="10" fill="#7c3aed">→ saved to MongoDB</text>
+  </g>
+
+  <!-- 2: Architecture -->
+  <g filter="url(#cardShadow)">
+    <rect x="440" y="160" width="180" height="110" rx="14" fill="#ffffff" stroke="#60a5fa" stroke-width="1.5"/>
+    <rect x="440" y="160" width="180" height="6" rx="3" fill="#3b82f6"/>
+    <circle cx="468" cy="200" r="16" fill="#3b82f6"/>
+    <text x="468" y="206" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">2</text>
+    <text x="492" y="195" font-size="13" font-weight="700" fill="#0f172a">Architecture</text>
+    <text x="492" y="212" font-size="10.5" fill="#475569">live T5 · big picture</text>
+    <text x="460" y="248" font-size="10" fill="#1d4ed8">in-browser inference</text>
+  </g>
+
+  <!-- 3: Tokenization -->
+  <g filter="url(#cardShadow)">
+    <rect x="640" y="160" width="180" height="110" rx="14" fill="#ffffff" stroke="#22d3ee" stroke-width="1.5"/>
+    <rect x="640" y="160" width="180" height="6" rx="3" fill="#06b6d4"/>
+    <circle cx="668" cy="200" r="16" fill="#06b6d4"/>
+    <text x="668" y="206" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">3</text>
+    <text x="692" y="195" font-size="13" font-weight="700" fill="#0f172a">Tokenization</text>
+    <text x="692" y="212" font-size="10.5" fill="#475569">sentence → tokens</text>
+    <text x="660" y="248" font-size="10" fill="#0e7490">split / merge animation</text>
+  </g>
+
+  <!-- 4: Embedding -->
+  <g filter="url(#cardShadow)">
+    <rect x="840" y="160" width="180" height="110" rx="14" fill="#ffffff" stroke="#2dd4bf" stroke-width="1.5"/>
+    <rect x="840" y="160" width="180" height="6" rx="3" fill="#14b8a6"/>
+    <circle cx="868" cy="200" r="16" fill="#14b8a6"/>
+    <text x="868" y="206" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">4</text>
+    <text x="892" y="195" font-size="13" font-weight="700" fill="#0f172a">Embedding</text>
+    <text x="892" y="212" font-size="10.5" fill="#475569">tokens → vectors</text>
+    <text x="860" y="248" font-size="10" fill="#0f766e">4-D demo space</text>
+  </g>
+
+  <!-- 5: Positional Encoding -->
+  <g filter="url(#cardShadow)">
+    <rect x="1040" y="160" width="180" height="110" rx="14" fill="#ffffff" stroke="#34d399" stroke-width="1.5"/>
+    <rect x="1040" y="160" width="180" height="6" rx="3" fill="#10b981"/>
+    <circle cx="1068" cy="200" r="16" fill="#10b981"/>
+    <text x="1068" y="206" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">5</text>
+    <text x="1092" y="195" font-size="13" font-weight="700" fill="#0f172a">Positional Enc.</text>
+    <text x="1092" y="212" font-size="10.5" fill="#475569">order injected</text>
+    <text x="1060" y="248" font-size="10" fill="#047857">shuffle toggle proves it</text>
+  </g>
+
+  <!-- 6: Encoder Stack -->
+  <g filter="url(#cardShadow)">
+    <rect x="1240" y="160" width="180" height="110" rx="14" fill="#ffffff" stroke="#fbbf24" stroke-width="1.5"/>
+    <rect x="1240" y="160" width="180" height="6" rx="3" fill="#f59e0b"/>
+    <circle cx="1268" cy="200" r="16" fill="#f59e0b"/>
+    <text x="1268" y="206" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">6</text>
+    <text x="1292" y="195" font-size="13" font-weight="700" fill="#0f172a">Encoder Stack</text>
+    <text x="1292" y="212" font-size="10.5" fill="#475569">attention + FFN</text>
+    <text x="1260" y="248" font-size="10" fill="#b45309">stack 1–5 layers</text>
+  </g>
+
+  <!-- 7: Encoder Output -->
+  <g filter="url(#cardShadow)">
+    <rect x="1440" y="160" width="180" height="110" rx="14" fill="#ffffff" stroke="#fb923c" stroke-width="1.5"/>
+    <rect x="1440" y="160" width="180" height="6" rx="3" fill="#f97316"/>
+    <circle cx="1468" cy="200" r="16" fill="#f97316"/>
+    <text x="1468" y="206" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">7</text>
+    <text x="1492" y="195" font-size="13" font-weight="700" fill="#0f172a">Encoder Output</text>
+    <text x="1492" y="212" font-size="10.5" fill="#475569">contextual vectors</text>
+    <text x="1460" y="248" font-size="10" fill="#c2410c">in → refine → out</text>
+  </g>
+
+  <!-- 8: Post-Quiz -->
+  <g filter="url(#cardShadow)">
+    <rect x="1640" y="160" width="180" height="110" rx="14" fill="#ffffff" stroke="#a78bfa" stroke-width="1.5"/>
+    <rect x="1640" y="160" width="180" height="6" rx="3" fill="#8b5cf6"/>
+    <circle cx="1668" cy="200" r="16" fill="#8b5cf6"/>
+    <text x="1668" y="206" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">8</text>
+    <text x="1692" y="195" font-size="13" font-weight="700" fill="#0f172a">Post-Quiz</text>
+    <text x="1692" y="212" font-size="10.5" fill="#475569">measure learning</text>
+    <text x="1660" y="248" font-size="10" fill="#7c3aed">→ saved to MongoDB</text>
+  </g>
+
+  <!-- Arrows between cards (centered between adjacent boxes, y=215) -->
+  <line x1="222" y1="215" x2="238" y2="215" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="422" y1="215" x2="438" y2="215" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="622" y1="215" x2="638" y2="215" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="822" y1="215" x2="838" y2="215" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="1022" y1="215" x2="1038" y2="215" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="1222" y1="215" x2="1238" y2="215" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="1422" y1="215" x2="1438" y2="215" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="1622" y1="215" x2="1638" y2="215" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- Footer caption -->
+  <text x="930" y="298" text-anchor="middle" font-size="11" fill="#94a3b8">Steps 0–1 collect the baseline · Steps 2–7 deliver the lesson · Step 8 closes the loop</text>
+</svg>

@@ -57,21 +57,9 @@ function TransformerIntroStep({ active, theme, setStep, userName, setUserName })
               isDark ? "text-slate-300" : "text-slate-700"
             }`}
           >
-            A Transformer is a kind of neural network built to work with sequences
-            of data, and it really shines on language. Instead of reading words one
-            after another, it looks at the whole sentence at once and figures out
-            which words connect to which. The idea was first laid out in the paper{" "}
-            <em>Attention Is All You Need</em>, and the heart of it is something
-            called attention. Attention is just a way for the model to ask, for each
-            word, "how much should I care about every other word here?" Older models
-            like RNNs had to walk through a sentence step by step, which made them
-            slow and forgetful over long passages. Transformers skip that bottleneck
-            by processing every word in parallel, so they handle long sentences with
-            far less trouble. Before any of that happens, each word gets turned into
-            a vector of numbers (an embedding), and a bit of position information is
-            mixed in so the model still knows the order. With those two pieces in
-            place, the model can capture both what the words mean and how they sit
-            together.
+            A Transformer is a type of neural network architecture designed to process sequences of data, with particular strength in language-related tasks. Unlike earlier models that read input word by word in a fixed order, a Transformer processes the entire sequence at once, allowing it to reason about relationships between all words simultaneously.
+At the core of the Transformer is a mechanism called attention, which allows the model to determine how relevant each word is to every other word in the sequence. This makes it especially effective at capturing context and long-range dependencies that earlier models struggled with.
+Each word is first converted into a numerical vector called an embedding, and positional information is added so the model still understands the order of the sequence. Together, these components allow the Transformer to capture both the meaning of words and how they relate to one another in context.
           </p>
         </div>
 
