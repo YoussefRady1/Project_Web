@@ -1,0 +1,29 @@
+<svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+<style>
+  @keyframes p{0%,100%{opacity:.5}50%{opacity:1}}
+  @keyframes f{0%{stroke-dashoffset:16}100%{stroke-dashoffset:0}}
+  .p{animation:p 2.5s ease-in-out infinite}
+  .p1{animation-delay:.2s}.p2{animation-delay:.4s}
+  .fl{stroke-dasharray:3 3;animation:f 1.8s linear infinite}
+</style>
+<!-- Curved connections in -->
+<path d="M6 12 Q18 12 24 24" fill="none" stroke="#22D3EE" stroke-width="1" opacity=".5" class="fl"/>
+<path d="M6 28 Q14 28 24 26" fill="none" stroke="#06B6D4" stroke-width="1.2" opacity=".6" class="fl"/>
+<path d="M6 44 Q18 44 24 28" fill="none" stroke="#22D3EE" stroke-width="1" opacity=".5" class="fl"/>
+<!-- Curved connections out -->
+<path d="M32 24 Q38 12 50 12" fill="none" stroke="#E879F9" stroke-width="1" opacity=".5" class="fl"/>
+<path d="M32 26 Q42 28 50 28" fill="none" stroke="#D946EF" stroke-width="1.2" opacity=".6" class="fl"/>
+<path d="M32 28 Q38 44 50 44" fill="none" stroke="#E879F9" stroke-width="1" opacity=".5" class="fl"/>
+<!-- Input nodes -->
+<circle cx="6" cy="12" r="4.5" fill="#0EA5E9"/>
+<circle cx="6" cy="28" r="5" fill="#06B6D4" class="p"/>
+<circle cx="6" cy="44" r="4.5" fill="#0EA5E9"/>
+<!-- Center attention nexus -->
+<circle cx="28" cy="26" r="9" fill="#7C3AED" opacity=".3" class="p p2"/>
+<circle cx="28" cy="26" r="6" fill="#A855F7" class="p"/>
+<circle cx="28" cy="26" r="2.5" fill="#E9D5FF"/>
+<!-- Output nodes -->
+<circle cx="50" cy="12" r="4.5" fill="#D946EF"/>
+<circle cx="50" cy="28" r="5" fill="#C026D3" class="p p1"/>
+<circle cx="50" cy="44" r="4.5" fill="#D946EF"/>
+</svg>

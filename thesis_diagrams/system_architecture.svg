@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 880" width="1280" height="880" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d97706"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#15803d"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="880" fill="#f8fafc"/>
+
+  <text x="640" y="50" text-anchor="middle" font-size="26" font-weight="700" fill="#0f172a">System Architecture</text>
+  <text x="640" y="76" text-anchor="middle" font-size="14" fill="#64748b">Client-side inference with serverless persistence</text>
+
+  <!-- Hugging Face CDN -->
+  <g filter="url(#shadow)">
+    <rect x="80" y="130" width="320" height="120" rx="14" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+    <circle cx="120" cy="170" r="16" fill="#f59e0b"/>
+    <text x="120" y="176" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">HF</text>
+    <text x="150" y="166" font-size="15" font-weight="700" fill="#78350f">Hugging Face CDN</text>
+    <text x="150" y="186" font-size="12" fill="#92400e">Xenova/t5-small</text>
+    <text x="150" y="204" font-size="11" fill="#a16207">tokenizer + ONNX weights (~60 MB)</text>
+    <text x="150" y="220" font-size="11" fill="#a16207">downloaded once on first visit</text>
+  </g>
+
+  <!-- IndexedDB cache -->
+  <g filter="url(#shadow)">
+    <rect x="880" y="130" width="320" height="120" rx="14" fill="#ecfeff" stroke="#06b6d4" stroke-width="2"/>
+    <circle cx="920" cy="170" r="16" fill="#06b6d4"/>
+    <text x="920" y="176" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">IDB</text>
+    <text x="950" y="166" font-size="15" font-weight="700" fill="#0e7490">Browser Cache (IndexedDB)</text>
+    <text x="950" y="186" font-size="12" fill="#155e75">Transformers.js storage</text>
+    <text x="950" y="204" font-size="11" fill="#0891b2">model artefacts persist across sessions</text>
+    <text x="950" y="220" font-size="11" fill="#0891b2">subsequent loads are instant &amp; offline</text>
+  </g>
+
+  <!-- Browser container -->
+  <g filter="url(#shadow)">
+    <rect x="180" y="320" width="920" height="240" rx="18" fill="#ffffff" stroke="#0369a1" stroke-width="2.5"/>
+    <rect x="180" y="320" width="920" height="38" rx="18" fill="#e0f2fe" stroke="none"/>
+    <rect x="180" y="340" width="920" height="18" fill="#e0f2fe" stroke="none"/>
+    <circle cx="200" cy="339" r="5" fill="#ef4444"/>
+    <circle cx="216" cy="339" r="5" fill="#f59e0b"/>
+    <circle cx="232" cy="339" r="5" fill="#22c55e"/>
+    <text x="640" y="345" text-anchor="middle" font-size="14" font-weight="700" fill="#0c4a6e">User's Browser (Client)</text>
+
+    <!-- React Frontend -->
+    <g>
+      <rect x="220" y="395" width="240" height="140" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.8"/>
+      <text x="340" y="425" text-anchor="middle" font-size="15" font-weight="700" fill="#1e3a8a">React Frontend</text>
+      <text x="340" y="450" text-anchor="middle" font-size="11" fill="#1e40af">9-step UI · Framer Motion</text>
+      <text x="340" y="468" text-anchor="middle" font-size="11" fill="#1e40af">D3 visualisations · Tailwind</text>
+      <text x="340" y="494" text-anchor="middle" font-size="10" fill="#475569">state, navigation, animations,</text>
+      <text x="340" y="510" text-anchor="middle" font-size="10" fill="#475569">quiz UI, theming</text>
+    </g>
+
+    <!-- Transformers.js -->
+    <g>
+      <rect x="520" y="395" width="240" height="140" rx="12" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.8"/>
+      <text x="640" y="425" text-anchor="middle" font-size="15" font-weight="700" fill="#5b21b6">Transformers.js</text>
+      <text x="640" y="450" text-anchor="middle" font-size="11" fill="#6d28d9">@xenova/transformers</text>
+      <text x="640" y="468" text-anchor="middle" font-size="11" fill="#6d28d9">tokenizer · generate() pipeline</text>
+      <text x="640" y="494" text-anchor="middle" font-size="10" fill="#475569">orchestrates inference,</text>
+      <text x="640" y="510" text-anchor="middle" font-size="10" fill="#475569">handles beam / sampling, caching</text>
+    </g>
+
+    <!-- T5-Small ONNX -->
+    <g>
+      <rect x="820" y="395" width="240" height="140" rx="12" fill="#ecfdf5" stroke="#10b981" stroke-width="1.8"/>
+      <text x="940" y="425" text-anchor="middle" font-size="15" font-weight="700" fill="#065f46">T5-Small ONNX</text>
+      <text x="940" y="450" text-anchor="middle" font-size="11" fill="#047857">ONNX Runtime Web</text>
+      <text x="940" y="468" text-anchor="middle" font-size="11" fill="#047857">WebAssembly backend</text>
+      <text x="940" y="494" text-anchor="middle" font-size="10" fill="#475569">encoder + decoder tensors,</text>
+      <text x="940" y="510" text-anchor="middle" font-size="10" fill="#475569">runs entirely on user's CPU</text>
+    </g>
+  </g>
+
+  <!-- Vercel Serverless -->
+  <g filter="url(#shadow)">
+    <rect x="220" y="660" width="380" height="160" rx="14" fill="#0f172a" stroke="#0f172a" stroke-width="2"/>
+    <polygon points="260,710 290,758 230,758" fill="#ffffff"/>
+    <text x="320" y="710" font-size="16" font-weight="700" fill="#ffffff">Vercel Serverless Functions</text>
+    <text x="320" y="732" font-size="12" fill="#cbd5e1">Node.js runtime · auto-scaled</text>
+    <rect x="240" y="754" width="340" height="22" rx="6" fill="#1e293b" stroke="#334155"/>
+    <text x="252" y="770" font-size="11.5" font-family="Consolas, monospace" fill="#7dd3fc">POST /api/save-pre-quiz</text>
+    <rect x="240" y="784" width="340" height="22" rx="6" fill="#1e293b" stroke="#334155"/>
+    <text x="252" y="800" font-size="11.5" font-family="Consolas, monospace" fill="#7dd3fc">POST /api/save-post-quiz</text>
+  </g>
+
+  <!-- MongoDB -->
+  <g filter="url(#shadow)">
+    <rect x="700" y="660" width="380" height="160" rx="14" fill="#f0fdf4" stroke="#15803d" stroke-width="2"/>
+    <g transform="translate(740,700)">
+      <path d="M20 0 C 30 18 30 42 20 56 C 10 42 10 18 20 0 Z" fill="#15803d"/>
+      <line x1="20" y1="56" x2="20" y2="66" stroke="#15803d" stroke-width="2"/>
+    </g>
+    <text x="800" y="710" font-size="16" font-weight="700" fill="#14532d">MongoDB Atlas</text>
+    <text x="800" y="732" font-size="12" fill="#166534">managed cloud database (free tier)</text>
+    <text x="800" y="762" font-size="11.5" fill="#15803d">Collections:</text>
+    <text x="800" y="782" font-size="11" font-family="Consolas, monospace" fill="#166534">• pre_quiz_results</text>
+    <text x="800" y="800" font-size="11" font-family="Consolas, monospace" fill="#166534">• post_quiz_results</text>
+  </g>
+
+  <!-- Arrows -->
+  <!-- HF CDN → Browser (model download) -->
+  <path d="M 240 250 C 240 290, 320 290, 320 320" fill="none" stroke="#d97706" stroke-width="2" marker-end="url(#arrowOrange)" stroke-dasharray="6 4"/>
+  <text x="252" y="288" font-size="11" font-weight="600" fill="#b45309">model download</text>
+  <text x="252" y="304" font-size="10" fill="#92400e">(first visit only)</text>
+
+  <!-- Browser → IndexedDB (cache write/read) -->
+  <path d="M 970 320 C 970 290, 1040 290, 1040 250" fill="none" stroke="#0891b2" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 1010 250 C 1010 290, 1080 290, 1080 320" fill="none" stroke="#0891b2" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4 4"/>
+  <text x="990" y="280" text-anchor="middle" font-size="11" font-weight="600" fill="#0e7490">cache ⇄ reuse</text>
+
+  <!-- Browser → Vercel -->
+  <path d="M 410 560 C 410 610, 410 610, 410 660" fill="none" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <text x="425" y="600" font-size="11.5" font-weight="600" fill="#334155">HTTPS · JSON body</text>
+  <text x="425" y="616" font-size="10" fill="#64748b">{ user, answers, score, timestamp }</text>
+
+  <!-- Vercel → MongoDB -->
+  <path d="M 600 740 L 700 740" fill="none" stroke="#15803d" stroke-width="2.2" marker-end="url(#arrowGreen)"/>
+  <text x="650" y="730" text-anchor="middle" font-size="11.5" font-weight="600" fill="#15803d">insertOne()</text>
+  <text x="650" y="756" text-anchor="middle" font-size="10" fill="#166534">over MongoDB driver</text>
+
+  <!-- Legend -->
+  <g transform="translate(80,830)">
+    <rect x="0" y="-12" width="14" height="3" fill="#475569"/>
+    <text x="20" y="-7" font-size="10.5" fill="#475569">data flow</text>
+    <rect x="100" y="-12" width="14" height="3" fill="#d97706"/>
+    <text x="120" y="-7" font-size="10.5" fill="#475569">one-time download</text>
+    <rect x="240" y="-12" width="14" height="3" fill="#0891b2"/>
+    <text x="260" y="-7" font-size="10.5" fill="#475569">browser cache</text>
+    <rect x="360" y="-12" width="14" height="3" fill="#15803d"/>
+    <text x="380" y="-7" font-size="10.5" fill="#475569">database write</text>
+  </g>
+</svg>
