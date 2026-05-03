@@ -7,8 +7,8 @@ const encoderQuiz = [
     id: 1,
     question: "What does tokenization do?",
     options: [
-      "Splits a sentence into individual tokens",
       "Adds positional vectors to words",
+      "Splits a sentence into individual tokens",
       "Predicts the next word in the sentence",
       "Computes attention scores",
     ],
@@ -22,9 +22,9 @@ const encoderQuiz = [
     id: 2,
     question: "What is the purpose of embedding?",
     options: [
-      "To convert each token into a vector of numbers",
       "To translate the sentence to another language",
       "To remove punctuation from the text",
+      "To convert each token into a vector of numbers",
       "To shorten the sentence",
     ],
     correctAnswer: "To convert each token into a vector of numbers",
@@ -37,10 +37,10 @@ const encoderQuiz = [
     id: 3,
     question: "Why do we add positional encoding?",
     options: [
-      "To give each token information about its position in the sentence",
       "To make the sentence shorter",
       "To remove the meaning of words",
       "To merge multiple tokens together",
+      "To give each token information about its position in the sentence",
     ],
     correctAnswer:
       "To give each token information about its position in the sentence",
@@ -54,9 +54,9 @@ const encoderQuiz = [
     question:
       "In the positional encoding step, what two vectors are added together?",
     options: [
-      "The token embedding and the position vector",
       "Query and Key",
       "The encoder output and decoder output",
+      "The token embedding and the position vector",
       "ReLU output and feed-forward bias",
     ],
     correctAnswer: "The token embedding and the position vector",
@@ -69,8 +69,8 @@ const encoderQuiz = [
     id: 5,
     question: "What is the main purpose of self-attention?",
     options: [
-      "To let each token use information from other tokens in the sentence",
       "To delete unimportant words",
+      "To let each token use information from other tokens in the sentence",
       "To predict only the first token",
       "To convert text into images",
     ],
@@ -85,10 +85,10 @@ const encoderQuiz = [
     id: 6,
     question: "What is the encoder stack made of?",
     options: [
-      "Repeated encoder layers stacked on top of each other",
       "Only one embedding layer",
       "Only feed-forward layers",
       "Only positional encoding layers",
+      "Repeated encoder layers stacked on top of each other",
     ],
     correctAnswer: "Repeated encoder layers stacked on top of each other",
     stepIndex: 3,
@@ -101,9 +101,9 @@ const encoderQuiz = [
     question:
       "What does the feed-forward layer do inside an encoder layer?",
     options: [
-      "Further transforms each token's representation independently",
       "Splits the sentence into tokens",
       "Predicts the next sentence",
+      "Further transforms each token's representation independently",
       "Adds positional vectors to embeddings",
     ],
     correctAnswer:
@@ -117,10 +117,10 @@ const encoderQuiz = [
     id: 8,
     question: "What does 'Add & Normalize' help with inside the encoder?",
     options: [
-      "Stabilizing training and preserving information from earlier layers",
       "Splitting the sentence into tokens",
       "Generating new tokens",
       "Translating text to another language",
+      "Stabilizing training and preserving information from earlier layers",
     ],
     correctAnswer:
       "Stabilizing training and preserving information from earlier layers",
@@ -133,8 +133,8 @@ const encoderQuiz = [
     id: 9,
     question: "What does the encoder output represent?",
     options: [
-      "Final context-aware vectors, one per input token",
       "The translated sentence in another language",
+      "Final context-aware vectors, one per input token",
       "A single random number for the sentence",
       "The original sentence unchanged",
     ],
@@ -148,9 +148,9 @@ const encoderQuiz = [
     id: 10,
     question: "Which of these is the correct order of the encoder pipeline?",
     options: [
-      "Tokenization → Embedding → Positional Encoding → Encoder Stack → Encoder Output",
       "Embedding → Tokenization → Positional Encoding → Output",
       "Encoder Output → Encoder Stack → Tokenization",
+      "Tokenization → Embedding → Positional Encoding → Encoder Stack → Encoder Output",
       "Tokenization → Output → Embedding → Positional Encoding",
     ],
     correctAnswer:
