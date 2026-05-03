@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AttentionStep from "./AttentionStep";
 import FeedForwardStep from "./FeedForwardStep";
 
@@ -7,6 +7,14 @@ function EncoderStackStep({ active, tokens, theme }) {
   const [layerCount, setLayerCount] = useState(1);
   const [view, setView] = useState("overview");
   const isDark = theme === "dark";
+
+  useEffect(() => {
+    if (!active || view !== "overview") return;
+    const id = setInterval(() => {
+      setLayerCount((prev) => (prev >= 5 ? 1 : prev + 1));
+    }, 2200);
+    return () => clearInterval(id);
+  }, [active, view]);
 
   const layerStyles = [
     {
@@ -598,30 +606,103 @@ function EncoderStackStep({ active, tokens, theme }) {
           : "More encoder layers now repeat the same encoder-layer structure and build richer contextual understanding across the sentence."}
       </div>
 
-      <div className="mt-4 flex items-center justify-center gap-3">
-        <button
-          onClick={() =>
-            setLayerCount((prev) => Math.min(prev + 1, layerStyles.length))
-          }
-          className={`px-4 py-1.5 text-xs border rounded-lg transition ${
-            isDark
-              ? "border-green-400 text-green-300 hover:bg-green-400/10"
-              : "border-green-500 text-green-700 bg-green-100 hover:bg-green-200"
-          }`}
-        >
-          Add Extra Encoder Layer
-        </button>
+      <div
+        className={`mt-4 w-full rounded-xl border p-3 ${
+          isDark
+            ? "border-slate-700 bg-slate-900/70"
+            : "border-slate-300 bg-slate-50"
+        }`}
+      >
+        <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <motion.span
+              animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }}
+              transition={{ duration: 1.4, repeat: Infinity }}
+              className={`inline-block w-2 h-2 rounded-full ${
+                isDark ? "bg-green-400" : "bg-green-500"
+              }`}
+            />
+            <div
+              className={`text-xs font-semibold ${
+                isDark ? "text-cyan-300" : "text-blue-800"
+              }`}
+            >
+              Auto-stacking encoder layers
+            </div>
+          </div>
 
-        <button
-          onClick={() => setLayerCount((prev) => Math.max(prev - 1, 1))}
-          className={`px-4 py-1.5 text-xs border rounded-lg transition ${
-            isDark
-              ? "border-red-400 text-red-300 hover:bg-red-400/10"
-              : "border-red-400 text-red-700 bg-red-100 hover:bg-red-200"
+          <div
+            className={`text-[11px] ${
+              isDark ? "text-slate-400" : "text-slate-600"
+            }`}
+          >
+            Showing {layerCount} of {layerStyles.length}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 mb-2">
+          {layerStyles.map((_, i) => {
+            const segmentColors = [
+              "bg-red-500",
+              "bg-red-400",
+              "bg-orange-400",
+              "bg-lime-400",
+              "bg-green-400",
+            ];
+            const segmentLabels = ["L1", "L2", "L3", "L4", "L5"];
+            const isFilled = i < layerCount;
+            const isCurrent = i === layerCount - 1;
+            return (
+              <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                <motion.div
+                  animate={{
+                    opacity: isFilled ? 1 : 0.2,
+                    scale: isCurrent ? [1, 1.06, 1] : 1,
+                  }}
+                  transition={{
+                    opacity: { duration: 0.4, ease: "easeOut" },
+                    scale: { duration: 1.2, repeat: Infinity },
+                  }}
+                  className={`w-full h-3 rounded-full ${
+                    isFilled
+                      ? segmentColors[i]
+                      : isDark
+                      ? "bg-slate-700"
+                      : "bg-slate-300"
+                  } ${
+                    isCurrent
+                      ? isDark
+                        ? "ring-2 ring-cyan-300/70"
+                        : "ring-2 ring-blue-500/60"
+                      : ""
+                  }`}
+                />
+                <span
+                  className={`text-[9px] font-semibold ${
+                    isFilled
+                      ? isDark
+                        ? "text-slate-200"
+                        : "text-slate-700"
+                      : isDark
+                      ? "text-slate-600"
+                      : "text-slate-400"
+                  }`}
+                >
+                  {segmentLabels[i]}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        <div
+          className={`text-[11px] leading-5 text-center ${
+            isDark ? "text-slate-300" : "text-slate-700"
           }`}
         >
-          Remove Encoder Layer
-        </button>
+          Watch how the model gets smarter with each added layer — more layers
+          mean richer context and a deeper understanding of the sentence.
+        </div>
       </div>
     </motion.div>
   );
