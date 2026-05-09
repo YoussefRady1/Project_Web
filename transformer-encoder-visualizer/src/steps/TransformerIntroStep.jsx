@@ -26,7 +26,7 @@ function TransformerIntroStep({ active, theme, setStep, userName, setUserName })
       }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[980px] min-h-[620px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-300 bg-white"
+        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
       }`}
     >
       <h2
@@ -42,7 +42,7 @@ function TransformerIntroStep({ active, theme, setStep, userName, setUserName })
           className={`rounded-xl border p-4 ${
             isDark
               ? "border-cyan-400/30 bg-cyan-400/5"
-              : "border-blue-300 bg-blue-50"
+              : "border-blue-400 bg-blue-50"
           }`}
         >
           <div
@@ -67,7 +67,7 @@ Each word is first converted into a numerical vector called an embedding, and po
           className={`rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-300 bg-slate-50"
+              : "border-slate-400/70 bg-slate-50"
           }`}
         >
           <div
@@ -102,7 +102,7 @@ Each word is first converted into a numerical vector called an embedding, and po
           className={`rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-300 bg-slate-50"
+              : "border-slate-400/70 bg-slate-50"
           }`}
         >
           <div
@@ -140,7 +140,7 @@ Each word is first converted into a numerical vector called an embedding, and po
         className={`w-full max-w-[500px] rounded-xl border p-5 mb-4 ${
           isDark
             ? "border-cyan-400/30 bg-cyan-400/5"
-            : "border-blue-300 bg-blue-50"
+            : "border-blue-400 bg-blue-50"
         }`}
       >
         <label

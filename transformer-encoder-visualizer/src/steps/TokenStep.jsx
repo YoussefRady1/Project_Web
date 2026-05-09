@@ -112,7 +112,7 @@ function TokenStep({ active, tokens = [], theme }) {
       }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[680px] h-[430px] flex flex-col items-center justify-start overflow-hidden ${
-  isDark ? "border-cyan-500" : "border-blue-300 bg-white"
+  isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
 }`}
     >
       <h2 className={`${isDark ? "text-cyan-300" : "text-blue-800"} font-semibold text-center`}>
@@ -129,7 +129,7 @@ function TokenStep({ active, tokens = [], theme }) {
   className={`w-full max-w-[420px] mb-6 rounded-xl border p-3 ${
     isDark
       ? "border-cyan-400/30 bg-cyan-400/5"
-      : "border-blue-300 bg-blue-50"
+      : "border-blue-400 bg-blue-50"
   }`}
 >
   <div

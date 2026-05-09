@@ -87,15 +87,15 @@ function App() {
           <img
             src={isDark ? logoDark : logoLight}
             alt="Transformer Logo"
-            className={`h-10 w-10 object-contain rounded-lg transition-shadow duration-300 ${
+            className={`h-14 w-14 object-contain rounded-xl transition-shadow duration-300 ${
               isDark
                 ? "ring-1 ring-cyan-400/30 shadow-[0_0_18px_rgba(34,211,238,0.35)]"
-                : "ring-1 ring-white/40 bg-white/10 shadow-[0_0_14px_rgba(255,255,255,0.25)]"
+                : "ring-2 ring-white/50 bg-white/10 shadow-[0_0_14px_rgba(255,255,255,0.25)]"
             }`}
           />
 
           <span
-            className={`font-semibold text-sm ${
+            className={`font-bold text-base tracking-wide ${
               isDark ? "text-cyan-300" : "text-white"
             }`}
           >
@@ -126,22 +126,20 @@ function App() {
         </div>
       </div>
 
-      {showTokenInput && (
-        <div
-          className={`p-6 border-b transition-colors duration-300 ${
-            isDark ? "border-slate-800" : "border-slate-300"
-          }`}
-        >
-          <TokenInput setTokens={setTokens} theme={theme} />
-        </div>
-      )}
-
       <div
-        className={`p-4 border-b transition-colors duration-300 ${
-          isDark ? "border-slate-800" : "border-slate-300"
+        className={`p-3 border-b transition-colors duration-300 ${
+          isDark ? "border-slate-800" : "border-slate-400/60"
         }`}
       >
         <AnimationController step={step} setStep={setStep} theme={theme} />
+      </div>
+
+      <div
+        className={`flex justify-center py-2 border-b transition-all duration-300 ${
+          isDark ? "border-slate-800" : "border-slate-400/60"
+        } ${showTokenInput ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+      >
+        <TokenInput setTokens={setTokens} theme={theme} />
       </div>
 
       <div className="flex-1 flex items-center justify-center">

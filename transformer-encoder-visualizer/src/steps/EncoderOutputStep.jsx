@@ -87,7 +87,7 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
       }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[980px] min-h-[620px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-300 bg-white"
+        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
       }`}
     >
       <h2
@@ -109,7 +109,7 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
   className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 ${
     isDark
       ? "border-cyan-400/30 bg-cyan-400/5"
-      : "border-blue-300 bg-blue-50"
+      : "border-blue-400 bg-blue-50"
   }`}
 >
   <div
@@ -143,7 +143,7 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
           className={`rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-300 bg-slate-50"
+              : "border-slate-400/70 bg-slate-50"
           }`}
         >
           <h3
@@ -187,7 +187,7 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
           className={`rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-300 bg-slate-50"
+              : "border-slate-400/70 bg-slate-50"
           }`}
         >
           <h3
@@ -237,7 +237,7 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
             className={`rounded-xl border p-4 ${
               isDark
                 ? "border-slate-700 bg-slate-900/70"
-                : "border-slate-300 bg-white"
+                : "border-slate-400/70 bg-white"
             }`}
           >
             <div className="flex items-center gap-3 mb-2 flex-wrap">
@@ -274,7 +274,7 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
                     className={`px-2 py-1 text-xs border rounded ${
                       isDark
                         ? "border-cyan-400 text-cyan-300"
-                        : "border-blue-300 text-blue-800 bg-blue-100"
+                        : "border-blue-400 text-blue-800 bg-blue-100"
                     }`}
                   >
                     {v.toFixed(2)}

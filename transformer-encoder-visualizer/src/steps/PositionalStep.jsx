@@ -60,7 +60,7 @@ function PositionalStep({ active, tokens, theme }) {
         scale: active ? 1 : 0.95,
       }}
       className={`relative p-6 border rounded-2xl w-[900px] min-h-[340px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-300 bg-white"
+        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
       }`}
     >
       <h2
@@ -82,7 +82,7 @@ function PositionalStep({ active, tokens, theme }) {
   className={`w-full max-w-[560px] mx-auto mb-5 rounded-xl border p-3 ${
     isDark
       ? "border-cyan-400/30 bg-cyan-400/5"
-      : "border-blue-300 bg-blue-50"
+      : "border-blue-400 bg-blue-50"
   }`}
 >
   <div
@@ -106,7 +106,7 @@ function PositionalStep({ active, tokens, theme }) {
     className={`rounded-lg border px-2.5 py-2 flex flex-col gap-1.5 text-[10px] ${
             isDark
               ? "border-slate-700 bg-slate-900/90"
-              : "border-slate-300 bg-slate-50"
+              : "border-slate-400/70 bg-slate-50"
           }`}
         >
           <div className="flex items-center gap-2">
@@ -222,7 +222,7 @@ function PositionalStep({ active, tokens, theme }) {
                       className={`px-2 py-1 text-xs border rounded ${
                         isDark
                           ? "border-cyan-400 text-cyan-300"
-                          : "border-blue-300 text-blue-800 bg-blue-100"
+                          : "border-blue-400 text-blue-800 bg-blue-100"
                       }`}
                     >
                       {v}

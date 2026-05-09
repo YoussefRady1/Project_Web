@@ -262,7 +262,7 @@ function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizComplet
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
             className={`w-full rounded-2xl border backdrop-blur-sm p-8 mb-6 ${
-              isDark ? "border-slate-700/70 bg-slate-900/60" : "border-slate-200 bg-white/70"
+              isDark ? "border-slate-700/70 bg-slate-900/60" : "border-slate-300 bg-white/70"
             }`}
           >
             <div className="grid grid-cols-3 gap-6 items-center">
@@ -371,7 +371,7 @@ function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizComplet
               className={`w-full mt-8 rounded-2xl border p-6 ${
                 isDark
                   ? "border-slate-700/70 bg-slate-900/60"
-                  : "border-slate-200 bg-white/80"
+                  : "border-slate-300 bg-white/80"
               }`}
             >
               <div className="flex items-center justify-between mb-4">
@@ -536,7 +536,7 @@ function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizComplet
       }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[1100px] min-h-[760px] flex flex-col items-center ${
-        isDark ? "border-cyan-500 bg-transparent" : "border-blue-300 bg-white"
+        isDark ? "border-cyan-500 bg-transparent" : "border-blue-400/80 bg-white shadow-sm"
       }`}
     >
       <h2
@@ -562,7 +562,7 @@ function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizComplet
             className={`rounded-xl border p-4 ${
               isDark
                 ? "border-slate-700 bg-slate-900/70"
-                : "border-slate-300 bg-slate-50"
+                : "border-slate-400/70 bg-slate-50"
             }`}
           >
             <div
@@ -635,7 +635,7 @@ function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizComplet
             className={`rounded-xl border p-5 text-center ${
               isDark
                 ? "border-slate-700 bg-slate-900/80"
-                : "border-slate-300 bg-slate-50"
+                : "border-slate-400/70 bg-slate-50"
             }`}
           >
             <div
@@ -664,7 +664,7 @@ function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizComplet
               className={`rounded-xl border p-5 ${
                 isDark
                   ? "border-slate-700 bg-slate-900/80"
-                  : "border-slate-300 bg-slate-50"
+                  : "border-slate-400/70 bg-slate-50"
               }`}
             >
               <div
@@ -682,7 +682,7 @@ function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizComplet
                     className={`rounded-lg border p-4 ${
                       isDark
                         ? "border-slate-700 bg-slate-950/70"
-                        : "border-slate-300 bg-white"
+                        : "border-slate-400/70 bg-white"
                     }`}
                   >
                     <div className={isDark ? "text-red-300 font-medium mb-2" : "text-red-700 font-medium mb-2"}>

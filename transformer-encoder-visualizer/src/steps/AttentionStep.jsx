@@ -450,7 +450,7 @@ const focusedUnderstandingLabel =
       }}
       transition={{ duration: 0.3 }}
       className={`border rounded-2xl overflow-hidden ${
-        isDark ? "border-cyan-500" : "border-blue-300 bg-white"
+        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
       }`}
       style={{ width: BOX_W }}
     >
@@ -475,7 +475,7 @@ const focusedUnderstandingLabel =
   className={`mx-4 mb-4 rounded-xl border p-3 ${
     isDark
       ? "border-cyan-400/30 bg-cyan-400/5"
-      : "border-blue-300 bg-blue-50"
+      : "border-blue-400 bg-blue-50"
   }`}
 >
   <div
@@ -500,7 +500,7 @@ const focusedUnderstandingLabel =
           className={`mx-4 mb-3 rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/95"
-              : "border-slate-300 bg-slate-50"
+              : "border-slate-400/70 bg-slate-50"
           }`}
           style={{ touchAction: "auto" }}
         >
@@ -540,7 +540,7 @@ const focusedUnderstandingLabel =
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-cyan-400/30 bg-cyan-400/5"
-                  : "border-blue-300 bg-blue-50"
+                  : "border-blue-400 bg-blue-50"
               }`}
             >
               <div
@@ -564,7 +564,7 @@ const focusedUnderstandingLabel =
                       className={`px-2 py-1 rounded border ${
                         isDark
                           ? "border-cyan-400 text-cyan-300"
-                          : "border-blue-300 text-blue-800 bg-blue-100"
+                          : "border-blue-400 text-blue-800 bg-blue-100"
                       }`}
                     >
                       {v}
@@ -612,7 +612,7 @@ const focusedUnderstandingLabel =
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-slate-700 bg-slate-950/60"
-                  : "border-slate-300 bg-white"
+                  : "border-slate-400/70 bg-white"
               }`}
             >
               <div
@@ -650,7 +650,7 @@ const focusedUnderstandingLabel =
                 className={`rounded-md border p-2 mb-3 ${
                   isDark
                     ? "border-slate-800 bg-slate-900/70"
-                    : "border-slate-300 bg-slate-50"
+                    : "border-slate-400/70 bg-slate-50"
                 }`}
               >
                 <div
@@ -773,7 +773,7 @@ const focusedUnderstandingLabel =
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-slate-700 bg-slate-950/60"
-                  : "border-slate-300 bg-white"
+                  : "border-slate-400/70 bg-white"
               }`}
             >
               <div
@@ -879,7 +879,7 @@ const focusedUnderstandingLabel =
               className={`rounded-lg border p-3 leading-5 ${
                 isDark
                   ? "border-slate-700 bg-slate-950/60 text-slate-300"
-                  : "border-slate-300 bg-white text-slate-700"
+                  : "border-slate-400/70 bg-white text-slate-700"
               }`}
             >
               <div
@@ -942,7 +942,7 @@ const focusedUnderstandingLabel =
             className={`absolute z-20 w-[34px] h-[34px] rounded-full border flex items-center justify-center cursor-grab active:cursor-grabbing ${
               isDark
                 ? "border-cyan-400 bg-slate-900 shadow-[0_0_12px_rgba(34,211,238,0.35)]"
-                : "border-blue-300 bg-white shadow-[0_0_12px_rgba(59,130,246,0.18)]"
+                : "border-blue-400/80 bg-white shadow-sm shadow-[0_0_12px_rgba(59,130,246,0.18)]"
             }`}
             title="Drag to cut connections"
           >
@@ -1081,7 +1081,7 @@ const focusedUnderstandingLabel =
             className={`rounded-xl border p-4 ${
               isDark
                 ? "border-slate-700 bg-slate-900/80"
-                : "border-slate-300 bg-slate-50"
+                : "border-slate-400/70 bg-slate-50"
             }`}
           >
             <div
@@ -1118,7 +1118,7 @@ const focusedUnderstandingLabel =
             className={`rounded-xl border p-4 ${
               isDark
                 ? "border-slate-700 bg-slate-900/80"
-                : "border-slate-300 bg-slate-50"
+                : "border-slate-400/70 bg-slate-50"
             }`}
           >
             <div
@@ -1206,7 +1206,7 @@ const focusedUnderstandingLabel =
           className={`mx-4 mt-4 rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-300 bg-slate-50"
+              : "border-slate-400/70 bg-slate-50"
           }`}
         >
           <div
@@ -1222,7 +1222,7 @@ const focusedUnderstandingLabel =
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-cyan-400/30 bg-cyan-400/5"
-                  : "border-blue-300 bg-blue-50"
+                  : "border-blue-400 bg-blue-50"
               }`}
             >
               <div
@@ -1312,7 +1312,7 @@ const focusedUnderstandingLabel =
           className={`mx-4 mt-4 rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-300 bg-slate-50"
+              : "border-slate-400/70 bg-slate-50"
           }`}
         >
           <div

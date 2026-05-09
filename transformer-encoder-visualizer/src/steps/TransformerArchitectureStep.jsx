@@ -144,7 +144,7 @@ function InfoTip({ text, isDark }) {
           className={`absolute z-50 bottom-full mb-1 left-1/2 -translate-x-1/2 w-52 p-2 rounded-lg shadow-xl text-[10px] leading-snug border pointer-events-none normal-case font-normal tracking-normal ${
             isDark
               ? "bg-slate-900 border-slate-600 text-slate-200"
-              : "bg-white border-slate-300 text-slate-700"
+              : "bg-white border-slate-400 text-slate-800"
           }`}
         >
           {text}
@@ -259,7 +259,7 @@ function GenerationControls({
   return (
     <div
       className={`rounded-xl border px-3 py-2 ${
-        isDark ? "border-slate-700 bg-slate-900/40" : "border-slate-300 bg-slate-50"
+        isDark ? "border-slate-700 bg-slate-900/40" : "border-slate-400/70 bg-slate-50"
       }`}
     >
       <div
@@ -694,7 +694,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           className={`flex items-center gap-3 px-4 py-2 rounded-xl text-sm ${
             isDark
               ? "bg-slate-900 border border-slate-700"
-              : "bg-slate-50 border border-slate-300"
+              : "bg-slate-50 border border-slate-400/70"
           }`}
         >
           <span
@@ -755,7 +755,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
                       : "border-blue-500 bg-blue-50 text-blue-700"
                     : isDark
                     ? "border-slate-700 text-slate-500 hover:border-slate-600"
-                    : "border-slate-300 text-slate-400 hover:border-slate-400"
+                    : "border-slate-400 text-slate-500 hover:border-slate-500"
                 }`}
               >
                 {ex.label}
@@ -775,7 +775,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm ${
               isDark
                 ? "bg-slate-900 border border-slate-700"
-                : "bg-slate-50 border border-slate-300"
+                : "bg-slate-50 border border-slate-400/70"
             }`}
           >
             <span
@@ -1212,6 +1212,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
         onClose={() => setSelectedStage(null)}
         p={p}
         isDark={isDark}
+        liveOutput={outToks}
       />
 
       <div className="flex items-center justify-between">

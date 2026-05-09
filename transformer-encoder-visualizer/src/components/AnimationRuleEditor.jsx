@@ -74,7 +74,7 @@ function Section({ title, accent, children, isDark }) {
   return (
     <div
       className={`rounded-lg border p-3 ${
-        isDark ? "border-slate-700 bg-slate-900/50" : "border-slate-300 bg-white"
+        isDark ? "border-slate-700 bg-slate-900/50" : "border-slate-400/70 bg-white"
       }`}
     >
       <div
