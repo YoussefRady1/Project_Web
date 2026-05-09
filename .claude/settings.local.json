@@ -27,7 +27,9 @@
       "Bash(py --version)",
       "Bash(py -c \"import matplotlib; print\\(matplotlib.__version__\\)\")",
       "Bash(node -e \"console.log\\(process.version\\)\")",
-      "Bash(node convert.js)"
+      "Bash(node convert.js)",
+      "Bash(node -e \"require\\('./src/data/decoderPreQuiz.js'\\) && require\\('./src/data/decoderPostQuiz.js'\\) && console.log\\('Data files OK'\\)\")",
+      "Bash(npx eslint *)"
     ]
   },
   "model": "claude-opus-4-7"
