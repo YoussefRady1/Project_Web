@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Interactive Transformer Encoder Visualizer — an educational React web app that walks users through each stage of a transformer encoder pipeline via animated, step-by-step visualizations. Users type a sentence and navigate through 7 ordered steps, from tokenization through to an interactive quiz. Step 0 runs a real T5-Small model in the browser for live translation inference.
+Interactive Transformer Encoder–Decoder Visualizer — an educational React web app that walks users through each stage of a transformer encoder and decoder pipeline via animated, step-by-step visualizations. Users type a sentence and navigate through encoder steps (tokenization → embedding → positional → encoder stack → encoder output), a transition animation, then 11 decoder steps (output tokenization → embedding → positional → masked self-attention → add&norm → cross-attention → add&norm → feed forward → add&norm → linear+softmax → output prediction), followed by an interactive quiz. Step 0 runs a real T5-Small model in the browser for live translation inference.
 
 ## Tech Stack
 
@@ -83,15 +83,26 @@ Project_Web/
         │
         ├── steps/
         │   ├── TransformerArchitectureStep.jsx  # Step 0: Full arch diagram + live T5-Small
-        │   ├── TransformerIntroStep.jsx         # Standalone intro (not wired into step pipeline)
-        │   ├── TokenStep.jsx                    # Step 1: Tokenization animation
-        │   ├── EmbeddingStep.jsx                # Step 2: Token → vector embedding
-        │   ├── PositionalStep.jsx               # Step 3: Positional encoding addition
-        │   ├── EncoderStackStep.jsx             # Step 4: Encoder layer overview (hosts sub-views)
+        │   ├── TransformerIntroStep.jsx         # Intro page (wired as page 0)
+        │   ├── PreQuizStep.jsx                  # Pre-quiz assessment
+        │   ├── TokenStep.jsx                    # Encoder Step 1: Tokenization animation
+        │   ├── EmbeddingStep.jsx                # Encoder Step 2: Token → vector embedding
+        │   ├── PositionalStep.jsx               # Encoder Step 3: Positional encoding addition
+        │   ├── EncoderStackStep.jsx             # Encoder Step 4: Encoder layer overview (hosts sub-views)
         │   ├── AttentionStep.jsx                # Sub-step: Interactive self-attention graph
         │   ├── FeedForwardStep.jsx              # Sub-step: Feed-forward + ReLU visualization
-        │   ├── EncoderOutputStep.jsx            # Step 5: Final encoder representations
-        │   └── EncoderQuizStep.jsx              # Step 6: 12-question randomized quiz
+        │   ├── EncoderOutputStep.jsx            # Encoder Step 5: Final encoder representations
+        │   ├── DecoderTransitionStep.jsx        # Transition: Encoder→Decoder context transfer animation
+        │   ├── DecoderTokenStep.jsx             # Decoder Step 1: <START> token & autoregressive intro
+        │   ├── DecoderEmbeddingStep.jsx         # Decoder Step 2: Decoder token → vector embedding
+        │   ├── DecoderPositionalStep.jsx        # Decoder Step 3: Positional encoding for decoder tokens
+        │   ├── DecoderMaskedAttentionStep.jsx   # Decoder Step 4: Masked (causal) self-attention
+        │   ├── DecoderAddNormStep.jsx           # Decoder Steps 5/7/9: Reusable Add & Normalize (variant prop)
+        │   ├── DecoderCrossAttentionStep.jsx    # Decoder Step 6: Encoder–Decoder cross-attention
+        │   ├── DecoderFeedForwardStep.jsx       # Decoder Step 8: Feed-forward + ReLU
+        │   ├── DecoderLinearSoftmaxStep.jsx     # Decoder Step 10: Linear projection + softmax probabilities
+        │   ├── DecoderOutputStep.jsx            # Decoder Step 11: Autoregressive output prediction
+        │   └── EncoderQuizStep.jsx              # Post-quiz: 12-question randomized quiz
         │
         └── data/
             └── encoderQuiz.js         # 30 quiz questions with options, answers, explanations
@@ -104,29 +115,45 @@ Project_Web/
 `App.js` owns three pieces of state — `tokens`, `step`, and `theme` — and passes them down:
 
 - **`TokenInput`** — text input that splits the sentence into tokens on every keystroke via `.split(/\s+/)`.
-- **`AnimationController`** — Prev/Next buttons; `step` is clamped to 0–6.
-- **`MainCanvas`** — maps the current `step` index to a step component via `stepComponents[]` array, renders with `AnimatePresence` page transitions (slide left/right), and shows a progress bar.
+- **`AnimationController`** — Prev/Next buttons; `step` is clamped to 0–(TOTAL_PAGES-1).
+- **`MainCanvas`** — maps the current `step` index to a step component via `PAGE_CONFIG[]` array, renders with `AnimatePresence` page transitions (blur/scale), and shows a progress bar. Supports per-page `props` object for variant-driven components (e.g., `DecoderAddNormStep`).
 
 ### Step pipeline (in order)
 
 | Index | Component | What it visualizes |
 |-------|-----------|-------------------|
-| 0 | `TransformerArchitectureStep` | Full encoder+decoder architecture with live T5-Small inference, animation rule editor, stage detail panels |
-| 1 | `TokenStep` | Sentence splitting into tokens with split/combine button animation |
-| 2 | `EmbeddingStep` | Token-to-vector embedding with expandable math explanation |
-| 3 | `PositionalStep` | Positional encoding addition with shuffle toggle to show importance of order |
-| 4 | `EncoderStackStep` | Multi-layer encoder overview with sub-views for self-attention and feed-forward |
-| 5 | `EncoderOutputStep` | Final encoder representations showing input → context refinement → output per token |
-| 6 | `EncoderQuizStep` | Interactive quiz — 12 random questions from a pool of 30, grading + wrong-answer review |
+| 0 | `TransformerIntroStep` | Transformer overview and educational intro |
+| 1 | `PreQuizStep` | Pre-quiz assessment |
+| 2 | `TransformerArchitectureStep` | Full encoder+decoder architecture with live T5-Small inference |
+| 3 | `TokenStep` | Sentence splitting into tokens with split/combine button animation |
+| 4 | `EmbeddingStep` | Token-to-vector embedding with expandable math explanation |
+| 5 | `PositionalStep` | Positional encoding addition with shuffle toggle |
+| 6 | `EncoderStackStep` | Multi-layer encoder overview with sub-views for self-attention and feed-forward |
+| 7 | `EncoderOutputStep` | Final encoder representations showing input → context refinement → output |
+| 8 | `DecoderTransitionStep` | Animated context transfer from encoder to decoder (3-phase: compress → bridge → reveal) |
+| 9 | `DecoderTokenStep` | `<START>` token introduction, autoregressive generation timeline |
+| 10 | `DecoderEmbeddingStep` | Decoder token → vector embedding (including fixed `<START>` vector) |
+| 11 | `DecoderPositionalStep` | Positional encoding added to decoder embeddings |
+| 12 | `DecoderMaskedAttentionStep` | Masked (causal) self-attention with interactive token perspective and Q/K/V |
+| 13 | `DecoderAddNormStep` (variant: masked-attention) | Add & Normalize after masked self-attention |
+| 14 | `DecoderCrossAttentionStep` | Encoder–Decoder cross-attention with hover-interactive flow visualization |
+| 15 | `DecoderAddNormStep` (variant: cross-attention) | Add & Normalize after cross-attention |
+| 16 | `DecoderFeedForwardStep` | Feed-forward + ReLU transformation of decoder vectors |
+| 17 | `DecoderAddNormStep` (variant: feed-forward) | Add & Normalize after feed-forward |
+| 18 | `DecoderLinearSoftmaxStep` | Linear projection + softmax vocabulary probabilities with animated bars |
+| 19 | `DecoderOutputStep` | Autoregressive output prediction with step-by-step generation and auto-play |
+| 20 | `EncoderQuizStep` | Interactive quiz — 12 random questions from a pool of 30 |
 
 ### Key conventions
 
-- Every step component receives `{ active, tokens, setStep, theme }` props.
+- Every step component receives `{ active, tokens, setStep, theme }` props. Decoder steps may also receive `variant` via `PAGE_CONFIG[].props`.
 - Dark/light theming is string-based (`"dark"` / `"light"`); each component derives `isDark = theme === "dark"` locally and applies conditional Tailwind classes.
 - Animations use Framer Motion's `useAnimation` + async `sleep()` sequences within `useEffect`.
 - Tokens are capped at 10 across all steps (`safeTokens = tokens.slice(0, 10)`).
-- A deterministic `generateEmbeddingVector(word)` function is duplicated across `EmbeddingStep`, `PositionalStep`, `AttentionStep`, `FeedForwardStep`, and `EncoderOutputStep` — it uses character codes, vowel count, and word length to produce a stable 4-dimensional demo vector.
+- A deterministic `generateEmbeddingVector(word)` function is duplicated across encoder and decoder step files — it uses character codes, vowel count, and word length to produce a stable 4-dimensional demo vector.
 - A matching `generatePositionVector(position)` function is also duplicated across steps — produces a 4-dim vector from position index.
+- Decoder steps use a fixed `START_VECTOR = [0.2, 0.7, 0.1, 0.4]` for the `<START>` token embedding.
+- Decoder tokens are derived as `["<START>", ...userTokens]` (capped at ~7 total for visual clarity).
 - Each step has a "Why we use this step" educational callout box.
 
 ### TransformerArchitectureStep (Step 0) — detailed design
@@ -222,10 +249,78 @@ This is the most complex step (~1170 lines). It combines a live ML model, an SVG
 - After submission: shows grade (correct/total + percentage), wrong-answer review with explanations, and "Go to [Step] Again" buttons.
 - "Try Same Quiz Again" resets answers; "Generate New 12 Questions" re-shuffles.
 
-### TransformerIntroStep (not in pipeline)
+### Decoder visualization system
 
-- Standalone educational component explaining encoder/decoder at a high level.
-- Not wired into `MainCanvas` step array — exists as a separate file that could be integrated.
+The decoder is implemented as 10 new step components plus a transition step, inserted between `EncoderOutputStep` and `EncoderQuizStep`. They follow the same patterns as encoder steps (Framer Motion animations, `isDark` theming, "Why we use this step" callout boxes, educational explanation panels).
+
+#### DecoderTransitionStep — encoder→decoder context transfer
+
+- 3-phase animation triggered by "Transfer Context to Decoder" button.
+- Phase 1: Encoder output vector cards shrink and glow (compress).
+- Phase 2: Vectors fly rightward across an animated bridge line with flowing particles.
+- Phase 3: Decoder panel slides in from right showing the received memory vectors.
+- Reuses `generateEncoderOutputVector()` from `EncoderOutputStep`.
+
+#### DecoderTokenStep — output tokenization
+
+- Introduces `<START>` token as the decoder's initial input.
+- Shows the full decoder sequence `["<START>", ...tokens]` with staggered reveal.
+- "Generation timeline" table shows step-by-step autoregressive prediction flow.
+
+#### DecoderEmbeddingStep — output embedding
+
+- Converts decoder tokens to vectors using `getDecoderEmbedding()`.
+- `<START>` uses a fixed `START_VECTOR`; other tokens use `generateEmbeddingVector()`.
+- Same arrow animation pattern as encoder `EmbeddingStep`.
+
+#### DecoderPositionalStep — positional encoding
+
+- Identical structure to encoder `PositionalStep` but for decoder tokens.
+- Shows embedding + position → combined output for each decoder token.
+
+#### DecoderMaskedAttentionStep — masked (causal) self-attention
+
+- Interactive token selection with Q/K/V display per focused token.
+- Masked attention matrix: allowed cells show scores, future cells show 🔒 lock icons.
+- "Token perspective" panel shows can-attend-to vs masked tokens.
+- "Visual attention flow" shows per-token allowed/blocked connections.
+
+#### DecoderAddNormStep — reusable Add & Normalize
+
+- Single component with `variant` prop: `"masked-attention"` | `"cross-attention"` | `"feed-forward"`.
+- `VARIANT_CONFIG` maps variant → title, subtitle, explanation, sublayerShift values.
+- Shows residual connection (input + sub-layer output) and layer normalization per token.
+- Each variant uses different shift values to produce visually distinct results.
+
+#### DecoderCrossAttentionStep — encoder–decoder cross-attention
+
+- The most important decoder step — bridges encoder and decoder.
+- Left column: encoder output vectors (Key/Value source) with glow intensity proportional to attention.
+- Right column: decoder tokens (Query source) with hover interaction.
+- Center: animated connection lines with flowing particles and score labels on hover.
+- Cross-attention matrix showing decoder (rows) × encoder (cols) scores.
+- Cells use background opacity proportional to attention weight.
+
+#### DecoderFeedForwardStep — decoder feed-forward + ReLU
+
+- Same structure as encoder `FeedForwardStep`.
+- Uses `DECODER_FF_SHIFT = [0.55, 0.85, 0.45, 1.0]` (different from encoder's shift).
+- Toggle between pre-ReLU (negative = red) and post-ReLU (zeroed = blue) views.
+
+#### DecoderLinearSoftmaxStep — linear + softmax
+
+- Selectable decoder position to inspect vocabulary probabilities.
+- Generates vocabulary scores via dot product of decoder vector with word embeddings.
+- Softmax converts to probabilities; animated horizontal bars show distribution.
+- Top prediction highlighted with glow effect.
+
+#### DecoderOutputStep — autoregressive output prediction
+
+- Step-by-step generation with "Generate Next Token" button and "Auto-Generate" mode.
+- Shows generation steps: input sequence → predicted token at each step.
+- Current output sequence displayed with animated token reveals.
+- Generation completes when `<END>` is predicted.
+- Reset button to restart the generation demo.
 
 ## Theming
 
@@ -243,7 +338,7 @@ This is the most complex step (~1170 lines). It combines a live ML model, an SVG
 
 - `App.test.js` is the default CRA test — it looks for "learn react" text which doesn't exist in the app, so it will fail.
 - `reactflow` is listed as a dependency but not imported or used in any current component.
-- The `generateEmbeddingVector()` and `generatePositionVector()` functions are duplicated across 5 files — a shared utility would reduce duplication.
-- `TransformerIntroStep.jsx` exists but is not included in the step pipeline.
+- The `generateEmbeddingVector()` and `generatePositionVector()` functions are duplicated across encoder and decoder files — a shared utility would reduce duplication.
+- `TransformerIntroStep.jsx` is wired as page 0 (Transformer Overview).
 - `App.css` contains only the default CRA styles (spin animation, header styles) which are not used.
 - The `logo.svg` in `src/` is the default CRA logo, unused — the app uses `assets/logo.png` instead.

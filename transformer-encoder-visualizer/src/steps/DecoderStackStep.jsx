@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import AttentionStep from "./AttentionStep";
-import FeedForwardStep from "./FeedForwardStep";
+import DecoderMaskedAttentionStep from "./DecoderMaskedAttentionStep";
+import DecoderCrossAttentionStep from "./DecoderCrossAttentionStep";
+import DecoderFeedForwardStep from "./DecoderFeedForwardStep";
 
-function EncoderStackStep({ active, tokens, theme }) {
+function DecoderStackStep({ active, tokens, theme }) {
   const [layerCount, setLayerCount] = useState(1);
   const [view, setView] = useState("overview");
   const isDark = theme === "dark";
@@ -22,46 +23,46 @@ function EncoderStackStep({ active, tokens, theme }) {
       text: isDark ? "text-red-300" : "text-red-700",
       glow: "shadow-[0_0_18px_rgba(239,68,68,0.18)]",
       dot: "bg-red-500",
-      note: "Layer 1: starts building basic context between words",
+      note: "Layer 1: starts building basic decoder context from past tokens",
     },
     {
       border: "border-orange-500",
       text: isDark ? "text-orange-300" : "text-orange-700",
       glow: "shadow-[0_0_18px_rgba(249,115,22,0.18)]",
       dot: "bg-orange-500",
-      note: "Layer 2: connects nearby words and short phrases",
+      note: "Layer 2: strengthens connections with encoder outputs",
     },
     {
       border: "border-amber-400",
       text: isDark ? "text-amber-300" : "text-amber-700",
       glow: "shadow-[0_0_18px_rgba(251,191,36,0.18)]",
       dot: "bg-amber-400",
-      note: "Layer 3: refines word relationships and grammar patterns",
+      note: "Layer 3: refines alignment between source and target meaning",
     },
     {
       border: "border-lime-400",
       text: isDark ? "text-lime-300" : "text-lime-700",
       glow: "shadow-[0_0_18px_rgba(163,230,53,0.18)]",
       dot: "bg-lime-400",
-      note: "Layer 4: captures sentence-level meaning",
+      note: "Layer 4: captures deeper translation/generation patterns",
     },
     {
       border: "border-emerald-400",
       text: isDark ? "text-emerald-300" : "text-emerald-700",
       glow: "shadow-[0_0_18px_rgba(52,211,153,0.18)]",
       dot: "bg-emerald-400",
-      note: "Layer 5: builds strong contextual understanding",
+      note: "Layer 5: builds strong contextual prediction ability",
     },
     {
       border: "border-green-500",
       text: isDark ? "text-green-300" : "text-green-700",
       glow: "shadow-[0_0_18px_rgba(34,197,94,0.20)]",
       dot: "bg-green-500",
-      note: "Layer 6: produces the final, richest representation",
+      note: "Layer 6: produces the final, richest decoder representation",
     },
   ];
 
-  if (view === "attention") {
+  if (view === "masked-attention") {
     return (
       <div className="flex flex-col items-center gap-4">
         <button
@@ -72,10 +73,27 @@ function EncoderStackStep({ active, tokens, theme }) {
               : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
           }`}
         >
-          ← Back to Encoder Stack
+          ← Back to Decoder Stack
         </button>
+        <DecoderMaskedAttentionStep active={active} tokens={tokens} theme={theme} />
+      </div>
+    );
+  }
 
-        <AttentionStep active={active} tokens={tokens} theme={theme} />
+  if (view === "cross-attention") {
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <button
+          onClick={() => setView("overview")}
+          className={`px-4 py-1.5 text-xs border rounded-lg transition ${
+            isDark
+              ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10"
+              : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+          }`}
+        >
+          ← Back to Decoder Stack
+        </button>
+        <DecoderCrossAttentionStep active={active} tokens={tokens} theme={theme} />
       </div>
     );
   }
@@ -91,10 +109,9 @@ function EncoderStackStep({ active, tokens, theme }) {
               : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
           }`}
         >
-          ← Back to Encoder Stack
+          ← Back to Decoder Stack
         </button>
-
-        <FeedForwardStep active={active} tokens={tokens} theme={theme} />
+        <DecoderFeedForwardStep active={active} tokens={tokens} theme={theme} />
       </div>
     );
   }
@@ -115,7 +132,7 @@ function EncoderStackStep({ active, tokens, theme }) {
           isDark ? "text-cyan-300" : "text-blue-800"
         }`}
       >
-        Encoder Stack
+        Decoder Stack
       </h2>
 
       <p
@@ -123,31 +140,36 @@ function EncoderStackStep({ active, tokens, theme }) {
           isDark ? "text-slate-400" : "text-slate-700"
         }`}
       >
-        The encoder stack is built from repeated encoder layers
+        The decoder stack is built from repeated decoder layers
       </p>
-<div
-  className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 ${
-    isDark
-      ? "border-cyan-400/30 bg-cyan-400/5"
-      : "border-blue-400 bg-blue-50"
-  }`}
->
-  <div
-    className={`text-sm font-semibold mb-1 ${
-      isDark ? "text-cyan-300" : "text-blue-800"
-    }`}
-  >
-    Why we use this step
-  </div>
 
-  <p
-    className={`text-[11px] leading-5 ${
-      isDark ? "text-slate-300" : "text-slate-700"
-    }`}
-  >
-    We use the encoder stack because one layer is usually not enough to build deep understanding. Repeating encoder layers allows the model to refine context step by step and produce richer sentence representations.
-  </p>
-</div>
+      <div
+        className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 ${
+          isDark
+            ? "border-cyan-400/30 bg-cyan-400/5"
+            : "border-blue-400 bg-blue-50"
+        }`}
+      >
+        <div
+          className={`text-sm font-semibold mb-1 ${
+            isDark ? "text-cyan-300" : "text-blue-800"
+          }`}
+        >
+          Why we use this step
+        </div>
+        <p
+          className={`text-[11px] leading-5 ${
+            isDark ? "text-slate-300" : "text-slate-700"
+          }`}
+        >
+          The decoder stack repeats decoder layers to progressively refine the
+          output. Each layer uses masked self-attention (to understand generated
+          tokens), cross-attention (to consult the encoder), and a feed-forward
+          network (to transform representations). Stacking these layers gives the
+          decoder enough depth to produce accurate translations and predictions.
+        </p>
+      </div>
+
       <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4 mb-5">
         <div
           className={`rounded-xl border p-4 ${
@@ -161,7 +183,7 @@ function EncoderStackStep({ active, tokens, theme }) {
               isDark ? "text-cyan-300" : "text-blue-800"
             }`}
           >
-            What happens inside one encoder layer?
+            What happens inside one decoder layer?
           </h3>
 
           <div
@@ -181,10 +203,10 @@ function EncoderStackStep({ active, tokens, theme }) {
                   isDark ? "text-cyan-300" : "text-blue-800"
                 }`}
               >
-                Correct encoder layer order
+                Correct decoder layer order
               </div>
 
-              <div className="flex flex-wrap items-center gap-2 text-xs">
+              <div className="flex flex-wrap items-center gap-1.5 text-xs">
                 <div
                   className={`px-2 py-1 rounded border ${
                     isDark
@@ -192,11 +214,9 @@ function EncoderStackStep({ active, tokens, theme }) {
                       : "border-slate-300 text-slate-900 bg-slate-50"
                   }`}
                 >
-                  Self-Attention
+                  Masked Self-Attention
                 </div>
-                <span className={isDark ? "text-slate-500" : "text-slate-600"}>
-                  →
-                </span>
+                <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
                 <div
                   className={`px-2 py-1 rounded border ${
                     isDark
@@ -204,11 +224,29 @@ function EncoderStackStep({ active, tokens, theme }) {
                       : "border-slate-300 text-slate-900 bg-slate-50"
                   }`}
                 >
-                  Add &amp; Normalize
+                  Add &amp; Norm
                 </div>
-                <span className={isDark ? "text-slate-500" : "text-slate-600"}>
-                  →
-                </span>
+                <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
+                <div
+                  className={`px-2 py-1 rounded border ${
+                    isDark
+                      ? "border-purple-500/60 text-purple-300"
+                      : "border-purple-300 text-purple-800 bg-purple-50"
+                  }`}
+                >
+                  Cross-Attention
+                </div>
+                <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
+                <div
+                  className={`px-2 py-1 rounded border ${
+                    isDark
+                      ? "border-slate-600 text-white"
+                      : "border-slate-300 text-slate-900 bg-slate-50"
+                  }`}
+                >
+                  Add &amp; Norm
+                </div>
+                <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
                 <div
                   className={`px-2 py-1 rounded border ${
                     isDark
@@ -218,9 +256,7 @@ function EncoderStackStep({ active, tokens, theme }) {
                 >
                   Feed Forward
                 </div>
-                <span className={isDark ? "text-slate-500" : "text-slate-600"}>
-                  →
-                </span>
+                <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
                 <div
                   className={`px-2 py-1 rounded border ${
                     isDark
@@ -228,7 +264,7 @@ function EncoderStackStep({ active, tokens, theme }) {
                       : "border-slate-300 text-slate-900 bg-slate-50"
                   }`}
                 >
-                  Add &amp; Normalize
+                  Add &amp; Norm
                 </div>
               </div>
             </div>
@@ -245,9 +281,13 @@ function EncoderStackStep({ active, tokens, theme }) {
                   isDark ? "text-cyan-300" : "text-blue-800"
                 }`}
               >
-                Important note
+                Key difference from encoder
               </div>
-              <p>This encoder layer repeats multiple times to form the full encoder stack.</p>
+              <p>
+                The decoder layer has an extra sub-layer — cross-attention —
+                which connects it to the encoder's output. This is the bridge
+                between understanding the input and generating the output.
+              </p>
             </div>
 
             <div
@@ -262,7 +302,7 @@ function EncoderStackStep({ active, tokens, theme }) {
                   isDark ? "text-cyan-300" : "text-blue-800"
                 }`}
               >
-                Learn the internal parts first
+                Learn the internal parts
               </div>
 
               <p
@@ -270,21 +310,32 @@ function EncoderStackStep({ active, tokens, theme }) {
                   isDark ? "text-slate-300" : "text-slate-700"
                 }`}
               >
-                Before fully understanding the encoder stack, the student should
-                first know what self-attention does and what the feed forward
-                layer does.
+                Before fully understanding the decoder stack, explore what each
+                sub-layer does. Each sub-view includes its own Add &amp; Norm
+                explanation.
               </p>
 
               <div className="flex flex-wrap gap-3">
                 <button
-                  onClick={() => setView("attention")}
+                  onClick={() => setView("masked-attention")}
                   className={`px-4 py-1.5 text-xs border rounded-lg transition ${
                     isDark
                       ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10"
                       : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
                   }`}
                 >
-                  Learn Self-Attention
+                  Learn Masked Self-Attention
+                </button>
+
+                <button
+                  onClick={() => setView("cross-attention")}
+                  className={`px-4 py-1.5 text-xs border rounded-lg transition ${
+                    isDark
+                      ? "border-purple-400 text-purple-300 hover:bg-purple-400/10"
+                      : "border-purple-400 text-purple-700 bg-purple-100 hover:bg-purple-200"
+                  }`}
+                >
+                  Learn Cross-Attention
                 </button>
 
                 <button
@@ -323,17 +374,18 @@ function EncoderStackStep({ active, tokens, theme }) {
             }`}
           >
             <p>
-              After self-attention, the model adds the original input back and
-              normalizes the result.
+              After each sub-layer (masked attention, cross-attention, feed
+              forward), the model adds the original input back and normalizes.
             </p>
-
             <p>
-              After feed forward, it does the same thing again: add the previous
-              signal and normalize it.
+              This happens{" "}
+              <span className={isDark ? "text-white" : "text-slate-900"}>
+                three times
+              </span>{" "}
+              per decoder layer — once after each sub-layer.
             </p>
-
             <p>
-              This helps keep learning stable and preserves useful information
+              It helps keep learning stable and preserves useful information
               through the layer.
             </p>
           </div>
@@ -354,7 +406,8 @@ function EncoderStackStep({ active, tokens, theme }) {
               isDark ? "text-slate-500" : "text-slate-600"
             }`}
           >
-            Short side video to explain residual connection and layer normalization.
+            Short side video to explain residual connection and layer
+            normalization.
           </p>
         </div>
       </div>
@@ -371,7 +424,7 @@ function EncoderStackStep({ active, tokens, theme }) {
             isDark ? "text-cyan-300" : "text-blue-800"
           }`}
         >
-          One Encoder Layer Diagram
+          One Decoder Layer Diagram
         </div>
 
         <div className="flex flex-col items-center">
@@ -393,7 +446,7 @@ function EncoderStackStep({ active, tokens, theme }) {
                 isDark ? "text-cyan-300" : "text-blue-800"
               }`}
             >
-              Encoder Layer
+              Decoder Layer
             </div>
 
             <div className="w-full flex flex-col items-center gap-2 text-xs">
@@ -404,7 +457,31 @@ function EncoderStackStep({ active, tokens, theme }) {
                     : "border-slate-300 text-slate-900 bg-slate-50"
                 }`}
               >
-                Self-Attention
+                Masked Self-Attention
+              </div>
+
+              <div className={isDark ? "text-cyan-400" : "text-blue-600"}>↓</div>
+
+              <div
+                className={`w-full text-center px-2 py-1.5 rounded-lg border text-xs ${
+                  isDark
+                    ? "border-slate-600 text-white"
+                    : "border-slate-300 text-slate-900 bg-slate-50"
+                }`}
+              >
+                Add &amp; Normalize
+              </div>
+
+              <div className={isDark ? "text-cyan-400" : "text-blue-600"}>↓</div>
+
+              <div
+                className={`w-full text-center px-2 py-1.5 rounded-lg border text-xs ${
+                  isDark
+                    ? "border-purple-500/60 text-purple-300"
+                    : "border-purple-300 text-purple-800 bg-purple-50"
+                }`}
+              >
+                Cross-Attention (← Encoder)
               </div>
 
               <div className={isDark ? "text-cyan-400" : "text-blue-600"}>↓</div>
@@ -503,7 +580,7 @@ function EncoderStackStep({ active, tokens, theme }) {
                 </div>
 
                 <div className="flex gap-2 mb-3 text-sm flex-wrap">
-                  {tokens.map((t, i) => (
+                  {(tokens.length ? tokens.slice(0, 6) : ["token"]).map((t, i) => (
                     <motion.span
                       key={i}
                       animate={{
@@ -529,22 +606,19 @@ function EncoderStackStep({ active, tokens, theme }) {
                   ))}
                 </div>
 
-                <div className="flex items-center gap-2 text-xs flex-wrap">
+                <div className="flex items-center gap-1.5 text-xs flex-wrap">
                   <motion.div
                     animate={{
                       scale: active && isActive ? [1, 1.08, 1] : 1,
                     }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                    }}
+                    transition={{ duration: 1, repeat: Infinity }}
                     className={`px-2 py-1 rounded border ${
                       isDark
                         ? "border-slate-600 text-white"
                         : "border-slate-300 text-slate-900 bg-slate-50"
                     }`}
                   >
-                    Self-Attention
+                    Masked Attn
                   </motion.div>
 
                   <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
@@ -553,18 +627,14 @@ function EncoderStackStep({ active, tokens, theme }) {
                     animate={{
                       scale: active && isActive ? [1, 1.08, 1] : 1,
                     }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      delay: 0.15,
-                    }}
+                    transition={{ duration: 1, repeat: Infinity, delay: 0.1 }}
                     className={`px-2 py-1 rounded border ${
                       isDark
                         ? "border-slate-600 text-white"
                         : "border-slate-300 text-slate-900 bg-slate-50"
                     }`}
                   >
-                    Add &amp; Normalize
+                    Add&amp;Norm
                   </motion.div>
 
                   <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
@@ -573,18 +643,14 @@ function EncoderStackStep({ active, tokens, theme }) {
                     animate={{
                       scale: active && isActive ? [1, 1.08, 1] : 1,
                     }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      delay: 0.3,
-                    }}
+                    transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
                     className={`px-2 py-1 rounded border ${
                       isDark
-                        ? "border-slate-600 text-white"
-                        : "border-slate-300 text-slate-900 bg-slate-50"
+                        ? "border-purple-500/60 text-purple-300"
+                        : "border-purple-300 text-purple-800 bg-purple-50"
                     }`}
                   >
-                    Feed Forward
+                    Cross-Attn
                   </motion.div>
 
                   <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
@@ -593,18 +659,46 @@ function EncoderStackStep({ active, tokens, theme }) {
                     animate={{
                       scale: active && isActive ? [1, 1.08, 1] : 1,
                     }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      delay: 0.45,
-                    }}
+                    transition={{ duration: 1, repeat: Infinity, delay: 0.3 }}
                     className={`px-2 py-1 rounded border ${
                       isDark
                         ? "border-slate-600 text-white"
                         : "border-slate-300 text-slate-900 bg-slate-50"
                     }`}
                   >
-                    Add &amp; Normalize
+                    Add&amp;Norm
+                  </motion.div>
+
+                  <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
+
+                  <motion.div
+                    animate={{
+                      scale: active && isActive ? [1, 1.08, 1] : 1,
+                    }}
+                    transition={{ duration: 1, repeat: Infinity, delay: 0.4 }}
+                    className={`px-2 py-1 rounded border ${
+                      isDark
+                        ? "border-slate-600 text-white"
+                        : "border-slate-300 text-slate-900 bg-slate-50"
+                    }`}
+                  >
+                    FFN
+                  </motion.div>
+
+                  <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
+
+                  <motion.div
+                    animate={{
+                      scale: active && isActive ? [1, 1.08, 1] : 1,
+                    }}
+                    transition={{ duration: 1, repeat: Infinity, delay: 0.5 }}
+                    className={`px-2 py-1 rounded border ${
+                      isDark
+                        ? "border-slate-600 text-white"
+                        : "border-slate-300 text-slate-900 bg-slate-50"
+                    }`}
+                  >
+                    Add&amp;Norm
                   </motion.div>
                 </div>
               </motion.div>
@@ -648,10 +742,10 @@ function EncoderStackStep({ active, tokens, theme }) {
         }`}
       >
         {layerCount === 1
-          ? "With one encoder layer, the model starts building context between words."
+          ? "With one decoder layer, the model starts learning to align generated tokens with the input."
           : layerCount < layerStyles.length
-          ? "Adding more encoder layers repeats the same internal process and helps the model refine the sentence step by step."
-          : "More encoder layers now repeat the same encoder-layer structure and build richer contextual understanding across the sentence."}
+          ? "Adding more decoder layers repeats the same internal process, refining both self-context and encoder alignment."
+          : "All decoder layers now work together to build the richest possible representation for accurate output prediction."}
       </div>
 
       <div
@@ -675,7 +769,7 @@ function EncoderStackStep({ active, tokens, theme }) {
                 isDark ? "text-cyan-300" : "text-blue-800"
               }`}
             >
-              Encoder Depth Animation
+              Decoder Depth Animation
             </div>
           </div>
 
@@ -804,7 +898,7 @@ function EncoderStackStep({ active, tokens, theme }) {
               isDark ? "text-slate-400" : "text-slate-600"
             }`}
           >
-            More layers → richer context and deeper understanding.
+            More layers → richer decoder context and better predictions.
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
@@ -842,4 +936,4 @@ function EncoderStackStep({ active, tokens, theme }) {
   );
 }
 
-export default EncoderStackStep;
+export default DecoderStackStep;

@@ -54,7 +54,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
         animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
         transition={{ duration: 0.3 }}
         className={`p-6 border rounded-2xl w-[980px] min-h-[400px] flex flex-col items-center justify-center ${
-          isDark ? "border-cyan-500 bg-transparent" : "border-blue-300 bg-white"
+          isDark ? "border-cyan-500 bg-transparent" : "border-blue-400/80 bg-white shadow-sm"
         }`}
       >
         <div
@@ -89,7 +89,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
         animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
         transition={{ duration: 0.3 }}
         className={`p-6 border rounded-2xl w-[980px] min-h-[400px] flex flex-col items-center justify-center ${
-          isDark ? "border-cyan-500 bg-transparent" : "border-blue-300 bg-white"
+          isDark ? "border-cyan-500 bg-transparent" : "border-blue-400/80 bg-white shadow-sm"
         }`}
       >
         <h2
@@ -111,7 +111,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
           className={`w-full max-w-[400px] rounded-xl border p-5 ${
             isDark
               ? "border-cyan-400/30 bg-cyan-400/5"
-              : "border-blue-300 bg-blue-50"
+              : "border-blue-400 bg-blue-50"
           }`}
         >
           <label
@@ -165,7 +165,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
       }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[1100px] min-h-[760px] flex flex-col items-center ${
-        isDark ? "border-cyan-500 bg-transparent" : "border-blue-300 bg-white"
+        isDark ? "border-cyan-500 bg-transparent" : "border-blue-400/80 bg-white shadow-sm"
       }`}
     >
       <h2
@@ -200,7 +200,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
             className={`rounded-xl border p-4 ${
               isDark
                 ? "border-slate-700 bg-slate-900/70"
-                : "border-slate-300 bg-slate-50"
+                : "border-slate-400/70 bg-slate-50"
             }`}
           >
             <div
@@ -270,7 +270,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
             className={`rounded-xl border p-5 text-center ${
               isDark
                 ? "border-slate-700 bg-slate-900/80"
-                : "border-slate-300 bg-slate-50"
+                : "border-slate-400/70 bg-slate-50"
             }`}
           >
             <div
@@ -308,7 +308,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
               className={`rounded-xl border p-5 ${
                 isDark
                   ? "border-slate-700 bg-slate-900/80"
-                  : "border-slate-300 bg-slate-50"
+                  : "border-slate-400/70 bg-slate-50"
               }`}
             >
               <div
@@ -326,7 +326,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
                     className={`rounded-lg border p-4 ${
                       isDark
                         ? "border-slate-700 bg-slate-950/70"
-                        : "border-slate-300 bg-white"
+                        : "border-slate-400/70 bg-white"
                     }`}
                   >
                     <div

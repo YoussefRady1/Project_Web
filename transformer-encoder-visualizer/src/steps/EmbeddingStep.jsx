@@ -62,7 +62,7 @@ function EmbeddingStep({ active, tokens, theme }) {
       }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[760px] min-h-[420px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-300 bg-white"
+        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
       }`}
     >
       <h2
@@ -85,7 +85,7 @@ function EmbeddingStep({ active, tokens, theme }) {
   className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 ${
     isDark
       ? "border-cyan-400/30 bg-cyan-400/5"
-      : "border-blue-300 bg-blue-50"
+      : "border-blue-400 bg-blue-50"
   }`}
 >
   <div
@@ -116,7 +116,7 @@ function EmbeddingStep({ active, tokens, theme }) {
           className={`w-full rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/70"
-              : "border-slate-300 bg-slate-50"
+              : "border-slate-400/70 bg-slate-50"
           }`}
         >
           <div className="mb-4 flex justify-center">
@@ -140,7 +140,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                 className={`mb-3 rounded-lg border p-3 text-[11px] leading-5 ${
                   isDark
                     ? "border-cyan-400/40 bg-cyan-400/5 text-slate-300"
-                    : "border-blue-300 bg-blue-50 text-slate-700"
+                    : "border-blue-400 bg-blue-50 text-slate-700"
                 }`}
               >
                 <span
@@ -173,7 +173,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                   className={`rounded-lg border p-3 ${
                     isDark
                       ? "border-slate-700 bg-slate-950/60"
-                      : "border-slate-300 bg-white"
+                      : "border-slate-400/70 bg-white"
                   }`}
                 >
                   <div
@@ -196,7 +196,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                   className={`rounded-lg border p-3 ${
                     isDark
                       ? "border-slate-700 bg-slate-950/60"
-                      : "border-slate-300 bg-white"
+                      : "border-slate-400/70 bg-white"
                   }`}
                 >
                   <div
@@ -256,7 +256,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                   className={`rounded-lg border p-3 ${
                     isDark
                       ? "border-slate-700 bg-slate-950/60"
-                      : "border-slate-300 bg-white"
+                      : "border-slate-400/70 bg-white"
                   }`}
                 >
                   <div
@@ -276,7 +276,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                       className={`rounded-md border p-2 ${
                         isDark
                           ? "border-slate-800 bg-slate-900/70"
-                          : "border-slate-300 bg-slate-50"
+                          : "border-slate-400/70 bg-slate-50"
                       }`}
                     >
                       <span className={isDark ? "text-cyan-300 font-medium" : "text-blue-800 font-medium"}>
@@ -292,7 +292,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                       className={`rounded-md border p-2 ${
                         isDark
                           ? "border-slate-800 bg-slate-900/70"
-                          : "border-slate-300 bg-slate-50"
+                          : "border-slate-400/70 bg-slate-50"
                       }`}
                     >
                       <span className={isDark ? "text-cyan-300 font-medium" : "text-blue-800 font-medium"}>
@@ -308,7 +308,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                       className={`rounded-md border p-2 ${
                         isDark
                           ? "border-slate-800 bg-slate-900/70"
-                          : "border-slate-300 bg-slate-50"
+                          : "border-slate-400/70 bg-slate-50"
                       }`}
                     >
                       <span className={isDark ? "text-cyan-300 font-medium" : "text-blue-800 font-medium"}>
@@ -324,7 +324,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                       className={`rounded-md border p-2 ${
                         isDark
                           ? "border-slate-800 bg-slate-900/70"
-                          : "border-slate-300 bg-slate-50"
+                          : "border-slate-400/70 bg-slate-50"
                       }`}
                     >
                       <span className={isDark ? "text-cyan-300 font-medium" : "text-blue-800 font-medium"}>
@@ -342,7 +342,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                   className={`rounded-lg border p-3 ${
                     isDark
                       ? "border-cyan-400/40 bg-cyan-400/5"
-                      : "border-blue-300 bg-blue-50"
+                      : "border-blue-400 bg-blue-50"
                   }`}
                 >
                   <div
@@ -360,7 +360,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                         className={`text-xs px-2 py-1 rounded border ${
                           isDark
                             ? "text-white bg-slate-900 border-cyan-400/40"
-                            : "text-slate-900 bg-white border-blue-300"
+                            : "text-slate-900 bg-white border-blue-400"
                         }`}
                       >
                         {value}
@@ -436,7 +436,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                     className={`flex gap-1 px-2 py-1 rounded border ${
                       isDark
                         ? "bg-slate-900 border-cyan-400"
-                        : "bg-white border-blue-300"
+                        : "bg-white border-blue-400"
                     }`}
                   >
                     {vector.map((v, i) => (

@@ -310,7 +310,23 @@ function FFNDetail({ p }) {
   );
 }
 
-function OutputDetail({ p }) {
+function OutputDetail({ p, liveOutput }) {
+  const fallbackBars = [
+    { w: 60, l: "Bienvenue", p: "20%" },
+    { w: 54, l: "à", p: "18%" },
+    { w: 48, l: "votre", p: "16%" },
+    { w: 45, l: "voiture", p: "15%" },
+    { w: 40, l: "tout", p: "13%" },
+  ];
+
+  const hasLive = liveOutput && liveOutput.length > 0;
+  const bars = hasLive
+    ? liveOutput.slice(0, 5).map((item) => {
+        const pct = (item.prob * 100).toFixed(1);
+        return { w: Math.max(20, item.prob * 300), l: item.tok, p: `${pct}%` };
+      })
+    : fallbackBars;
+
   return (
     <svg viewBox="0 0 900 220" className="w-full" style={{ minHeight: 220 }}>
       <SvgDefs color={p.sub} />
@@ -335,13 +351,7 @@ function OutputDetail({ p }) {
 
       {/* Top-K bars */}
       <g>
-        {[
-          { w: 60, l: "Bienvenue", p: "20%" },
-          { w: 54, l: "à", p: "18%" },
-          { w: 48, l: "votre", p: "16%" },
-          { w: 45, l: "voiture", p: "15%" },
-          { w: 40, l: "tout", p: "13%" },
-        ].map((b, i) => (
+        {bars.map((b, i) => (
           <g key={i}>
             <rect
               x={640}
@@ -558,14 +568,14 @@ const EXPLANATIONS = {
   },
 };
 
-function StageDetailView({ stageKey, onClose, p, isDark }) {
+function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
   const content = {
     embed: <EmbedDetail p={p} />,
     selfAttn: <SelfAttnDetail p={p} />,
     encFFN: <FFNDetail p={p} />,
     decFFN: <FFNDetail p={p} />,
     crossAttn: <SelfAttnDetail p={p} isCross />,
-    outProj: <OutputDetail p={p} />,
+    outProj: <OutputDetail p={p} liveOutput={liveOutput} />,
   };
 
   return (
@@ -613,7 +623,7 @@ function StageDetailView({ stageKey, onClose, p, isDark }) {
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-cyan-500/30 bg-cyan-500/5"
-                  : "border-blue-300 bg-blue-50"
+                  : "border-blue-400 bg-blue-50"
               }`}
             >
               <div
@@ -637,7 +647,7 @@ function StageDetailView({ stageKey, onClose, p, isDark }) {
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-slate-700 bg-slate-950/40"
-                  : "border-slate-300 bg-white"
+                  : "border-slate-400/70 bg-white"
               }`}
             >
               <div
@@ -680,12 +690,100 @@ function StageDetailView({ stageKey, onClose, p, isDark }) {
               </ol>
             </div>
 
+            {/* Live worked example — Output Projection only */}
+            {stageKey === "outProj" && liveOutput && liveOutput.length > 0 && (() => {
+              const top5 = liveOutput.slice(0, 5);
+              const logits = top5.map((t) => Math.log(Math.max(t.prob, 1e-10)));
+              const maxLogit = Math.max(...logits);
+              const exps = logits.map((z) => Math.exp(z - maxLogit));
+              const sumExp = exps.reduce((a, b) => a + b, 0);
+              const renorm = exps.map((e) => e / sumExp);
+              const topToken = top5[0];
+
+              return (
+                <div
+                  className={`rounded-lg border p-3 ${
+                    isDark
+                      ? "border-amber-500/30 bg-amber-500/5"
+                      : "border-amber-400 bg-amber-50"
+                  }`}
+                >
+                  <div
+                    className={`text-[10px] font-bold uppercase tracking-wider mb-2 ${
+                      isDark ? "text-amber-300" : "text-amber-700"
+                    }`}
+                  >
+                    Worked example — live from T5-small
+                  </div>
+
+                  <div
+                    className={`text-[11px] leading-5 mb-2 ${
+                      isDark ? "text-slate-300" : "text-slate-700"
+                    }`}
+                  >
+                    The model just generated these tokens. Here are the top-5 candidates
+                    for the <span className="font-semibold">first output token</span>,
+                    with a renormalized softmax over those 5:
+                  </div>
+
+                  <div
+                    className={`rounded-md border p-2 mb-2 font-mono text-[10.5px] leading-6 ${
+                      isDark
+                        ? "bg-slate-900 border-slate-700 text-cyan-300"
+                        : "bg-white border-slate-300 text-blue-800"
+                    }`}
+                  >
+                    {top5.map((t, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <span className={`w-20 text-right truncate ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                          {t.tok}
+                        </span>
+                        <span className="opacity-60">→</span>
+                        <span>log(p) = {logits[i].toFixed(3)}</span>
+                        <span className="opacity-60">→</span>
+                        <span>exp = {exps[i].toFixed(4)}</span>
+                        <span className="opacity-60">→</span>
+                        <span className="font-semibold">{(renorm[i] * 100).toFixed(1)}%</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div
+                    className={`rounded-md border p-2 mb-2 font-mono text-[10.5px] ${
+                      isDark
+                        ? "bg-slate-900 border-slate-700 text-cyan-300"
+                        : "bg-white border-slate-300 text-blue-800"
+                    }`}
+                  >
+                    softmax("{topToken.tok}") = exp({logits[0].toFixed(3)}) / Σ exp(z_j) = {exps[0].toFixed(4)} / {sumExp.toFixed(4)} = <span className="font-bold">{(renorm[0] * 100).toFixed(1)}%</span>
+                  </div>
+
+                  <div
+                    className={`text-[10px] leading-4 ${
+                      isDark ? "text-slate-500" : "text-slate-500"
+                    }`}
+                  >
+                    Note: this is a renormalization over the top 5 candidates, not the full 32,128-token vocabulary.
+                    The original model probabilities are shown in the bars above.
+                  </div>
+
+                  <div
+                    className={`mt-2 text-[10px] italic ${
+                      isDark ? "text-cyan-400/70" : "text-blue-600"
+                    }`}
+                  >
+                    These probabilities come from the actual T5-small model running in your browser.
+                  </div>
+                </div>
+              );
+            })()}
+
             {/* Key insights */}
             <div
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-slate-700 bg-slate-900/40"
-                  : "border-slate-300 bg-slate-50"
+                  : "border-slate-400/70 bg-slate-50"
               }`}
             >
               <div
