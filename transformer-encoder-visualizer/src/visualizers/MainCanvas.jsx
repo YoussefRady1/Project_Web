@@ -15,17 +15,21 @@ import DecoderPositionalStep from "../steps/DecoderPositionalStep";
 import DecoderStackStep from "../steps/DecoderStackStep";
 import DecoderLinearSoftmaxStep from "../steps/DecoderLinearSoftmaxStep";
 import DecoderOutputStep from "../steps/DecoderOutputStep";
-import EncoderQuizStep from "../steps/EncoderQuizStep";
+import EncoderPostQuizStep from "../steps/EncoderPostQuizStep";
+import DecoderPreQuizStep from "../steps/DecoderPreQuizStep";
+import DecoderPostQuizStep from "../steps/DecoderPostQuizStep";
 
 const PAGE_CONFIG = [
   { component: TransformerIntroStep, title: "Transformer Overview", label: "Overview", section: "overview" },
-  { component: PreQuizStep, title: "Pre-Quiz", label: "Pre-Quiz", section: "overview" },
+  { component: PreQuizStep, title: "Encoder Pre-Quiz", label: "Pre-Quiz", section: "overview" },
   { component: TransformerArchitectureStep, title: "Architecture Overview", label: "Architecture", section: "architecture" },
   { component: TokenStep, title: "Step 1: Tokenization", label: "Encoder 1 of 5", section: "encoder" },
   { component: EmbeddingStep, title: "Step 2: Embedding", label: "Encoder 2 of 5", section: "encoder" },
   { component: PositionalStep, title: "Step 3: Positional Encoding", label: "Encoder 3 of 5", section: "encoder" },
   { component: EncoderStackStep, title: "Step 4: Encoder Stack", label: "Encoder 4 of 5", section: "encoder" },
   { component: EncoderOutputStep, title: "Step 5: Encoder Output", label: "Encoder 5 of 5", section: "encoder" },
+  { component: EncoderPostQuizStep, title: "Encoder Post-Quiz", label: "Encoder Quiz", section: "encoder-quiz" },
+  { component: DecoderPreQuizStep, title: "Decoder Pre-Quiz", label: "Decoder Pre-Quiz", section: "decoder-quiz" },
   { component: DecoderTransitionStep, title: "Encoder → Decoder Transfer", label: "Transition", section: "decoder" },
   { component: DecoderTokenStep, title: "Step 1: Output Tokenization", label: "Decoder 1 of 4", section: "decoder" },
   { component: DecoderEmbeddingStep, title: "Step 2: Output Embedding", label: "Decoder 2 of 4", section: "decoder" },
@@ -33,17 +37,19 @@ const PAGE_CONFIG = [
   { component: DecoderStackStep, title: "Step 4: Decoder Stack", label: "Decoder 4 of 4", section: "decoder" },
   { component: DecoderLinearSoftmaxStep, title: "Linear + Softmax", label: "Linear + Softmax", section: "linear" },
   { component: DecoderOutputStep, title: "Output Prediction", label: "Output", section: "output" },
-  { component: EncoderQuizStep, title: "Post-Quiz", label: "Final Quiz", section: "quiz" },
+  { component: DecoderPostQuizStep, title: "Decoder Post-Quiz", label: "Final Quiz", section: "final-quiz" },
 ];
 
 const SECTION_MAP = [
   { id: "overview", label: "Overview" },
   { id: "architecture", label: "Architecture" },
   { id: "encoder", label: "Encoder" },
+  { id: "encoder-quiz", label: "Encoder Quiz" },
+  { id: "decoder-quiz", label: "Decoder Quiz" },
   { id: "decoder", label: "Decoder" },
   { id: "linear", label: "Linear + Softmax" },
   { id: "output", label: "Output" },
-  { id: "quiz", label: "Quiz" },
+  { id: "final-quiz", label: "Final Quiz" },
 ];
 
 export const TOTAL_PAGES = PAGE_CONFIG.length;
@@ -63,6 +69,16 @@ function MainCanvas({
   postQuizScore,
   submitPreQuiz,
   submitPostQuiz,
+  encoderPostCompleted,
+  encoderPostScore,
+  submitEncoderPostQuiz,
+  decoderPreCompleted,
+  decoderPreScore,
+  submitDecoderPreQuiz,
+  decoderPostCompleted,
+  decoderPostScore,
+  submitDecoderPostQuiz,
+  resetSession,
 }) {
   const config = PAGE_CONFIG[step];
   const StepComponent = config.component;
@@ -231,6 +247,16 @@ function MainCanvas({
                 postQuizScore={postQuizScore}
                 submitPreQuiz={submitPreQuiz}
                 submitPostQuiz={submitPostQuiz}
+                encoderPostCompleted={encoderPostCompleted}
+                encoderPostScore={encoderPostScore}
+                submitEncoderPostQuiz={submitEncoderPostQuiz}
+                decoderPreCompleted={decoderPreCompleted}
+                decoderPreScore={decoderPreScore}
+                submitDecoderPreQuiz={submitDecoderPreQuiz}
+                decoderPostCompleted={decoderPostCompleted}
+                decoderPostScore={decoderPostScore}
+                submitDecoderPostQuiz={submitDecoderPostQuiz}
+                resetSession={resetSession}
                 {...(config.props || {})}
               />
             </motion.div>

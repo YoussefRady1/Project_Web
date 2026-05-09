@@ -44,7 +44,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
   const isDark = theme === "dark";
 
   const safeTokens = useMemo(
-    () => (tokens.length ? tokens.slice(0, 6) : ["token"]),
+    () => (tokens.length ? tokens.slice(0, 3) : ["token"]),
     [tokens]
   );
 
@@ -115,22 +115,6 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
         <p className={`text-[10px] italic mt-2 pt-2 ${isDark ? "border-t border-slate-700/50 text-cyan-300/70" : "border-t border-slate-300/50 text-blue-600/80"}`}>
           Like numbering the pages of a book — the content is the same, but the order matters for understanding the story.
         </p>
-      </div>
-
-      {/* Data flow */}
-      <div className="w-full max-w-[760px] mb-5 grid grid-cols-3 gap-2">
-        <div className={`rounded-xl border p-3 ${isDark ? "border-emerald-500/30 bg-emerald-500/5" : "border-emerald-400 bg-emerald-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-emerald-300" : "text-emerald-700"}`}>From previous step</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Embedding vectors from the previous step. Each vector represents a word's meaning, but the model doesn't yet know which position each token is at.</p>
-        </div>
-        <div className={`rounded-xl border p-3 ${isDark ? "border-cyan-500/30 bg-cyan-500/5" : "border-blue-400 bg-blue-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-cyan-300" : "text-blue-700"}`}>What happens here</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>A unique position vector is added to each embedding. This lets the model distinguish 'word at position 0' from 'word at position 3' — crucial since transformers process all tokens in parallel.</p>
-        </div>
-        <div className={`rounded-xl border p-3 ${isDark ? "border-amber-500/30 bg-amber-500/5" : "border-amber-400 bg-amber-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-amber-300" : "text-amber-700"}`}>Goes to next step</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>These position-aware vectors enter Masked Self-Attention, where each token learns about other tokens it's allowed to see.</p>
-        </div>
       </div>
 
       <div

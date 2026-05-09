@@ -77,6 +77,7 @@ function generateLogits(sentence, position, targetWord, vocab) {
 function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
   const isDark = theme === "dark";
   const [selectedPos, setSelectedPos] = useState(0);
+  const [showExplanation, setShowExplanation] = useState(false);
 
   const sentence = tokens.length ? tokens.join(" ") : "I love sunny days";
   const translation = useMemo(() => getTranslation(sentence), [sentence]);
@@ -95,36 +96,17 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
     const candidates = vocab
       .map((word, i) => ({
         word,
-        logit: logits[i],
         prob: probs[i],
-        shifted: logits[i] - maxLogit,
-        exp: exps[i],
       }))
       .sort((a, b) => b.prob - a.prob);
-
-    const top5 = candidates.slice(0, 5);
-    const wLogits = top5.map((c) => c.logit);
-    const wMax = Math.max(...wLogits);
-    const wExps = wLogits.map((z) => Math.exp(z - wMax));
-    const wSum = wExps.reduce((a, b) => a + b, 0);
-    const wProbs = wExps.map((e) => e / wSum);
 
     return {
       candidates,
       maxProb: candidates[0]?.prob || 0,
-      walkthrough: {
-        tokens: top5,
-        logits: wLogits,
-        maxLogit: wMax,
-        shifted: wLogits.map((z) => z - wMax),
-        exps: wExps,
-        sumExp: wSum,
-        probs: wProbs,
-      },
     };
   }, [sentence, selectedPos, translation, vocab]);
 
-  const { candidates, maxProb, walkthrough } = demoData;
+  const { candidates, maxProb } = demoData;
 
   const FLOW = [
     {
@@ -185,53 +167,14 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
         decoder layers
       </p>
 
-      {/* Why box */}
-      <div
-        className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 ${
-          isDark
-            ? "border-cyan-400/30 bg-cyan-400/5"
-            : "border-blue-400 bg-blue-50"
+      <button
+        onClick={() => setShowExplanation((v) => !v)}
+        className={`mb-4 text-[11px] font-medium underline underline-offset-2 ${
+          isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-700 hover:text-blue-800"
         }`}
       >
-        <div
-          className={`text-sm font-semibold mb-1 ${
-            isDark ? "text-cyan-300" : "text-blue-800"
-          }`}
-        >
-          Why we use this step
-        </div>
-        <p
-          className={`text-[11px] leading-5 ${
-            isDark ? "text-slate-300" : "text-slate-700"
-          }`}
-        >
-          The decoder produces a 512-dimensional vector for each output position.
-          The <strong>linear layer</strong> multiplies it by a weight matrix (512
-          × vocab_size) to give one raw score (<em>logit</em>) per vocabulary
-          word. Then <strong>softmax</strong> converts those logits into
-          probabilities that sum to 1. The word with the highest probability
-          becomes the prediction.
-        </p>
-        <p className={`text-[10px] italic mt-2 pt-2 ${isDark ? "border-t border-slate-700/50 text-cyan-300/70" : "border-t border-slate-300/50 text-blue-600/80"}`}>
-          Like a multiple-choice exam — the linear layer scores every possible answer in the vocabulary, and softmax converts those scores into confidence percentages.
-        </p>
-      </div>
-
-      {/* Data flow */}
-      <div className="w-full max-w-[760px] mb-5 grid grid-cols-3 gap-2">
-        <div className={`rounded-xl border p-3 ${isDark ? "border-emerald-500/30 bg-emerald-500/5" : "border-emerald-400 bg-emerald-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-emerald-300" : "text-emerald-700"}`}>From previous step</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>The final decoder output vector &mdash; it has passed through all decoder layers (masked attention &rarr; add&amp;norm &rarr; cross attention &rarr; add&amp;norm &rarr; feed forward &rarr; add&amp;norm), repeated 6 times in T5-small.</p>
-        </div>
-        <div className={`rounded-xl border p-3 ${isDark ? "border-cyan-500/30 bg-cyan-500/5" : "border-blue-400 bg-blue-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-cyan-300" : "text-blue-700"}`}>What happens here</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>The linear layer multiplies each 512-dim vector by a weight matrix (512 &times; vocab_size) to produce one raw score (logit) per vocabulary word. Softmax then converts logits to probabilities that sum to 1.</p>
-        </div>
-        <div className={`rounded-xl border p-3 ${isDark ? "border-amber-500/30 bg-amber-500/5" : "border-amber-400 bg-amber-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-amber-300" : "text-amber-700"}`}>Goes to next step</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>The word with the highest probability is selected as the prediction. This feeds into the Output Prediction step, where it becomes part of the decoder's growing input sequence.</p>
-        </div>
-      </div>
+        {showExplanation ? "Hide explanation" : "Show explanation"}
+      </button>
 
       {/* Visual flow pipeline */}
       <div className="flex items-center justify-center gap-1.5 mb-5 flex-wrap">
@@ -268,95 +211,51 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
         ))}
       </div>
 
-      {/* Step 1 + Step 2 panels */}
-      <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4 mb-5">
-        <div
-          className={`rounded-xl border p-4 ${
+      {/* How it works panel — only when explanation is shown */}
+      {showExplanation && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`w-full max-w-[760px] rounded-xl border p-4 mb-5 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
               : "border-slate-400/70 bg-slate-50"
           }`}
         >
-          <h3
-            className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
-            }`}
-          >
-            Step 1: Linear projection → logits
-          </h3>
           <div
             className={`text-[11px] leading-5 space-y-2 ${
               isDark ? "text-slate-300" : "text-slate-700"
             }`}
           >
             <p>
-              Each decoder output vector (512 numbers) is multiplied by a large
-              weight matrix to produce one score for <em>every</em> word in the
-              vocabulary.
+              The <strong>linear layer</strong> scores every vocabulary word by multiplying
+              the decoder output vector (512 numbers) by a weight matrix to produce one raw
+              score (<em>logit</em>) per word. <strong>Softmax</strong> then converts these
+              logits into probabilities between 0 and 1 that sum to exactly 1.
             </p>
-            <div
-              className={`rounded-lg border p-3 text-center font-mono text-sm ${
-                isDark
-                  ? "border-slate-700 bg-slate-950/70 text-white"
-                  : "border-slate-400/70 bg-white text-slate-900"
-              }`}
-            >
-              logits = decoder_output × W<sub>vocab</sub>
+            <div className="flex gap-3">
               <div
-                className={`text-[10px] mt-1 font-sans ${
-                  isDark ? "text-slate-500" : "text-slate-500"
+                className={`flex-1 rounded-lg border p-2.5 text-center font-mono text-[11px] ${
+                  isDark
+                    ? "border-slate-700 bg-slate-950/70 text-white"
+                    : "border-slate-400/70 bg-white text-slate-900"
                 }`}
               >
-                shape: (512) × (512 × vocab_size) → (vocab_size scores)
+                logits = decoder_output × W<sub>vocab</sub>
+              </div>
+              <div
+                className={`flex-1 rounded-lg border p-2.5 text-center font-mono text-[11px] ${
+                  isDark
+                    ? "border-slate-700 bg-slate-950/70 text-white"
+                    : "border-slate-400/70 bg-white text-slate-900"
+                }`}
+              >
+                P(word) = e<sup>logit</sup> / Σ e<sup>all logits</sup>
               </div>
             </div>
-            <p>
-              A higher logit means the model thinks that word is more likely.
-              These are raw numbers, they can be negative, zero, or very large.
-            </p>
           </div>
-        </div>
-
-        <div
-          className={`rounded-xl border p-4 ${
-            isDark
-              ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
-          }`}
-        >
-          <h3
-            className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
-            }`}
-          >
-            Step 2: Softmax → probabilities
-          </h3>
-          <div
-            className={`text-[11px] leading-5 space-y-2 ${
-              isDark ? "text-slate-300" : "text-slate-700"
-            }`}
-          >
-            <p>
-              Softmax converts raw logits into probabilities between 0 and 1
-              that add up to exactly 1:
-            </p>
-            <div
-              className={`rounded-lg border p-3 text-center font-mono text-sm ${
-                isDark
-                  ? "border-slate-700 bg-slate-950/70 text-white"
-                  : "border-slate-400/70 bg-white text-slate-900"
-              }`}
-            >
-              P(word) = e<sup>logit</sup> / Σ e<sup>all logits</sup>
-            </div>
-            <p>
-              Softmax <strong>amplifies differences</strong>: a logit of 5.0 vs
-              3.0 doesn't give 5/8 vs 3/8, it gives ~88% vs ~12%. The highest
-              logit dominates.
-            </p>
-          </div>
-        </div>
-      </div>
+        </motion.div>
+      )}
 
       {/* Position selector */}
       <div className="w-full mb-4">
@@ -408,166 +307,6 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
         </div>
       </div>
 
-      {/* Softmax walkthrough table */}
-      <div
-        className={`w-full rounded-xl border p-4 mb-5 ${
-          isDark
-            ? "border-amber-500/30 bg-amber-500/5"
-            : "border-amber-400 bg-amber-50"
-        }`}
-      >
-        <div
-          className={`text-sm font-semibold mb-1 ${
-            isDark ? "text-amber-300" : "text-amber-700"
-          }`}
-        >
-          Softmax walkthrough — position {selectedPos}
-        </div>
-        <div
-          className={`text-[11px] leading-5 mb-3 ${
-            isDark ? "text-slate-300" : "text-slate-700"
-          }`}
-        >
-          How softmax picks "
-          <span className="font-semibold">
-            {walkthrough.tokens[0]?.word}
-          </span>
-          " from the top 5 candidates (renormalized over these 5 for clarity):
-        </div>
-
-        <div className="overflow-x-auto mb-3">
-          <table className="w-full text-[11px]">
-            <thead>
-              <tr
-                className={`border-b ${
-                  isDark ? "border-slate-700" : "border-slate-300"
-                }`}
-              >
-                <th
-                  className={`text-left py-1.5 pr-3 font-semibold ${
-                    isDark ? "text-slate-300" : "text-slate-800"
-                  }`}
-                >
-                  Token
-                </th>
-                <th
-                  className={`text-right py-1.5 px-3 font-semibold ${
-                    isDark ? "text-slate-300" : "text-slate-800"
-                  }`}
-                >
-                  Logit (z)
-                </th>
-                <th
-                  className={`text-right py-1.5 px-3 font-semibold ${
-                    isDark ? "text-slate-300" : "text-slate-800"
-                  }`}
-                >
-                  z − max
-                </th>
-                <th
-                  className={`text-right py-1.5 px-3 font-semibold ${
-                    isDark ? "text-slate-300" : "text-slate-800"
-                  }`}
-                >
-                  e<sup>(z−max)</sup>
-                </th>
-                <th
-                  className={`text-right py-1.5 pl-3 font-semibold ${
-                    isDark ? "text-slate-300" : "text-slate-800"
-                  }`}
-                >
-                  Probability
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {walkthrough.tokens.map((t, i) => (
-                <tr
-                  key={i}
-                  className={`border-b ${
-                    i === 0
-                      ? isDark
-                        ? "border-green-400/30 bg-green-400/5"
-                        : "border-green-300 bg-green-50"
-                      : isDark
-                      ? "border-slate-800"
-                      : "border-slate-200"
-                  }`}
-                >
-                  <td
-                    className={`py-1.5 pr-3 font-medium ${
-                      i === 0
-                        ? isDark
-                          ? "text-green-300"
-                          : "text-green-700"
-                        : isDark
-                        ? "text-slate-300"
-                        : "text-slate-700"
-                    }`}
-                  >
-                    {t.word}
-                  </td>
-                  <td
-                    className={`py-1.5 px-3 text-right font-mono ${
-                      isDark ? "text-cyan-300" : "text-blue-800"
-                    }`}
-                  >
-                    {walkthrough.logits[i].toFixed(2)}
-                  </td>
-                  <td
-                    className={`py-1.5 px-3 text-right font-mono ${
-                      isDark ? "text-slate-400" : "text-slate-600"
-                    }`}
-                  >
-                    {walkthrough.shifted[i].toFixed(2)}
-                  </td>
-                  <td
-                    className={`py-1.5 px-3 text-right font-mono ${
-                      isDark ? "text-slate-400" : "text-slate-600"
-                    }`}
-                  >
-                    {walkthrough.exps[i].toFixed(4)}
-                  </td>
-                  <td
-                    className={`py-1.5 pl-3 text-right font-mono font-semibold ${
-                      i === 0
-                        ? isDark
-                          ? "text-green-300"
-                          : "text-green-700"
-                        : isDark
-                        ? "text-slate-300"
-                        : "text-slate-700"
-                    }`}
-                  >
-                    {(walkthrough.probs[i] * 100).toFixed(1)}%
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div
-          className={`rounded-lg border p-3 font-mono text-[11px] mb-2 ${
-            isDark
-              ? "border-slate-700 bg-slate-900 text-cyan-300"
-              : "border-slate-300 bg-white text-blue-800"
-          }`}
-        >
-          P("{walkthrough.tokens[0]?.word}") = e
-          <sup>{walkthrough.shifted[0]?.toFixed(2)}</sup> /{" "}
-          {walkthrough.sumExp.toFixed(4)} ={" "}
-          <span className="font-bold">
-            {(walkthrough.probs[0] * 100).toFixed(1)}%
-          </span>
-        </div>
-
-        <div className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-          Renormalized over top 5 for clarity. In a real transformer, softmax
-          runs over the entire vocabulary (e.g. 32,128 tokens for T5).
-        </div>
-      </div>
-
       {/* Probability bars */}
       <div
         className={`w-full rounded-xl border p-4 ${
@@ -588,12 +327,11 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
             isDark ? "text-slate-500" : "text-slate-500"
           }`}
         >
-          Showing all {vocab.length} demo vocabulary words (a real model has
-          32,000+)
+          Top 5 candidates (a real model scores all 32,128 vocabulary tokens)
         </div>
 
         <div className="space-y-2.5">
-          {candidates.map((item, i) => {
+          {candidates.slice(0, 5).map((item, i) => {
             const isTop = i === 0;
             const barWidth = maxProb > 0 ? (item.prob / maxProb) * 100 : 0;
 
@@ -703,8 +441,8 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
             isDark ? "text-cyan-400/60" : "text-blue-600"
           }`}
         >
-          Demo vocabulary of {vocab.length} words for educational clarity — a
-          real T5 model scores all 32,128 vocabulary tokens the same way.
+          Showing top 5 from a demo vocabulary — a real T5 model scores all
+          32,128 vocabulary tokens the same way.
         </div>
       </div>
 

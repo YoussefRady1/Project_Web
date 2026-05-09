@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 
 function generateEmbeddingVector(word) {
@@ -65,25 +65,17 @@ function formatVector(vector) {
   return vector.map((v) => v.toFixed(2));
 }
 
-function normalizeVector(vec) {
-  const mean = vec.reduce((a, v) => a + v, 0) / vec.length;
-  const variance =
-    vec.reduce((a, v) => a + (v - mean) ** 2, 0) / vec.length;
-  const std = Math.sqrt(variance + 0.001);
-  return vec.map((v) => Number(((v - mean) / std).toFixed(2)));
-}
-
-const ADD_NORM_SHIFT = [0.08, -0.05, 0.12, -0.03];
-
 function DecoderMaskedAttentionStep({ active, tokens = [], theme }) {
   const isDark = theme === "dark";
   const [focusedIndex, setFocusedIndex] = useState(0);
-  const [showAddNorm, setShowAddNorm] = useState(false);
+  const [showExplanation, setShowExplanation] = useState(false);
 
   const safeTokens = useMemo(
-    () => (tokens.length ? tokens.slice(0, 6) : ["token"]),
+    () => (tokens.length ? tokens.slice(0, 3) : ["token"]),
     [tokens]
   );
+
+  const hiddenTokenCount = Math.max(0, tokens.length - 3);
 
   const decoderTokens = useMemo(
     () => ["<START>", ...safeTokens],
@@ -120,22 +112,6 @@ function DecoderMaskedAttentionStep({ active, tokens = [], theme }) {
     [tokenVectors]
   );
 
-  const addNormRows = useMemo(
-    () =>
-      decoderTokens.map((tok, i) => {
-        const emb = getDecoderEmbedding(tok);
-        const pos = generatePositionVector(i);
-        const input = addVectors(emb, pos);
-        const sublayerOutput = input.map((v, j) =>
-          Number((v + ADD_NORM_SHIFT[j]).toFixed(2))
-        );
-        const residual = addVectors(input, sublayerOutput);
-        const normalized = normalizeVector(residual);
-        return { token: tok, input, sublayerOutput, residual, normalized };
-      }),
-    [decoderTokens]
-  );
-
   const focusedData = tokenVectors[focusedIndex] || tokenVectors[0];
 
   const canAttendTo = decoderTokens
@@ -168,52 +144,28 @@ function DecoderMaskedAttentionStep({ active, tokens = [], theme }) {
         are masked
       </p>
 
-      <div
-        className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 ${
-          isDark
-            ? "border-cyan-400/30 bg-cyan-400/5"
-            : "border-blue-400 bg-blue-50"
+      <button
+        onClick={() => setShowExplanation((v) => !v)}
+        className={`mb-3 text-[11px] font-medium underline underline-offset-2 ${
+          isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-700 hover:text-blue-800"
         }`}
       >
-        <div
-          className={`text-sm font-semibold mb-1 ${
-            isDark ? "text-cyan-300" : "text-blue-800"
+        {showExplanation ? "Hide explanation" : "Show explanation"}
+      </button>
+
+      {showExplanation && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 text-[11px] leading-5 ${
+            isDark ? "border-slate-700 bg-slate-900/70 text-slate-300" : "border-slate-300 bg-slate-50 text-slate-700"
           }`}
         >
-          Why we use this step
-        </div>
-        <p
-          className={`text-[11px] leading-5 ${
-            isDark ? "text-slate-300" : "text-slate-700"
-          }`}
-        >
-          Masked self-attention prevents the decoder from "cheating" by looking
-          at future tokens during generation. Since the decoder generates one
-          token at a time, each position should only see the tokens that came
-          before it. This is enforced by masking future positions.
-        </p>
-        <p className={`text-[10px] italic mt-2 pt-2 ${isDark ? "border-t border-slate-700/50 text-cyan-300/70" : "border-t border-slate-300/50 text-blue-600/80"}`}>
-          Like reading a book left-to-right — you can reference what you've already read, but you can't peek at the next chapter.
-        </p>
-      </div>
+          Masked self-attention prevents the decoder from "cheating" by looking at future tokens. Each position can only attend to itself and previous tokens, enforcing left-to-right autoregressive generation.
+        </motion.div>
+      )}
 
-      {/* Data flow */}
-      <div className="w-full max-w-[760px] mb-5 grid grid-cols-3 gap-2">
-        <div className={`rounded-xl border p-3 ${isDark ? "border-emerald-500/30 bg-emerald-500/5" : "border-emerald-400 bg-emerald-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-emerald-300" : "text-emerald-700"}`}>From previous step</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Position-encoded vectors from the Positional Encoding step. Each vector now carries both meaning (from embedding) and position (from positional encoding).</p>
-        </div>
-        <div className={`rounded-xl border p-3 ${isDark ? "border-cyan-500/30 bg-cyan-500/5" : "border-blue-400 bg-blue-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-cyan-300" : "text-blue-700"}`}>What happens here</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{"Each token creates a Query (Q), Key (K), and Value (V) vector. Q×K scores show how relevant each token is. Future tokens are masked with −∞ so they get 0 attention after softmax — the decoder cannot 'cheat' by looking ahead."}</p>
-        </div>
-        <div className={`rounded-xl border p-3 ${isDark ? "border-amber-500/30 bg-amber-500/5" : "border-amber-400 bg-amber-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-amber-300" : "text-amber-700"}`}>Goes to next step</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>The attention-weighted output goes through Add &amp; Normalize (residual connection + layer normalization), then to Cross-Attention.</p>
-        </div>
-      </div>
-
-      <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4 mb-5">
+      <div className="w-full max-w-[760px] mb-5">
         <div
           className={`rounded-xl border p-4 ${
             isDark
@@ -266,50 +218,6 @@ function DecoderMaskedAttentionStep({ active, tokens = [], theme }) {
             </p>
           </div>
         </div>
-
-        <div
-          className={`rounded-xl border p-4 ${
-            isDark
-              ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
-          }`}
-        >
-          <h3
-            className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
-            }`}
-          >
-            Encoder vs Decoder attention
-          </h3>
-          <div
-            className={`text-[11px] leading-5 space-y-2 ${
-              isDark ? "text-slate-300" : "text-slate-700"
-            }`}
-          >
-            <p>
-              In the{" "}
-              <span className={isDark ? "text-white" : "text-slate-900"}>
-                encoder
-              </span>
-              , every token can attend to every other token (full attention).
-            </p>
-            <p>
-              In the{" "}
-              <span className={isDark ? "text-white" : "text-slate-900"}>
-                decoder
-              </span>
-              , tokens can only attend to{" "}
-              <span className={isDark ? "text-white" : "text-slate-900"}>
-                past
-              </span>{" "}
-              tokens (masked / causal attention).
-            </p>
-            <p>
-              This is because the decoder generates tokens one at a time, so it
-              must not have access to future information.
-            </p>
-          </div>
-        </div>
       </div>
 
       <div
@@ -336,7 +244,7 @@ function DecoderMaskedAttentionStep({ active, tokens = [], theme }) {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-4 justify-center">
+        <div className="flex flex-wrap gap-2 mb-4 justify-center items-center">
           {decoderTokens.map((tok, i) => (
             <motion.button
               key={tok + i}
@@ -363,6 +271,15 @@ function DecoderMaskedAttentionStep({ active, tokens = [], theme }) {
               {tok}
             </motion.button>
           ))}
+          {hiddenTokenCount > 0 && (
+            <span
+              className={`text-xs italic px-2 ${
+                isDark ? "text-slate-500" : "text-slate-500"
+              }`}
+            >
+              ...and {hiddenTokenCount} more token{hiddenTokenCount > 1 ? "s" : ""}
+            </span>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
@@ -614,326 +531,7 @@ function DecoderMaskedAttentionStep({ active, tokens = [], theme }) {
         </div>
       </div>
 
-      <div
-        className={`w-full rounded-xl border p-4 mb-5 ${
-          isDark
-            ? "border-slate-700 bg-slate-900/70"
-            : "border-slate-400/70 bg-slate-50"
-        }`}
-      >
-        <div
-          className={`text-sm font-semibold mb-3 text-center ${
-            isDark ? "text-cyan-300" : "text-blue-800"
-          }`}
-        >
-          Visual attention flow
-        </div>
-
-        <div className="flex flex-wrap gap-3 justify-center items-end">
-          {decoderTokens.map((tok, i) => (
-            <motion.div
-              key={tok + i}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: active ? 1 : 0.3, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="flex flex-col items-center gap-2"
-            >
-              <div className="flex flex-col items-center gap-1">
-                {decoderTokens.map((otherTok, j) => {
-                  if (j > i) {
-                    return (
-                      <motion.div
-                        key={`blocked-${i}-${j}`}
-                        animate={
-                          active
-                            ? { opacity: [0.3, 0.6, 0.3] }
-                            : { opacity: 0.3 }
-                        }
-                        transition={{
-                          duration: 1.5,
-                          repeat: Infinity,
-                          delay: j * 0.1,
-                        }}
-                        className={`text-[9px] px-1.5 py-0.5 rounded ${
-                          isDark
-                            ? "text-red-300/50 bg-red-400/5 border border-red-400/20"
-                            : "text-red-400 bg-red-50 border border-red-200"
-                        }`}
-                      >
-                        🔒 {otherTok}
-                      </motion.div>
-                    );
-                  }
-                  if (j === i) return null;
-                  return (
-                    <motion.div
-                      key={`allowed-${i}-${j}`}
-                      animate={
-                        active
-                          ? {
-                              boxShadow: isDark
-                                ? [
-                                    "0 0 0px rgba(34,211,238,0)",
-                                    "0 0 10px rgba(34,211,238,0.3)",
-                                    "0 0 0px rgba(34,211,238,0)",
-                                  ]
-                                : "none",
-                            }
-                          : {}
-                      }
-                      transition={{
-                        duration: 1.8,
-                        repeat: Infinity,
-                        delay: j * 0.08,
-                      }}
-                      className={`text-[9px] px-1.5 py-0.5 rounded ${
-                        isDark
-                          ? "text-green-300 bg-green-400/10 border border-green-400/30"
-                          : "text-green-700 bg-green-50 border border-green-300"
-                      }`}
-                    >
-                      ✓ {otherTok}
-                    </motion.div>
-                  );
-                })}
-              </div>
-
-              <motion.div
-                animate={
-                  active && focusedIndex === i
-                    ? {
-                        boxShadow: isDark
-                          ? "0 0 16px rgba(34,211,238,0.4)"
-                          : "0 0 12px rgba(59,130,246,0.3)",
-                      }
-                    : {}
-                }
-                className={`px-3 py-1.5 rounded-lg border text-xs font-medium ${
-                  isDark
-                    ? "border-cyan-400 text-cyan-300 bg-slate-900"
-                    : "border-blue-400 text-blue-800 bg-white"
-                }`}
-              >
-                {tok}
-              </motion.div>
-
-              <span
-                className={`text-[9px] ${
-                  isDark ? "text-slate-500" : "text-slate-500"
-                }`}
-              >
-                pos {i}
-              </span>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      <p
-        className={`text-[11px] text-center max-w-[700px] leading-5 mb-5 ${
-          isDark ? "text-slate-500" : "text-slate-600"
-        }`}
-      >
-        The causal mask ensures the decoder generates tokens autoregressively.
-        Each token builds context only from what has been generated before it —
-        never from the future.
-      </p>
-
-      <button
-        onClick={() => setShowAddNorm(!showAddNorm)}
-        className={`px-5 py-2 rounded-lg border text-sm font-medium transition mb-4 ${
-          showAddNorm
-            ? isDark
-              ? "border-green-400 text-green-300 bg-green-400/10 hover:bg-green-400/20"
-              : "border-green-500 text-green-700 bg-green-100 hover:bg-green-200"
-            : isDark
-            ? "border-amber-400 text-amber-300 bg-amber-400/10 hover:bg-amber-400/20"
-            : "border-amber-500 text-amber-700 bg-amber-100 hover:bg-amber-200"
-        }`}
-      >
-        {showAddNorm ? "Hide Add & Normalize ▲" : "Show Add & Normalize ▼"}
-      </button>
-
-      <AnimatePresence>
-        {showAddNorm && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full overflow-hidden"
-          >
-            <div
-              className={`w-full rounded-xl border p-5 mb-4 ${
-                isDark
-                  ? "border-green-400/30 bg-green-400/5"
-                  : "border-green-300 bg-green-50"
-              }`}
-            >
-              <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                <h3
-                  className={`text-sm font-semibold ${
-                    isDark ? "text-green-300" : "text-green-700"
-                  }`}
-                >
-                  Add &amp; Norm after Masked Self-Attention
-                </h3>
-                <span
-                  className={`text-[10px] italic ${
-                    isDark ? "text-slate-500" : "text-slate-500"
-                  }`}
-                >
-                  input + MaskedAttn(input) → normalize
-                </span>
-              </div>
-
-              <div className="w-full space-y-3">
-                {addNormRows.map((row, rIdx) => (
-                  <motion.div
-                    key={row.token + rIdx}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: active ? 1 : 0.3, y: 0 }}
-                    transition={{ delay: rIdx * 0.08 }}
-                    className={`rounded-lg border p-3 ${
-                      isDark
-                        ? "border-slate-700 bg-slate-900/70"
-                        : "border-slate-400/70 bg-white"
-                    }`}
-                  >
-                    <div
-                      className={`text-sm font-medium mb-2 ${
-                        isDark ? "text-cyan-300" : "text-blue-800"
-                      }`}
-                    >
-                      {row.token}
-                    </div>
-
-                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                      <span
-                        className={`text-[10px] min-w-[70px] ${
-                          isDark ? "text-slate-400" : "text-slate-600"
-                        }`}
-                      >
-                        Input:
-                      </span>
-                      {row.input.map((v, i) => (
-                        <span
-                          key={`in-${rIdx}-${i}`}
-                          className={`px-2 py-0.5 text-[11px] rounded border ${
-                            isDark
-                              ? "border-cyan-400 text-cyan-300"
-                              : "border-blue-400 text-blue-800 bg-blue-100"
-                          }`}
-                        >
-                          {v.toFixed(2)}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                      <span
-                        className={`text-[10px] min-w-[70px] ${
-                          isDark ? "text-slate-400" : "text-slate-600"
-                        }`}
-                      >
-                        Sub-layer:
-                      </span>
-                      {row.sublayerOutput.map((v, i) => (
-                        <span
-                          key={`sub-${rIdx}-${i}`}
-                          className={`px-2 py-0.5 text-[11px] rounded border ${
-                            isDark
-                              ? "border-purple-400 text-purple-300"
-                              : "border-violet-300 text-violet-700 bg-violet-100"
-                          }`}
-                        >
-                          {v.toFixed(2)}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                      <span
-                        className={`text-[10px] min-w-[70px] ${
-                          isDark ? "text-slate-400" : "text-slate-600"
-                        }`}
-                      >
-                        Residual:
-                      </span>
-                      <motion.span
-                        animate={
-                          active
-                            ? { scale: [1, 1.15, 1], opacity: [0.7, 1, 0.7] }
-                            : {}
-                        }
-                        transition={{ duration: 1.4, repeat: Infinity }}
-                        className={isDark ? "text-cyan-400 text-xs" : "text-blue-600 text-xs"}
-                      >
-                        +
-                      </motion.span>
-                      {row.residual.map((v, i) => (
-                        <span
-                          key={`res-${rIdx}-${i}`}
-                          className={`px-2 py-0.5 text-[11px] rounded border ${
-                            isDark
-                              ? "border-amber-400 text-amber-300"
-                              : "border-amber-300 text-amber-700 bg-amber-100"
-                          }`}
-                        >
-                          {v.toFixed(2)}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span
-                        className={`text-[10px] min-w-[70px] ${
-                          isDark ? "text-slate-400" : "text-slate-600"
-                        }`}
-                      >
-                        Normalized:
-                      </span>
-                      {row.normalized.map((v, i) => (
-                        <motion.span
-                          key={`norm-${rIdx}-${i}`}
-                          animate={
-                            active
-                              ? {
-                                  y: [0, -2, 0],
-                                  boxShadow: isDark
-                                    ? [
-                                        "0 0 0px rgba(74,222,128,0)",
-                                        "0 0 12px rgba(74,222,128,0.35)",
-                                        "0 0 0px rgba(74,222,128,0)",
-                                      ]
-                                    : "none",
-                                }
-                              : {}
-                          }
-                          transition={{
-                            duration: 1.4,
-                            repeat: Infinity,
-                            delay: i * 0.1,
-                          }}
-                          className={`px-2 py-0.5 text-[11px] rounded border ${
-                            isDark
-                              ? "border-green-400 text-green-300"
-                              : "border-green-400 text-green-700 bg-green-100"
-                          }`}
-                        >
-                          {v.toFixed(2)}
-                        </motion.span>
-                      ))}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className={`w-full max-w-[760px] mt-5 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-400 bg-violet-50"}`}>
+      <div className={`w-full max-w-[760px] mt-2 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-400 bg-violet-50"}`}>
         <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-violet-300" : "text-violet-700"}`}>Key insight</div>
         <p className={`text-[10px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>Masking prevents the decoder from "cheating" by looking at future tokens. This ensures the model learns to predict each word using only past context, just like how you generate speech one word at a time.</p>
       </div>

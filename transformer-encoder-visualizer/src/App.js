@@ -34,6 +34,51 @@ function App() {
     () => Number(localStorage.getItem("postQuizScore")) || 0
   );
 
+  const [encoderPostCompleted, setEncoderPostCompleted] = useState(
+    () => localStorage.getItem("encoderPostCompleted") === "true"
+  );
+  const [encoderPostScore, setEncoderPostScore] = useState(
+    () => Number(localStorage.getItem("encoderPostScore")) || 0
+  );
+  const [decoderPreCompleted, setDecoderPreCompleted] = useState(
+    () => localStorage.getItem("decoderPreCompleted") === "true"
+  );
+  const [decoderPreScore, setDecoderPreScore] = useState(
+    () => Number(localStorage.getItem("decoderPreScore")) || 0
+  );
+  const [decoderPostCompleted, setDecoderPostCompleted] = useState(
+    () => localStorage.getItem("decoderPostCompleted") === "true"
+  );
+  const [decoderPostScore, setDecoderPostScore] = useState(
+    () => Number(localStorage.getItem("decoderPostScore")) || 0
+  );
+
+  const resetSession = () => {
+    setDbRecordId(null);
+    setPreQuizCompleted(false);
+    setPreQuizScore(0);
+    setPostQuizCompleted(false);
+    setPostQuizScore(0);
+    setEncoderPostCompleted(false);
+    setEncoderPostScore(0);
+    setDecoderPreCompleted(false);
+    setDecoderPreScore(0);
+    setDecoderPostCompleted(false);
+    setDecoderPostScore(0);
+
+    [
+      "dbRecordId",
+      "preQuizCompleted", "preQuizScore",
+      "postQuizCompleted", "postQuizScore",
+      "encoderPostCompleted", "encoderPostScore",
+      "decoderPreCompleted", "decoderPreScore",
+      "decoderPostCompleted", "decoderPostScore",
+      "postQuizAnswers",
+      "encoderPostQuizAnswers",
+      "decoderPostQuizAnswers",
+    ].forEach((key) => localStorage.removeItem(key));
+  };
+
   const submitPreQuiz = async (score) => {
     setPreQuizScore(score);
     setPreQuizCompleted(true);
@@ -63,6 +108,52 @@ function App() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: dbRecordId, postQuizScore: score }),
+      });
+    } catch (_) {}
+  };
+
+  const submitEncoderPostQuiz = async (score) => {
+    setEncoderPostScore(score);
+    setEncoderPostCompleted(true);
+    localStorage.setItem("encoderPostCompleted", "true");
+    localStorage.setItem("encoderPostScore", String(score));
+    setPostQuizScore(score);
+    setPostQuizCompleted(true);
+    localStorage.setItem("postQuizCompleted", "true");
+    localStorage.setItem("postQuizScore", String(score));
+    try {
+      await fetch("/api/save-quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: dbRecordId, quizType: "encoderPostScore", score }),
+      });
+    } catch (_) {}
+  };
+
+  const submitDecoderPreQuiz = async (score) => {
+    setDecoderPreScore(score);
+    setDecoderPreCompleted(true);
+    localStorage.setItem("decoderPreCompleted", "true");
+    localStorage.setItem("decoderPreScore", String(score));
+    try {
+      await fetch("/api/save-quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: dbRecordId, quizType: "decoderPreScore", score }),
+      });
+    } catch (_) {}
+  };
+
+  const submitDecoderPostQuiz = async (score) => {
+    setDecoderPostScore(score);
+    setDecoderPostCompleted(true);
+    localStorage.setItem("decoderPostCompleted", "true");
+    localStorage.setItem("decoderPostScore", String(score));
+    try {
+      await fetch("/api/save-quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: dbRecordId, quizType: "decoderPostScore", score }),
       });
     } catch (_) {}
   };
@@ -156,6 +247,16 @@ function App() {
           postQuizScore={postQuizScore}
           submitPreQuiz={submitPreQuiz}
           submitPostQuiz={submitPostQuiz}
+          resetSession={resetSession}
+          encoderPostCompleted={encoderPostCompleted}
+          encoderPostScore={encoderPostScore}
+          submitEncoderPostQuiz={submitEncoderPostQuiz}
+          decoderPreCompleted={decoderPreCompleted}
+          decoderPreScore={decoderPreScore}
+          submitDecoderPreQuiz={submitDecoderPreQuiz}
+          decoderPostCompleted={decoderPostCompleted}
+          decoderPostScore={decoderPostScore}
+          submitDecoderPostQuiz={submitDecoderPostQuiz}
         />
       </div>
     </div>

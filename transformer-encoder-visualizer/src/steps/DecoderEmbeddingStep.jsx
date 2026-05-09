@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 function generateEmbeddingVector(word) {
   const cleanWord = (word || "").toLowerCase();
@@ -28,9 +28,10 @@ function getDecoderEmbedding(token) {
 
 function DecoderEmbeddingStep({ active, tokens = [], theme }) {
   const isDark = theme === "dark";
+  const [showExplanation, setShowExplanation] = useState(false);
 
   const safeTokens = useMemo(
-    () => (tokens.length ? tokens.slice(0, 6) : ["token"]),
+    () => (tokens.length ? tokens.slice(0, 3) : ["token"]),
     [tokens]
   );
 
@@ -67,125 +68,6 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
       >
         Each decoder token is converted into a vector representation
       </p>
-
-      <div
-        className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 ${
-          isDark
-            ? "border-cyan-400/30 bg-cyan-400/5"
-            : "border-blue-400 bg-blue-50"
-        }`}
-      >
-        <div
-          className={`text-sm font-semibold mb-1 ${
-            isDark ? "text-cyan-300" : "text-blue-800"
-          }`}
-        >
-          Why we use this step
-        </div>
-        <p
-          className={`text-[11px] leading-5 ${
-            isDark ? "text-slate-300" : "text-slate-700"
-          }`}
-        >
-          Just like the encoder, the decoder cannot work with raw tokens
-          directly. Each token — including the special &lt;START&gt; token —
-          must first be converted into a numerical vector so the Transformer can
-          process, compare, and transform it.
-        </p>
-        <p className={`text-[10px] italic mt-2 pt-2 ${isDark ? "border-t border-slate-700/50 text-cyan-300/70" : "border-t border-slate-300/50 text-blue-600/80"}`}>
-          Like looking up a word in a dictionary — each token gets a fixed numerical "definition" the model can work with.
-        </p>
-      </div>
-
-      {/* Data flow */}
-      <div className="w-full max-w-[760px] mb-5 grid grid-cols-3 gap-2">
-        <div className={`rounded-xl border p-3 ${isDark ? "border-emerald-500/30 bg-emerald-500/5" : "border-emerald-400 bg-emerald-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-emerald-300" : "text-emerald-700"}`}>From previous step</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Text tokens from the Token step (e.g., &lt;START&gt;, word1, word2...). These are still raw text — the model cannot compute with text directly.</p>
-        </div>
-        <div className={`rounded-xl border p-3 ${isDark ? "border-cyan-500/30 bg-cyan-500/5" : "border-blue-400 bg-blue-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-cyan-300" : "text-blue-700"}`}>What happens here</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Each token is looked up in a learned embedding table to get a fixed-size vector (512 dimensions in T5). This vector captures the word's meaning in numerical form.</p>
-        </div>
-        <div className={`rounded-xl border p-3 ${isDark ? "border-amber-500/30 bg-amber-500/5" : "border-amber-400 bg-amber-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-amber-300" : "text-amber-700"}`}>Goes to next step</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>These embedding vectors have meaning but no position information. The Positional Encoding step adds position so the model knows token order.</p>
-        </div>
-      </div>
-
-      <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4 mb-6">
-        <div
-          className={`rounded-xl border p-4 ${
-            isDark
-              ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
-          }`}
-        >
-          <h3
-            className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
-            }`}
-          >
-            How does decoder embedding work?
-          </h3>
-          <div
-            className={`text-[11px] leading-5 space-y-2 ${
-              isDark ? "text-slate-300" : "text-slate-700"
-            }`}
-          >
-            <p>
-              The decoder has its own embedding table, separate from the
-              encoder's.
-            </p>
-            <p>
-              Each token in the decoder's vocabulary is mapped to a unique
-              vector. The &lt;START&gt; token has its own fixed embedding
-              vector.
-            </p>
-            <p>
-              In this demo, we use the same letter-based rule to generate stable
-              vectors, plus a fixed vector for &lt;START&gt;.
-            </p>
-          </div>
-        </div>
-
-        <div
-          className={`rounded-xl border p-4 ${
-            isDark
-              ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
-          }`}
-        >
-          <h3
-            className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
-            }`}
-          >
-            Encoder vs Decoder embedding
-          </h3>
-          <div
-            className={`text-[11px] leading-5 space-y-2 ${
-              isDark ? "text-slate-300" : "text-slate-700"
-            }`}
-          >
-            <p>
-              Both the encoder and decoder convert tokens to vectors. The
-              process is the same, but the embedding tables can be different.
-            </p>
-            <p>
-              The encoder embeds the{" "}
-              <span className={isDark ? "text-white" : "text-slate-900"}>
-                input
-              </span>{" "}
-              sentence tokens. The decoder embeds the{" "}
-              <span className={isDark ? "text-white" : "text-slate-900"}>
-                output
-              </span>{" "}
-              tokens it has generated so far.
-            </p>
-          </div>
-        </div>
-      </div>
 
       <div
         className={`w-full max-w-[760px] rounded-xl border p-4 mb-4 ${
@@ -332,6 +214,32 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
           </motion.div>
         ))}
       </div>
+
+      <button
+        onClick={() => setShowExplanation((v) => !v)}
+        className={`mt-5 text-[11px] font-medium underline underline-offset-2 ${
+          isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-700 hover:text-blue-800"
+        }`}
+      >
+        {showExplanation ? "Hide explanation" : "Show explanation"}
+      </button>
+
+      {showExplanation && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`w-full max-w-[700px] mt-3 rounded-xl border p-3 text-[11px] leading-5 ${
+            isDark ? "border-slate-700 bg-slate-900/70 text-slate-300" : "border-slate-300 bg-slate-50 text-slate-700"
+          }`}
+        >
+          <p className="mb-2">
+            Just like the encoder, the decoder cannot work with raw tokens directly. Each token — including the special &lt;START&gt; token — must first be converted into a numerical vector so the Transformer can process it.
+          </p>
+          <p>
+            The decoder has its own embedding table, separate from the encoder's. The &lt;START&gt; token uses a fixed embedding vector.
+          </p>
+        </motion.div>
+      )}
 
       <div className={`w-full max-w-[760px] mt-5 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-400 bg-violet-50"}`}>
         <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-violet-300" : "text-violet-700"}`}>Key insight</div>

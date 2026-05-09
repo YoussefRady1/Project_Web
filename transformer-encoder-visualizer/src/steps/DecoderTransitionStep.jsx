@@ -48,6 +48,7 @@ function generateEncoderOutputVector(word, index, tokenCount) {
 
 function DecoderTransitionStep({ active, tokens = [], theme }) {
   const isDark = theme === "dark";
+  const [showExplanation, setShowExplanation] = useState(false);
   const [phase, setPhase] = useState(0);
 
   const safeTokens = useMemo(
@@ -94,50 +95,31 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
         Passing contextual memory from the encoder to the decoder
       </p>
 
-      <div
-        className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 ${
-          isDark
-            ? "border-cyan-400/30 bg-cyan-400/5"
-            : "border-blue-400 bg-blue-50"
+      <button
+        onClick={() => setShowExplanation((v) => !v)}
+        className={`mb-4 text-[11px] font-medium underline underline-offset-2 ${
+          isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-700 hover:text-blue-800"
         }`}
       >
-        <div
-          className={`text-sm font-semibold mb-1 ${
-            isDark ? "text-cyan-300" : "text-blue-800"
-          }`}
-        >
-          Why we need this transfer
-        </div>
-        <p
-          className={`text-[11px] leading-5 ${
-            isDark ? "text-slate-300" : "text-slate-700"
-          }`}
-        >
-          The encoder has finished understanding the input sentence. Now it sends
-          its contextual output vectors to the decoder, so the decoder can use
-          this understanding while generating the output sequence one token at a
-          time.
-        </p>
-        <p className={`text-[10px] italic mt-2 pt-2 ${isDark ? "border-t border-slate-700/50 text-cyan-300/70" : "border-t border-slate-300/50 text-blue-600/80"}`}>
-          Like passing notes from a reader to a writer — the encoder's understanding becomes the decoder's reference material.
-        </p>
-      </div>
+        {showExplanation ? "Hide explanation" : "Show explanation"}
+      </button>
 
-      {/* Data flow */}
-      <div className="w-full max-w-[760px] mb-5 grid grid-cols-3 gap-2">
-        <div className={`rounded-xl border p-3 ${isDark ? "border-emerald-500/30 bg-emerald-500/5" : "border-emerald-400 bg-emerald-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-emerald-300" : "text-emerald-700"}`}>From previous step</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>The encoder processed the input sentence through self-attention and feed-forward layers, producing one contextualized vector per input token.</p>
-        </div>
-        <div className={`rounded-xl border p-3 ${isDark ? "border-cyan-500/30 bg-cyan-500/5" : "border-blue-400 bg-blue-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-cyan-300" : "text-blue-700"}`}>What happens here</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>These encoder output vectors are transferred to the decoder as its 'memory.' They carry the encoder's full understanding of the input sentence.</p>
-        </div>
-        <div className={`rounded-xl border p-3 ${isDark ? "border-amber-500/30 bg-amber-500/5" : "border-amber-400 bg-amber-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-amber-300" : "text-amber-700"}`}>Goes to next step</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>The decoder will use these vectors as Keys (K) and Values (V) in Cross-Attention (Step 6), allowing it to reference the input while generating output.</p>
-        </div>
-      </div>
+      {showExplanation && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`w-full max-w-[700px] mb-5 rounded-xl border p-3 text-[11px] leading-5 ${
+            isDark ? "border-slate-700 bg-slate-900/70 text-slate-300" : "border-slate-300 bg-slate-50 text-slate-700"
+          }`}
+        >
+          <p className="mb-2">
+            The encoder has finished understanding the input sentence. Now it sends its contextual output vectors to the decoder, so the decoder can use this understanding while generating the output sequence.
+          </p>
+          <p>
+            The decoder will use these vectors as Keys (K) and Values (V) in Cross-Attention, allowing it to reference the input while generating output.
+          </p>
+        </motion.div>
+      )}
 
       {phase === 0 && (
         <motion.button
