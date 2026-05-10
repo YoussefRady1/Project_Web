@@ -233,7 +233,7 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
           }`}
         >
           <p className="mb-2">
-            Just like the encoder, the decoder cannot work with raw tokens directly. Each token — including the special &lt;START&gt; token — must first be converted into a numerical vector so the Transformer can process it.
+            Just like the encoder, the decoder cannot work with raw tokens directly. Each token including the special &lt;START&gt; token must first be converted into a numerical vector so the Transformer can process it.
           </p>
           <p>
             The decoder has its own embedding table, separate from the encoder's. The &lt;START&gt; token uses a fixed embedding vector.

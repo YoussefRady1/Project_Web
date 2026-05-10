@@ -163,7 +163,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
           isDark ? "text-slate-500" : "text-slate-500"
         }`}
       >
-        This step runs after the full decoder stack — it is not part of the
+        This step runs after the full decoder stack, it is not part of the
         decoder layers
       </p>
 
@@ -211,7 +211,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
         ))}
       </div>
 
-      {/* How it works panel — only when explanation is shown */}
+      {/* How it works panel, only when explanation is shown */}
       {showExplanation && (
         <motion.div
           initial={{ opacity: 0, y: 8 }}
@@ -300,7 +300,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
                     : "text-slate-400"
                 }`}
               >
-                → {tok}
+                → {tokens[i] || tok}
               </span>
             </button>
           ))}
@@ -320,7 +320,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
             isDark ? "text-cyan-300" : "text-blue-800"
           }`}
         >
-          Vocabulary probabilities — position {selectedPos}
+          Vocabulary probabilities, position {selectedPos}
         </div>
         <div
           className={`text-[10px] text-center mb-4 ${
@@ -441,7 +441,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
             isDark ? "text-cyan-400/60" : "text-blue-600"
           }`}
         >
-          Showing top 5 from a demo vocabulary — a real T5 model scores all
+          Showing top 5 from a demo vocabulary, a real T5 model scores all
           32,128 vocabulary tokens the same way.
         </div>
       </div>

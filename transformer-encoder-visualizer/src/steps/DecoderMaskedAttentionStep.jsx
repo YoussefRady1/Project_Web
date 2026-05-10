@@ -71,11 +71,9 @@ function DecoderMaskedAttentionStep({ active, tokens = [], theme }) {
   const [showExplanation, setShowExplanation] = useState(false);
 
   const safeTokens = useMemo(
-    () => (tokens.length ? tokens.slice(0, 3) : ["token"]),
+    () => (tokens.length ? tokens.slice(0, 10) : ["token"]),
     [tokens]
   );
-
-  const hiddenTokenCount = Math.max(0, tokens.length - 3);
 
   const decoderTokens = useMemo(
     () => ["<START>", ...safeTokens],
@@ -140,7 +138,7 @@ function DecoderMaskedAttentionStep({ active, tokens = [], theme }) {
           isDark ? "text-slate-400" : "text-slate-700"
         }`}
       >
-        The decoder can only attend to past and current tokens — future tokens
+        The decoder can only attend to past and current tokens, future tokens
         are masked
       </p>
 
@@ -213,7 +211,7 @@ function DecoderMaskedAttentionStep({ active, tokens = [], theme }) {
               <span className={isDark ? "text-white" : "text-slate-900"}>
                 causal mask
               </span>{" "}
-              — a triangular pattern where each token can only see itself and
+               a triangular pattern where each token can only see itself and
               previous tokens.
             </p>
           </div>
@@ -271,15 +269,6 @@ function DecoderMaskedAttentionStep({ active, tokens = [], theme }) {
               {tok}
             </motion.button>
           ))}
-          {hiddenTokenCount > 0 && (
-            <span
-              className={`text-xs italic px-2 ${
-                isDark ? "text-slate-500" : "text-slate-500"
-              }`}
-            >
-              ...and {hiddenTokenCount} more token{hiddenTokenCount > 1 ? "s" : ""}
-            </span>
-          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
@@ -454,7 +443,7 @@ function DecoderMaskedAttentionStep({ active, tokens = [], theme }) {
             isDark ? "text-slate-400" : "text-slate-700"
           }`}
         >
-          Green cells = allowed attention. Red cells with 🔒 = masked future
+          Blue cells = allowed attention. Red cells with 🔒 = masked future
           positions (set to −∞ before softmax).
         </div>
 
