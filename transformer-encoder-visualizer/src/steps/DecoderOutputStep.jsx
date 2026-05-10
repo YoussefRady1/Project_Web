@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState, useEffect, useMemo } from "react";
 
 const SENTENCE_TRANSLATIONS = {
@@ -65,21 +65,6 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
     };
   }, [autoPlay, stepIdx, totalSteps]);
 
-  const inputSeq = useMemo(() => {
-    const arr = ["<START>"];
-    for (let i = 0; i < stepIdx; i++) {
-      if (i < translation.length) arr.push(translation[i]);
-    }
-    return arr;
-  }, [stepIdx, translation]);
-
-  const justPredicted =
-    stepIdx === 0
-      ? null
-      : stepIdx <= translation.length
-      ? translation[stepIdx - 1]
-      : "<END>";
-
   const isComplete = stepIdx >= totalSteps;
 
   const handleNext = () => {
@@ -127,166 +112,48 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
       </p>
 
       <div className="w-full flex flex-col items-center gap-4">
-        {/* Step counter */}
-        <div
-          className={`text-[11px] uppercase tracking-wider font-semibold ${
-            isDark ? "text-cyan-300" : "text-blue-800"
-          }`}
-        >
-          Run {Math.min(stepIdx + 1, totalSteps)} of {totalSteps}
-        </div>
+        {/* Start hint */}
+        {stepIdx === 0 && (
+          <div className={`w-full max-w-[680px] rounded-xl border p-4 text-center ${isDark ? "border-slate-700 bg-slate-900/60" : "border-slate-300 bg-slate-50"}`}>
+            <p className={`text-sm font-medium mb-1 ${isDark ? "text-cyan-300" : "text-blue-800"}`}>How autoregressive generation works</p>
+            <p className={`text-[11px] leading-5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+              The decoder starts with only <strong>&lt;START&gt;</strong> and predicts one token. That token is added to the input, and the decoder runs again. This repeats until <strong>&lt;END&gt;</strong> is predicted.
+            </p>
+          </div>
+        )}
 
-        {/* Input box */}
-        <div className="w-full max-w-[680px]">
-          <div
-            className={`text-[10px] uppercase tracking-wider font-semibold mb-1.5 text-center ${
-              isDark ? "text-slate-500" : "text-slate-500"
-            }`}
-          >
-            Decoder sees as input
+        {/* Generation History Log */}
+        {stepIdx > 0 && (
+          <div className={`w-full max-w-[680px] rounded-xl border p-3 ${isDark ? "border-slate-700 bg-slate-900/60" : "border-slate-300 bg-slate-50"}`}>
+            <div className={`text-[10px] uppercase tracking-wider font-semibold mb-2 flex items-center gap-2 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+              <span>Generation Log</span>
+              <span className={`px-1.5 py-0.5 rounded text-[9px] ${isDark ? "bg-slate-800 text-slate-400" : "bg-slate-200 text-slate-600"}`}>{stepIdx} run{stepIdx > 1 ? "s" : ""} so far</span>
+            </div>
+            <div className="space-y-1 max-h-[160px] overflow-y-auto">
+              {Array.from({ length: stepIdx }, (_, i) => {
+                const inputToks = ["<START>", ...translation.slice(0, i)];
+                const predicted = i < translation.length ? translation[i] : "<END>";
+                return (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0 }}
+                    className={`flex items-center gap-2 text-[10px] rounded-lg px-2 py-1.5 ${isDark ? "bg-slate-800/50" : "bg-white border border-slate-200"}`}
+                  >
+                    <span className={`font-mono shrink-0 w-10 ${isDark ? "text-slate-500" : "text-slate-400"}`}>Run {i + 1}:</span>
+                    <span className={`font-mono truncate ${isDark ? "text-slate-400" : "text-slate-600"}`}>[{inputToks.join(", ")}]</span>
+                    <span className={`shrink-0 ${isDark ? "text-slate-600" : "text-slate-400"}`}>→</span>
+                    <span className={`font-bold shrink-0 px-1.5 py-0.5 rounded ${
+                      predicted === "<END>"
+                        ? isDark ? "text-purple-300 bg-purple-400/15" : "text-purple-700 bg-purple-100"
+                        : isDark ? "text-green-300 bg-green-400/15" : "text-green-700 bg-green-100"
+                    }`}>{predicted}</span>
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
-          <div
-            className={`rounded-xl border p-3 flex flex-wrap gap-2 justify-center min-h-[58px] items-center ${
-              isDark ? "border-slate-700 bg-slate-900/60" : "border-slate-300 bg-slate-50"
-            }`}
-          >
-            {inputSeq.map((tok, i) => {
-              const isStart = tok === "<START>";
-              const isJustAdded =
-                !isStart && i === inputSeq.length - 1 && !thinking;
-              return (
-                <motion.div
-                  key={tok + i + stepIdx}
-                  initial={isJustAdded ? { opacity: 0, scale: 0.5, y: 10 } : false}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ type: "spring", stiffness: 280, damping: 22 }}
-                  className={`px-3 py-1.5 rounded-lg border text-sm font-medium ${
-                    isStart
-                      ? isDark
-                        ? "border-cyan-400 text-cyan-300 bg-cyan-400/10"
-                        : "border-blue-400 text-blue-800 bg-blue-100"
-                      : isDark
-                      ? "border-slate-600 text-slate-300 bg-slate-800"
-                      : "border-slate-300 text-slate-700 bg-white"
-                  }`}
-                >
-                  {tok}
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Decoder machine */}
-        <motion.div
-          animate={
-            thinking
-              ? {
-                  scale: [1, 1.04, 1],
-                  boxShadow: isDark
-                    ? [
-                        "0 0 0px rgba(34,211,238,0)",
-                        "0 0 26px rgba(34,211,238,0.55)",
-                        "0 0 0px rgba(34,211,238,0)",
-                      ]
-                    : [
-                        "0 0 0px rgba(59,130,246,0)",
-                        "0 0 22px rgba(59,130,246,0.4)",
-                        "0 0 0px rgba(59,130,246,0)",
-                      ],
-                }
-              : {}
-          }
-          transition={{ duration: 0.7, repeat: thinking ? Infinity : 0 }}
-          className={`flex items-center gap-3 px-5 py-3 rounded-xl border-2 ${
-            isDark
-              ? "border-cyan-400 bg-slate-900/70 text-cyan-300"
-              : "border-blue-400 bg-white text-blue-800"
-          }`}
-        >
-          <span className="text-2xl">⚙</span>
-          <div className="flex flex-col">
-            <span className="text-sm font-bold">Decoder</span>
-            <span className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-              {thinking ? "running all layers..." : "ready"}
-            </span>
-          </div>
-        </motion.div>
-
-        {/* Predicted token */}
-        <div className="w-full max-w-[680px]">
-          <div
-            className={`text-[10px] uppercase tracking-wider font-semibold mb-1.5 text-center ${
-              isDark ? "text-slate-500" : "text-slate-500"
-            }`}
-          >
-            Decoder predicts next token
-          </div>
-          <div
-            className={`rounded-xl border p-3 flex justify-center items-center min-h-[58px] ${
-              isDark ? "border-slate-700 bg-slate-900/60" : "border-slate-300 bg-slate-50"
-            }`}
-          >
-            <AnimatePresence mode="wait">
-              {thinking ? (
-                <motion.div
-                  key="thinking"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className={`text-xs italic ${
-                    isDark ? "text-slate-500" : "text-slate-500"
-                  }`}
-                >
-                  thinking...
-                </motion.div>
-              ) : justPredicted ? (
-                <motion.div
-                  key={justPredicted + stepIdx}
-                  initial={{ opacity: 0, scale: 0.5, y: -8 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 18 }}
-                  className={`px-4 py-2 rounded-lg border text-base font-bold ${
-                    justPredicted === "<END>"
-                      ? isDark
-                        ? "border-purple-400 text-purple-300 bg-purple-400/15 shadow-[0_0_20px_rgba(168,85,247,0.4)]"
-                        : "border-purple-400 text-purple-700 bg-purple-100 shadow-[0_0_14px_rgba(139,92,246,0.3)]"
-                      : isDark
-                      ? "border-green-400 text-green-300 bg-green-400/15 shadow-[0_0_20px_rgba(74,222,128,0.4)]"
-                      : "border-green-400 text-green-700 bg-green-100 shadow-[0_0_14px_rgba(34,197,94,0.3)]"
-                  }`}
-                >
-                  {justPredicted}
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="empty"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className={`text-xs italic ${
-                    isDark ? "text-slate-600" : "text-slate-400"
-                  }`}
-                >
-                  click "Run Decoder" to predict the first token
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* Loop arrow caption */}
-        {justPredicted && justPredicted !== "<END>" && !isComplete && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className={`text-[11px] italic flex items-center gap-2 ${
-              isDark ? "text-slate-400" : "text-slate-600"
-            }`}
-          >
-            <span>↻</span>
-            <span>This token is added to the input. Run again for the next one.</span>
-          </motion.div>
         )}
 
         {/* Controls */}
@@ -373,7 +240,7 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
           <p className="mb-2">
             <strong>Token-by-token generation</strong> means the decoder runs
             its <em>entire</em> stack of layers (masked attention, cross-attention,
-            feed-forward) <strong>once per output token</strong> — and each run
+            feed-forward) <strong>once per output token</strong> and each run
             produces just <strong>one</strong> new word.
           </p>
           <p className="mb-2">

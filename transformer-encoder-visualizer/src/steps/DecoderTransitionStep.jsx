@@ -140,50 +140,67 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
         <AnimatePresence mode="wait">
           {phase <= 2 && phase > 0 ? null : phase === 0 ? (
             <motion.div
-              key="initial-vectors"
+              key="initial-view"
               exit={{ opacity: 0 }}
               className="w-full"
             >
-              <div
-                className={`text-xs mb-3 text-center ${
-                  isDark ? "text-slate-400" : "text-slate-600"
-                }`}
-              >
-                Encoder Output Vectors
+              {/* Why this transfer happens */}
+              <div className={`rounded-xl border p-3 mb-4 ${isDark ? "border-cyan-400/20 bg-cyan-400/5" : "border-blue-200 bg-blue-50"}`}>
+                <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-cyan-300" : "text-blue-800"}`}>Why does this transfer happen?</div>
+                <div className={`text-[10px] leading-4 space-y-1 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                  <p>The encoder has read your entire sentence and computed a rich vector for each word — capturing its meaning in context. These vectors encode the <strong>"understanding"</strong> of the input.</p>
+                  <p>The decoder cannot access this on its own. These vectors become <strong>Keys (K)</strong> and <strong>Values (V)</strong> in cross-attention, letting the decoder "look back" at the input while generating each output word.</p>
+                </div>
               </div>
-              <div className="flex flex-wrap gap-3 justify-center">
-                {rows.map((row, i) => (
-                  <div
-                    key={row.word + i}
-                    className={`px-3 py-2 rounded-lg border ${
-                      isDark
-                        ? "border-green-400/60 bg-slate-900/80"
-                        : "border-green-400 bg-white"
-                    }`}
-                  >
-                    <div
-                      className={`text-xs font-medium mb-1 ${
-                        isDark ? "text-cyan-300" : "text-blue-800"
-                      }`}
-                    >
-                      {row.word}
-                    </div>
-                    <div className="flex gap-1">
-                      {row.output.map((v, j) => (
-                        <span
-                          key={j}
-                          className={`text-[10px] px-1.5 py-0.5 rounded ${
-                            isDark
-                              ? "text-green-300 bg-green-400/10"
-                              : "text-green-700 bg-green-100"
-                          }`}
-                        >
-                          {v.toFixed(2)}
-                        </span>
-                      ))}
-                    </div>
+
+              {/* Split screen: Encoder | Arrow | Decoder */}
+              <div className="flex gap-3 w-full mb-4">
+                {/* ENCODER side — done */}
+                <div className={`flex-1 rounded-xl border p-3 ${isDark ? "border-green-400/50 bg-green-400/5 shadow-[0_0_18px_rgba(74,222,128,0.08)]" : "border-green-300 bg-green-50"}`}>
+                  <div className={`text-xs font-bold mb-0.5 ${isDark ? "text-green-300" : "text-green-700"}`}>ENCODER ✓ Done</div>
+                  <div className={`text-[10px] mb-2 ${isDark ? "text-slate-500" : "text-slate-500"}`}>Understood your input sentence</div>
+                  <div className="flex flex-col gap-1.5">
+                    {rows.slice(0, 5).map((row, i) => (
+                      <div key={i} className={`rounded border px-2 py-1 flex items-center justify-between ${isDark ? "border-green-400/20 bg-slate-900/60" : "border-green-200 bg-white"}`}>
+                        <span className={`text-[10px] font-medium ${isDark ? "text-green-300" : "text-green-700"}`}>{row.word}</span>
+                        <span className={`text-[9px] ml-2 ${isDark ? "text-slate-600" : "text-slate-400"}`}>[{row.output.map(v => v.toFixed(2)).join(", ")}]</span>
+                      </div>
+                    ))}
+                    {rows.length > 5 && (
+                      <div className={`text-[9px] text-center ${isDark ? "text-slate-700" : "text-slate-400"}`}>+ {rows.length - 5} more tokens</div>
+                    )}
                   </div>
-                ))}
+                </div>
+
+                {/* Center arrows */}
+                <div className="flex flex-col items-center justify-center gap-1 px-1">
+                  {[0, 1, 2].map(idx => (
+                    <motion.div
+                      key={idx}
+                      animate={{ x: [0, 10, 0], opacity: [0.3, 1, 0.3] }}
+                      transition={{ duration: 1.4, repeat: Infinity, delay: idx * 0.4 }}
+                      className={`text-xl ${isDark ? "text-cyan-400" : "text-blue-500"}`}
+                    >→</motion.div>
+                  ))}
+                  <div className={`text-[9px] text-center mt-1 ${isDark ? "text-slate-600" : "text-slate-400"}`}>vectors</div>
+                </div>
+
+                {/* DECODER side — waiting */}
+                <div className={`flex-1 rounded-xl border p-3 opacity-55 ${isDark ? "border-slate-600 bg-slate-900/40" : "border-slate-300 bg-slate-50"}`}>
+                  <div className={`text-xs font-bold mb-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>DECODER ⏳ Waiting</div>
+                  <div className={`text-[10px] mb-2 ${isDark ? "text-slate-600" : "text-slate-500"}`}>Needs encoder's understanding</div>
+                  <div className="flex flex-col gap-1.5">
+                    {["Awaiting encoder K, V...", "Awaiting encoder K, V...", "Awaiting encoder K, V..."].map((txt, i) => (
+                      <div key={i} className={`rounded border px-2 py-1.5 ${isDark ? "border-slate-700 bg-slate-800/50" : "border-slate-200 bg-white"}`}>
+                        <span className={`text-[10px] ${isDark ? "text-slate-700" : "text-slate-400"}`}>{txt}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className={`text-[11px] text-center ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+                Click <strong>"Transfer Context to Decoder"</strong> above to watch the vectors move
               </div>
             </motion.div>
           ) : null}
@@ -318,51 +335,44 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className={`text-2xl font-bold mb-2 ${
-                isDark ? "text-purple-300" : "text-purple-700"
-              }`}
+              className={`text-xl font-bold mb-1 ${isDark ? "text-green-300" : "text-green-700"}`}
             >
-              Decoder Visualization
+              Transfer Complete ✓
             </motion.div>
 
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
-              className={`text-xs mb-5 ${
-                isDark ? "text-slate-400" : "text-slate-600"
-              }`}
+              className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}
             >
-              The decoder will now generate the output sequence step by step
+              The decoder now has the encoder's understanding — it can start generating
             </motion.p>
 
+            {/* How these vectors are used */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className={`w-full max-w-[720px] rounded-xl border p-5 ${
-                isDark
-                  ? "border-purple-400/40 bg-purple-400/5"
-                  : "border-purple-300 bg-purple-50"
-              }`}
+              className={`w-full max-w-[720px] rounded-xl border p-4 mb-4 ${isDark ? "border-green-400/30 bg-green-400/5" : "border-green-300 bg-green-50"}`}
             >
-              <p
-                className={`text-sm leading-6 text-center mb-4 ${
-                  isDark ? "text-slate-300" : "text-slate-700"
-                }`}
-              >
-                The encoder has finished understanding the input sentence and
-                sent its contextual memory vectors to the decoder. The decoder
-                will use these vectors — along with its own generated tokens — to
-                produce the output sequence one token at a time.
-              </p>
+              <div className={`text-sm font-semibold mb-3 text-center ${isDark ? "text-green-300" : "text-green-700"}`}>
+                What the decoder received — and how it uses these vectors
+              </div>
 
-              <div
-                className={`text-[10px] uppercase tracking-wide text-center mb-3 ${
-                  isDark ? "text-purple-300/70" : "text-purple-600"
-                }`}
-              >
-                Encoder Memory Vectors (now available to decoder)
+              <div className="grid grid-cols-2 gap-2 mb-3">
+                <div className={`rounded-lg border p-2 ${isDark ? "border-pink-400/30 bg-pink-400/5" : "border-pink-200 bg-pink-50"}`}>
+                  <div className={`text-[10px] font-semibold mb-1 ${isDark ? "text-pink-300" : "text-pink-700"}`}>Used as Keys (K) in Cross-Attention</div>
+                  <div className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>The decoder compares its Query against these to score relevance — "which input word matters most right now?"</div>
+                </div>
+                <div className={`rounded-lg border p-2 ${isDark ? "border-lime-400/30 bg-lime-400/5" : "border-lime-200 bg-lime-50"}`}>
+                  <div className={`text-[10px] font-semibold mb-1 ${isDark ? "text-lime-300" : "text-lime-700"}`}>Used as Values (V) in Cross-Attention</div>
+                  <div className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>Blended by attention weights, these give the decoder the actual content from relevant input words</div>
+                </div>
+              </div>
+
+              <div className={`text-[10px] uppercase tracking-wide text-center mb-2 ${isDark ? "text-green-300/70" : "text-green-600"}`}>
+                Encoder Memory Vectors (K &amp; V source in every cross-attention layer)
               </div>
 
               <div className="flex flex-wrap gap-2 justify-center">
@@ -371,30 +381,13 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
                     key={i}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.8 + i * 0.1 }}
-                    className={`px-3 py-1.5 rounded-lg border text-xs ${
-                      isDark
-                        ? "border-purple-400/50 text-purple-300 bg-purple-400/10"
-                        : "border-purple-300 text-purple-700 bg-purple-100"
-                    }`}
+                    transition={{ delay: 0.8 + i * 0.08 }}
+                    className={`px-3 py-1.5 rounded-lg border text-xs ${isDark ? "border-green-400/50 text-green-300 bg-green-400/10" : "border-green-300 text-green-700 bg-green-100"}`}
                   >
-                    {row.word}: [{row.output.map((v) => v.toFixed(2)).join(", ")}
-                    ]
+                    {row.word}: [{row.output.map((v) => v.toFixed(2)).join(", ")}]
                   </motion.div>
                 ))}
               </div>
-
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.4 }}
-                className={`text-xs text-center mt-4 ${
-                  isDark ? "text-slate-500" : "text-slate-600"
-                }`}
-              >
-                These encoder memory vectors will be used in Cross-Attention
-                (Decoder Step 6) to help the decoder understand the input.
-              </motion.p>
             </motion.div>
 
             <motion.p

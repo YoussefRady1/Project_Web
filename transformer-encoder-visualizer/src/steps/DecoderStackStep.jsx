@@ -201,64 +201,23 @@ function DecoderStackStep({ active, tokens, theme }) {
                 Correct decoder layer order
               </div>
 
-              <div className="flex flex-wrap items-center gap-1.5 text-xs">
-                <div
-                  className={`px-2 py-1 rounded border ${
-                    isDark
-                      ? "border-slate-600 text-white"
-                      : "border-slate-300 text-slate-900 bg-slate-50"
-                  }`}
-                >
-                  Masked Self-Attention
+              <div className="grid grid-cols-2 gap-1.5 text-xs">
+                <div className={`px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
+                  ① Masked Self-Attention
                 </div>
-                <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-                <div
-                  className={`px-2 py-1 rounded border ${
-                    isDark
-                      ? "border-slate-600 text-white"
-                      : "border-slate-300 text-slate-900 bg-slate-50"
-                  }`}
-                >
+                <div className={`px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
                   Add &amp; Norm
                 </div>
-                <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-                <div
-                  className={`px-2 py-1 rounded border ${
-                    isDark
-                      ? "border-purple-500/60 text-purple-300"
-                      : "border-purple-300 text-purple-800 bg-purple-50"
-                  }`}
-                >
-                  Cross-Attention
+                <div className={`px-2 py-1.5 rounded border text-center font-medium ${isDark ? "border-amber-500/60 text-amber-300" : "border-amber-300 text-amber-800 bg-amber-50"}`}>
+                  ② Cross-Attention ← Encoder
                 </div>
-                <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-                <div
-                  className={`px-2 py-1 rounded border ${
-                    isDark
-                      ? "border-slate-600 text-white"
-                      : "border-slate-300 text-slate-900 bg-slate-50"
-                  }`}
-                >
+                <div className={`px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
                   Add &amp; Norm
                 </div>
-                <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-                <div
-                  className={`px-2 py-1 rounded border ${
-                    isDark
-                      ? "border-slate-600 text-white"
-                      : "border-slate-300 text-slate-900 bg-slate-50"
-                  }`}
-                >
-                  Feed Forward
+                <div className={`px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
+                  ③ Feed Forward
                 </div>
-                <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-                <div
-                  className={`px-2 py-1 rounded border ${
-                    isDark
-                      ? "border-slate-600 text-white"
-                      : "border-slate-300 text-slate-900 bg-slate-50"
-                  }`}
-                >
+                <div className={`px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
                   Add &amp; Norm
                 </div>
               </div>
@@ -326,8 +285,8 @@ function DecoderStackStep({ active, tokens, theme }) {
                   onClick={() => setView("cross-attention")}
                   className={`px-4 py-1.5 text-xs border rounded-lg transition ${
                     isDark
-                      ? "border-purple-400 text-purple-300 hover:bg-purple-400/10"
-                      : "border-purple-400 text-purple-700 bg-purple-100 hover:bg-purple-200"
+                      ? "border-amber-400 text-amber-300 hover:bg-amber-400/10"
+                      : "border-amber-400 text-amber-700 bg-amber-100 hover:bg-amber-200"
                   }`}
                 >
                   Learn Cross-Attention
@@ -398,115 +357,28 @@ function DecoderStackStep({ active, tokens, theme }) {
         </div>
       </div>
 
-      <div
-        className={`w-full rounded-xl border p-4 mb-5 ${
-          isDark
-            ? "border-slate-700 bg-slate-900/70"
-            : "border-slate-400/70 bg-slate-50"
-        }`}
-      >
-        <div
-          className={`text-sm font-semibold text-center mb-4 ${
-            isDark ? "text-cyan-300" : "text-blue-800"
-          }`}
-        >
-          One Decoder Layer Diagram
+      {/* Understanding Depth Bar */}
+      <div className={`w-full mb-4 rounded-xl border p-3 ${isDark ? "border-slate-700 bg-slate-900/70" : "border-slate-300 bg-slate-50"}`}>
+        <div className={`flex justify-between text-[10px] mb-1.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+          <span className="font-medium">Understanding Depth</span>
+          <span>{layerCount} / 6 decoder layers active</span>
         </div>
-
-        <div className="flex flex-col items-center">
+        <div className={`w-full h-4 rounded-full overflow-hidden ${isDark ? "bg-slate-800" : "bg-slate-200"}`}>
           <motion.div
-            animate={{
-              opacity: active ? 1 : 0.3,
-              scale: active ? [1, 1.01, 1] : 1,
-            }}
-            transition={{
-              duration: 1.6,
-              repeat: Infinity,
-            }}
-            className={`w-full max-w-[320px] rounded-xl border p-3 flex flex-col items-center ${
-              isDark ? "border-cyan-500 bg-slate-950/70" : "border-blue-400/80 bg-white shadow-sm"
-            }`}
-          >
-            <div
-              className={`w-full text-center text-sm font-medium mb-3 ${
-                isDark ? "text-cyan-300" : "text-blue-800"
-              }`}
-            >
-              Decoder Layer
-            </div>
-
-            <div className="w-full flex flex-col items-center gap-2 text-xs">
-              <div
-                className={`w-full text-center px-2 py-1.5 rounded-lg border text-xs ${
-                  isDark
-                    ? "border-slate-600 text-white"
-                    : "border-slate-300 text-slate-900 bg-slate-50"
-                }`}
-              >
-                Masked Self-Attention
-              </div>
-
-              <div className={isDark ? "text-cyan-400" : "text-blue-600"}>↓</div>
-
-              <div
-                className={`w-full text-center px-2 py-1.5 rounded-lg border text-xs ${
-                  isDark
-                    ? "border-slate-600 text-white"
-                    : "border-slate-300 text-slate-900 bg-slate-50"
-                }`}
-              >
-                Add &amp; Normalize
-              </div>
-
-              <div className={isDark ? "text-cyan-400" : "text-blue-600"}>↓</div>
-
-              <div
-                className={`w-full text-center px-2 py-1.5 rounded-lg border text-xs ${
-                  isDark
-                    ? "border-purple-500/60 text-purple-300"
-                    : "border-purple-300 text-purple-800 bg-purple-50"
-                }`}
-              >
-                Cross-Attention (← Encoder)
-              </div>
-
-              <div className={isDark ? "text-cyan-400" : "text-blue-600"}>↓</div>
-
-              <div
-                className={`w-full text-center px-2 py-1.5 rounded-lg border text-xs ${
-                  isDark
-                    ? "border-slate-600 text-white"
-                    : "border-slate-300 text-slate-900 bg-slate-50"
-                }`}
-              >
-                Add &amp; Normalize
-              </div>
-
-              <div className={isDark ? "text-cyan-400" : "text-blue-600"}>↓</div>
-
-              <div
-                className={`w-full text-center px-2 py-1.5 rounded-lg border text-xs ${
-                  isDark
-                    ? "border-slate-600 text-white"
-                    : "border-slate-300 text-slate-900 bg-slate-50"
-                }`}
-              >
-                Feed Forward
-              </div>
-
-              <div className={isDark ? "text-cyan-400" : "text-blue-600"}>↓</div>
-
-              <div
-                className={`w-full text-center px-2 py-1.5 rounded-lg border text-xs ${
-                  isDark
-                    ? "border-slate-600 text-white"
-                    : "border-slate-300 text-slate-900 bg-slate-50"
-                }`}
-              >
-                Add &amp; Normalize
-              </div>
-            </div>
-          </motion.div>
+            animate={{ width: `${(layerCount / 6) * 100}%` }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="h-full rounded-full"
+            style={{ background: "linear-gradient(to right, #ef4444, #f97316, #eab308, #84cc16, #22c55e)" }}
+          />
+        </div>
+        <div className={`text-[10px] text-center mt-1.5 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+          {layerCount === 1
+            ? "1 layer — basic context processing begins"
+            : layerCount <= 2
+            ? `${layerCount} layers — alignment with encoder growing`
+            : layerCount <= 4
+            ? `${layerCount} layers — deeper cross-attention patterns forming`
+            : `${layerCount} layers — rich, full understanding reached`}
         </div>
       </div>
 
@@ -531,7 +403,7 @@ function DecoderStackStep({ active, tokens, theme }) {
                   damping: 22,
                   mass: 0.9,
                 }}
-                className={`w-full px-4 py-3 rounded-xl border transition-colors duration-300 ${
+                className={`w-full px-3 py-2 rounded-xl border transition-colors duration-300 ${
                   isActive
                     ? `${layer.border} ${layer.glow}`
                     : isDark
@@ -601,99 +473,48 @@ function DecoderStackStep({ active, tokens, theme }) {
                   )}
                 </div>
 
-                <div className="flex items-center gap-1.5 text-xs flex-wrap">
+                <div className="grid grid-cols-2 gap-1 mt-1">
                   <motion.div
-                    animate={{
-                      scale: active && isActive ? [1, 1.08, 1] : 1,
-                    }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                    className={`px-2 py-1 rounded border ${
-                      isDark
-                        ? "border-slate-600 text-white"
-                        : "border-slate-300 text-slate-900 bg-slate-50"
-                    }`}
+                    animate={{ scale: active && isActive ? [1, 1.05, 1] : 1 }}
+                    transition={{ duration: 1.2, repeat: Infinity }}
+                    className={`text-center text-[9px] px-1.5 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}
                   >
                     Masked Attn
                   </motion.div>
-
-                  <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-
                   <motion.div
-                    animate={{
-                      scale: active && isActive ? [1, 1.08, 1] : 1,
-                    }}
-                    transition={{ duration: 1, repeat: Infinity, delay: 0.1 }}
-                    className={`px-2 py-1 rounded border ${
-                      isDark
-                        ? "border-slate-600 text-white"
-                        : "border-slate-300 text-slate-900 bg-slate-50"
-                    }`}
+                    animate={{ scale: active && isActive ? [1, 1.05, 1] : 1 }}
+                    transition={{ duration: 1.2, repeat: Infinity, delay: 0.15 }}
+                    className={`text-center text-[9px] px-1.5 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}
                   >
-                    Add&amp;Norm
+                    Add &amp; Norm
                   </motion.div>
-
-                  <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-
                   <motion.div
-                    animate={{
-                      scale: active && isActive ? [1, 1.08, 1] : 1,
-                    }}
-                    transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
-                    className={`px-2 py-1 rounded border ${
-                      isDark
-                        ? "border-purple-500/60 text-purple-300"
-                        : "border-purple-300 text-purple-800 bg-purple-50"
-                    }`}
+                    animate={{ scale: active && isActive ? [1, 1.05, 1] : 1 }}
+                    transition={{ duration: 1.2, repeat: Infinity, delay: 0.3 }}
+                    className={`text-center text-[9px] px-1.5 py-1 rounded border ${isDark ? "border-amber-500/60 text-amber-300" : "border-amber-300 text-amber-800 bg-amber-50"}`}
                   >
                     Cross-Attn
                   </motion.div>
-
-                  <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-
                   <motion.div
-                    animate={{
-                      scale: active && isActive ? [1, 1.08, 1] : 1,
-                    }}
-                    transition={{ duration: 1, repeat: Infinity, delay: 0.3 }}
-                    className={`px-2 py-1 rounded border ${
-                      isDark
-                        ? "border-slate-600 text-white"
-                        : "border-slate-300 text-slate-900 bg-slate-50"
-                    }`}
+                    animate={{ scale: active && isActive ? [1, 1.05, 1] : 1 }}
+                    transition={{ duration: 1.2, repeat: Infinity, delay: 0.45 }}
+                    className={`text-center text-[9px] px-1.5 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}
                   >
-                    Add&amp;Norm
+                    Add &amp; Norm
                   </motion.div>
-
-                  <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-
                   <motion.div
-                    animate={{
-                      scale: active && isActive ? [1, 1.08, 1] : 1,
-                    }}
-                    transition={{ duration: 1, repeat: Infinity, delay: 0.4 }}
-                    className={`px-2 py-1 rounded border ${
-                      isDark
-                        ? "border-slate-600 text-white"
-                        : "border-slate-300 text-slate-900 bg-slate-50"
-                    }`}
+                    animate={{ scale: active && isActive ? [1, 1.05, 1] : 1 }}
+                    transition={{ duration: 1.2, repeat: Infinity, delay: 0.6 }}
+                    className={`text-center text-[9px] px-1.5 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}
                   >
-                    FFN
+                    Feed Forward
                   </motion.div>
-
-                  <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-
                   <motion.div
-                    animate={{
-                      scale: active && isActive ? [1, 1.08, 1] : 1,
-                    }}
-                    transition={{ duration: 1, repeat: Infinity, delay: 0.5 }}
-                    className={`px-2 py-1 rounded border ${
-                      isDark
-                        ? "border-slate-600 text-white"
-                        : "border-slate-300 text-slate-900 bg-slate-50"
-                    }`}
+                    animate={{ scale: active && isActive ? [1, 1.05, 1] : 1 }}
+                    transition={{ duration: 1.2, repeat: Infinity, delay: 0.75 }}
+                    className={`text-center text-[9px] px-1.5 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}
                   >
-                    Add&amp;Norm
+                    Add &amp; Norm
                   </motion.div>
                 </div>
               </motion.div>

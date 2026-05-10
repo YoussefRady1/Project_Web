@@ -210,7 +210,7 @@ function DecoderTokenStep({ active, tokens = [], theme }) {
         >
           <p className="mb-2">
             The decoder cannot generate all tokens at once. It produces one
-            token, then re-runs itself with that token added to the input — this
+            token, then re-runs itself with that token added to the input, this
             is called <strong>autoregressive generation</strong>.
           </p>
           <p>

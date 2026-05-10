@@ -6,6 +6,7 @@ import FeedForwardStep from "./FeedForwardStep";
 function EncoderStackStep({ active, tokens, theme }) {
   const [layerCount, setLayerCount] = useState(1);
   const [view, setView] = useState("overview");
+  const [infoPage, setInfoPage] = useState(0);
   const isDark = theme === "dark";
 
   useEffect(() => {
@@ -148,215 +149,111 @@ function EncoderStackStep({ active, tokens, theme }) {
     We use the encoder stack because one layer is usually not enough to build deep understanding. Repeating encoder layers allows the model to refine context step by step and produce richer sentence representations.
   </p>
 </div>
-      <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-4 mb-5">
-        <div
-          className={`rounded-xl border p-4 ${
-            isDark
-              ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
-          }`}
-        >
-          <h3
-            className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
-            }`}
-          >
-            What happens inside one encoder layer?
-          </h3>
-
-          <div
-            className={`space-y-3 text-[11px] leading-5 ${
-              isDark ? "text-slate-300" : "text-slate-700"
-            }`}
-          >
-            <div
-              className={`rounded-lg border p-3 ${
-                isDark
-                  ? "border-slate-700 bg-slate-950/60"
-                  : "border-slate-400/70 bg-white"
+      {/* Info panel navigation */}
+      <div className="w-full mb-5">
+        {/* Page tabs */}
+        <div className="flex gap-2 mb-3 justify-center">
+          {["Inside One Encoder Layer", "Add & Normalize"].map((label, i) => (
+            <button
+              key={i}
+              onClick={() => setInfoPage(i)}
+              className={`px-4 py-1.5 text-xs font-medium rounded-lg border transition ${
+                infoPage === i
+                  ? isDark
+                    ? "border-cyan-400 text-cyan-300 bg-cyan-400/10"
+                    : "border-blue-400 text-blue-800 bg-blue-100"
+                  : isDark
+                  ? "border-slate-700 text-slate-400 hover:border-slate-500"
+                  : "border-slate-300 text-slate-600 hover:border-slate-400"
               }`}
             >
-              <div
-                className={`font-medium mb-1 ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
-                }`}
-              >
-                Correct encoder layer order
-              </div>
+              {label}
+            </button>
+          ))}
+        </div>
 
-              <div className="flex flex-wrap items-center gap-2 text-xs">
-                <div
-                  className={`px-2 py-1 rounded border ${
-                    isDark
-                      ? "border-slate-600 text-white"
-                      : "border-slate-300 text-slate-900 bg-slate-50"
-                  }`}
-                >
-                  Self-Attention
-                </div>
-                <span className={isDark ? "text-slate-500" : "text-slate-600"}>
-                  →
-                </span>
-                <div
-                  className={`px-2 py-1 rounded border ${
-                    isDark
-                      ? "border-slate-600 text-white"
-                      : "border-slate-300 text-slate-900 bg-slate-50"
-                  }`}
-                >
-                  Add &amp; Normalize
-                </div>
-                <span className={isDark ? "text-slate-500" : "text-slate-600"}>
-                  →
-                </span>
-                <div
-                  className={`px-2 py-1 rounded border ${
-                    isDark
-                      ? "border-slate-600 text-white"
-                      : "border-slate-300 text-slate-900 bg-slate-50"
-                  }`}
-                >
-                  Feed Forward
-                </div>
-                <span className={isDark ? "text-slate-500" : "text-slate-600"}>
-                  →
-                </span>
-                <div
-                  className={`px-2 py-1 rounded border ${
-                    isDark
-                      ? "border-slate-600 text-white"
-                      : "border-slate-300 text-slate-900 bg-slate-50"
-                  }`}
-                >
-                  Add &amp; Normalize
-                </div>
+        {/* Page 0: Inside one encoder layer */}
+        {infoPage === 0 && (
+          <motion.div
+            key="page0"
+            initial={{ opacity: 0, x: -16 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.25 }}
+            className={`rounded-xl border p-4 ${isDark ? "border-slate-700 bg-slate-900/80" : "border-slate-400/70 bg-slate-50"}`}
+          >
+            <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-cyan-300" : "text-blue-800"}`}>
+              What happens inside one encoder layer?
+            </h3>
+
+            {/* Layer order — vertical 2-col grid */}
+            <div className={`rounded-lg border p-3 mb-3 ${isDark ? "border-slate-700 bg-slate-950/60" : "border-slate-400/70 bg-white"}`}>
+              <div className={`font-medium mb-2 text-[11px] ${isDark ? "text-cyan-300" : "text-blue-800"}`}>Encoder layer order</div>
+              <div className="grid grid-cols-2 gap-1.5 text-xs">
+                <div className={`px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>① Self-Attention</div>
+                <div className={`px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>Add &amp; Norm</div>
+                <div className={`px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>② Feed Forward</div>
+                <div className={`px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>Add &amp; Norm</div>
               </div>
             </div>
 
-            <div
-              className={`rounded-lg border p-3 ${
-                isDark
-                  ? "border-cyan-400/40 bg-cyan-400/5"
-                  : "border-blue-400 bg-blue-50"
-              }`}
-            >
-              <div
-                className={`font-medium mb-1 ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
-                }`}
-              >
-                Important note
-              </div>
-              <p>This encoder layer repeats multiple times to form the full encoder stack.</p>
+            <div className={`rounded-lg border p-3 mb-3 ${isDark ? "border-cyan-400/40 bg-cyan-400/5" : "border-blue-400 bg-blue-50"}`}>
+              <div className={`font-medium mb-1 text-[11px] ${isDark ? "text-cyan-300" : "text-blue-800"}`}>Important note</div>
+              <p className={`text-[11px] leading-5 ${isDark ? "text-slate-300" : "text-slate-700"}`}>This encoder layer repeats multiple times to form the full encoder stack. Each repetition refines the representations further.</p>
             </div>
 
-            <div
-              className={`rounded-lg border p-3 ${
-                isDark
-                  ? "border-slate-700 bg-slate-950/60"
-                  : "border-slate-400/70 bg-white"
-              }`}
-            >
-              <div
-                className={`font-semibold text-lg mb-3 text-center ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
-                }`}
+            <div className={`font-medium mb-2 text-[11px] ${isDark ? "text-slate-300" : "text-slate-700"}`}>Explore the internal sub-layers:</div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setView("attention")}
+                className={`px-4 py-1.5 text-xs border rounded-lg transition ${isDark ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10" : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"}`}
               >
-                Learn the internal parts first
-              </div>
+                Learn Self-Attention →
+              </button>
+              <button
+                onClick={() => setView("feedforward")}
+                className={`px-4 py-1.5 text-xs border rounded-lg transition ${isDark ? "border-green-400 text-green-300 hover:bg-green-400/10" : "border-green-500 text-green-700 bg-green-100 hover:bg-green-200"}`}
+              >
+                Learn Feed Forward →
+              </button>
+            </div>
+          </motion.div>
+        )}
 
-              <p
-                className={`mb-4 text-sm leading-6 ${
-                  isDark ? "text-slate-300" : "text-slate-700"
-                }`}
-              >
-                Before fully understanding the encoder stack, the student should
-                first know what self-attention does and what the feed forward
-                layer does.
+        {/* Page 1: Add & Normalize */}
+        {infoPage === 1 && (
+          <motion.div
+            key="page1"
+            initial={{ opacity: 0, x: 16 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.25 }}
+            className={`rounded-xl border p-4 ${isDark ? "border-slate-700 bg-slate-900/80" : "border-slate-400/70 bg-slate-50"}`}
+          >
+            <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-cyan-300" : "text-blue-800"}`}>Add &amp; Normalize</h3>
+
+            <div className={`text-[11px] leading-5 space-y-2 mb-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+              <p>After <strong>self-attention</strong>, the model adds the original input back and normalizes the result.</p>
+              <p>After <strong>feed forward</strong>, it does the same thing again: add the previous signal and normalize it.</p>
+              <p>This happens <strong>twice</strong> per encoder layer — once after each sub-layer. It keeps learning stable and preserves useful information.</p>
+              <p className={`text-[10px] italic ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+                Layer normalization rescales each vector to have zero mean and unit variance, preventing activations from exploding or vanishing in deep stacks.
               </p>
-
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={() => setView("attention")}
-                  className={`px-4 py-1.5 text-xs border rounded-lg transition ${
-                    isDark
-                      ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10"
-                      : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
-                  }`}
-                >
-                  Learn Self-Attention
-                </button>
-
-                <button
-                  onClick={() => setView("feedforward")}
-                  className={`px-4 py-1.5 text-xs border rounded-lg transition ${
-                    isDark
-                      ? "border-green-400 text-green-300 hover:bg-green-400/10"
-                      : "border-green-500 text-green-700 bg-green-100 hover:bg-green-200"
-                  }`}
-                >
-                  Learn Feed Forward
-                </button>
-              </div>
             </div>
-          </div>
-        </div>
 
-        <div
-          className={`rounded-xl border p-4 ${
-            isDark
-              ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
-          }`}
-        >
-          <h3
-            className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
-            }`}
-          >
-            Add &amp; Normalize
-          </h3>
-
-          <div
-            className={`text-[11px] leading-5 space-y-2 mb-3 ${
-              isDark ? "text-slate-300" : "text-slate-700"
-            }`}
-          >
-            <p>
-              After self-attention, the model adds the original input back and
-              normalizes the result.
+            <div className="aspect-video rounded-lg overflow-hidden border border-slate-700">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/G45TuC6zRf4"
+                title="Layer Normalization in Transformer"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            <p className={`text-[10px] mt-2 leading-4 ${isDark ? "text-slate-500" : "text-slate-600"}`}>
+              Short video explaining residual connections and layer normalization.
             </p>
-
-            <p>
-              After feed forward, it does the same thing again: add the previous
-              signal and normalize it.
-            </p>
-
-            <p>
-              This helps keep learning stable and preserves useful information
-              through the layer.
-            </p>
-          </div>
-
-          <div className="aspect-video rounded-lg overflow-hidden border border-slate-700">
-            <iframe
-              width="100%"
-              height="100%"
-              src="https://www.youtube.com/embed/G45TuC6zRf4"
-              title="Layer Normalization in Transformer"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-
-          <p
-            className={`text-[10px] mt-2 leading-4 ${
-              isDark ? "text-slate-500" : "text-slate-600"
-            }`}
-          >
-            Short side video to explain residual connection and layer normalization.
-          </p>
-        </div>
+          </motion.div>
+        )}
       </div>
 
       <div
@@ -378,11 +275,9 @@ function EncoderStackStep({ active, tokens, theme }) {
           <motion.div
             animate={{
               opacity: active ? 1 : 0.3,
-              scale: active ? [1, 1.01, 1] : 1,
             }}
             transition={{
-              duration: 1.6,
-              repeat: Infinity,
+              duration: 0.3,
             }}
             className={`w-full max-w-[320px] rounded-xl border p-3 flex flex-col items-center ${
               isDark ? "border-cyan-500 bg-slate-950/70" : "border-blue-400/80 bg-white shadow-sm"
@@ -504,18 +399,8 @@ function EncoderStackStep({ active, tokens, theme }) {
 
                 <div className="flex gap-2 mb-3 text-sm flex-wrap">
                   {tokens.map((t, i) => (
-                    <motion.span
+                    <span
                       key={i}
-                      animate={{
-                        opacity: active && isActive ? 1 : 0.3,
-                        y: active && isActive ? [0, -2, 0] : 0,
-                        scale: active && isActive ? [1, 1.03 + index * 0.02, 1] : 1,
-                      }}
-                      transition={{
-                        duration: 1.2,
-                        repeat: Infinity,
-                        delay: i * 0.05 + index * 0.2,
-                      }}
                       className={`transition-colors duration-300 ${
                         isActive
                           ? layer.text
@@ -525,87 +410,26 @@ function EncoderStackStep({ active, tokens, theme }) {
                       }`}
                     >
                       {t}
-                    </motion.span>
+                    </span>
                   ))}
                 </div>
 
                 <div className="flex items-center gap-2 text-xs flex-wrap">
-                  <motion.div
-                    animate={{
-                      scale: active && isActive ? [1, 1.08, 1] : 1,
-                    }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                    }}
-                    className={`px-2 py-1 rounded border ${
-                      isDark
-                        ? "border-slate-600 text-white"
-                        : "border-slate-300 text-slate-900 bg-slate-50"
-                    }`}
-                  >
+                  <div className={`px-2 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
                     Self-Attention
-                  </motion.div>
-
+                  </div>
                   <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-
-                  <motion.div
-                    animate={{
-                      scale: active && isActive ? [1, 1.08, 1] : 1,
-                    }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      delay: 0.15,
-                    }}
-                    className={`px-2 py-1 rounded border ${
-                      isDark
-                        ? "border-slate-600 text-white"
-                        : "border-slate-300 text-slate-900 bg-slate-50"
-                    }`}
-                  >
+                  <div className={`px-2 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
                     Add &amp; Normalize
-                  </motion.div>
-
+                  </div>
                   <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-
-                  <motion.div
-                    animate={{
-                      scale: active && isActive ? [1, 1.08, 1] : 1,
-                    }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      delay: 0.3,
-                    }}
-                    className={`px-2 py-1 rounded border ${
-                      isDark
-                        ? "border-slate-600 text-white"
-                        : "border-slate-300 text-slate-900 bg-slate-50"
-                    }`}
-                  >
+                  <div className={`px-2 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
                     Feed Forward
-                  </motion.div>
-
+                  </div>
                   <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-
-                  <motion.div
-                    animate={{
-                      scale: active && isActive ? [1, 1.08, 1] : 1,
-                    }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      delay: 0.45,
-                    }}
-                    className={`px-2 py-1 rounded border ${
-                      isDark
-                        ? "border-slate-600 text-white"
-                        : "border-slate-300 text-slate-900 bg-slate-50"
-                    }`}
-                  >
+                  <div className={`px-2 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
                     Add &amp; Normalize
-                  </motion.div>
+                  </div>
                 </div>
               </motion.div>
 
