@@ -20,25 +20,27 @@ import DecoderPreQuizStep from "../steps/DecoderPreQuizStep";
 import DecoderPostQuizStep from "../steps/DecoderPostQuizStep";
 
 const PAGE_CONFIG = [
-  { component: TransformerIntroStep, title: "Transformer Overview", label: "Overview", section: "overview" },
-  { component: PreQuizStep, title: "Encoder Pre-Quiz", label: "Pre-Quiz", section: "overview" },
-  { component: TransformerArchitectureStep, title: "Architecture Overview", label: "Architecture", section: "architecture" },
-  { component: TokenStep, title: "Step 1: Tokenization", label: "Encoder 1 of 5", section: "encoder" },
-  { component: EmbeddingStep, title: "Step 2: Embedding", label: "Encoder 2 of 5", section: "encoder" },
-  { component: PositionalStep, title: "Step 3: Positional Encoding", label: "Encoder 3 of 5", section: "encoder" },
-  { component: EncoderStackStep, title: "Step 4: Encoder Stack", label: "Encoder 4 of 5", section: "encoder" },
-  { component: EncoderOutputStep, title: "Step 5: Encoder Output", label: "Encoder 5 of 5", section: "encoder" },
-  { component: EncoderPostQuizStep, title: "Encoder Post-Quiz", label: "Encoder Quiz", section: "encoder-quiz" },
-  { component: DecoderPreQuizStep, title: "Decoder Pre-Quiz", label: "Decoder Pre-Quiz", section: "decoder-quiz" },
-  { component: DecoderTransitionStep, title: "Encoder → Decoder Transfer", label: "Transition", section: "decoder" },
-  { component: DecoderTokenStep, title: "Step 1: Output Tokenization", label: "Decoder 1 of 4", section: "decoder" },
-  { component: DecoderEmbeddingStep, title: "Step 2: Output Embedding", label: "Decoder 2 of 4", section: "decoder" },
-  { component: DecoderPositionalStep, title: "Step 3: Positional Encoding", label: "Decoder 3 of 4", section: "decoder" },
-  { component: DecoderStackStep, title: "Step 4: Decoder Stack", label: "Decoder 4 of 4", section: "decoder" },
-  { component: DecoderLinearSoftmaxStep, title: "Linear + Softmax", label: "Linear + Softmax", section: "linear" },
-  { component: DecoderOutputStep, title: "Output Prediction", label: "Output", section: "output" },
-  { component: DecoderPostQuizStep, title: "Decoder Post-Quiz", label: "Final Quiz", section: "final-quiz" },
+  { component: TransformerIntroStep, title: "Transformer Overview", label: "Overview", section: "overview", keywords: "intro welcome start what is transformer introduction" },
+  { component: PreQuizStep, title: "Encoder Pre-Quiz", label: "Pre-Quiz", section: "overview", keywords: "prequiz assessment baseline before encoder" },
+  { component: TransformerArchitectureStep, title: "Architecture Overview", label: "Architecture", section: "architecture", keywords: "t5 model translation full diagram architecture" },
+  { component: TokenStep, title: "Step 1: Tokenization", label: "Encoder 1 of 5", section: "encoder", keywords: "tokens splitting words pieces tokenize" },
+  { component: EmbeddingStep, title: "Step 2: Embedding", label: "Encoder 2 of 5", section: "encoder", keywords: "vector word embedding numeric representation" },
+  { component: PositionalStep, title: "Step 3: Positional Encoding", label: "Encoder 3 of 5", section: "encoder", keywords: "position order sine cosine positional" },
+  { component: EncoderStackStep, title: "Step 4: Encoder Stack", label: "Encoder 4 of 5", section: "encoder", keywords: "self-attention feed forward add norm layers encoder layer stack" },
+  { component: EncoderOutputStep, title: "Step 5: Encoder Output", label: "Encoder 5 of 5", section: "encoder", keywords: "encoder output context vectors final" },
+  { component: EncoderPostQuizStep, title: "Encoder Post-Quiz", label: "Encoder Quiz", section: "encoder-quiz", keywords: "encoder quiz post test" },
+  { component: DecoderPreQuizStep, title: "Decoder Pre-Quiz", label: "Decoder Pre-Quiz", section: "decoder-quiz", keywords: "decoder pre quiz" },
+  { component: DecoderTransitionStep, title: "Encoder → Decoder Transfer", label: "Transition", section: "decoder", keywords: "transition transfer bridge memory k v keys values" },
+  { component: DecoderTokenStep, title: "Step 1: Output Tokenization", label: "Decoder 1 of 4", section: "decoder", keywords: "start token autoregressive decoder tokens output tokenization" },
+  { component: DecoderEmbeddingStep, title: "Step 2: Output Embedding", label: "Decoder 2 of 4", section: "decoder", keywords: "decoder embedding output embedding start vector" },
+  { component: DecoderPositionalStep, title: "Step 3: Positional Encoding", label: "Decoder 3 of 4", section: "decoder", keywords: "decoder positional position" },
+  { component: DecoderStackStep, title: "Step 4: Decoder Stack", label: "Decoder 4 of 4", section: "decoder", keywords: "masked attention cross attention decoder layer feed forward add norm" },
+  { component: DecoderLinearSoftmaxStep, title: "Linear + Softmax", label: "Linear + Softmax", section: "linear", keywords: "probabilities softmax vocab vocabulary linear projection" },
+  { component: DecoderOutputStep, title: "Output Prediction", label: "Output", section: "output", keywords: "generation output tokens predict prediction final" },
+  { component: DecoderPostQuizStep, title: "Decoder Post-Quiz", label: "Final Quiz", section: "final-quiz", keywords: "final quiz decoder post" },
 ];
+
+export { PAGE_CONFIG };
 
 const SECTION_MAP = [
   { id: "overview", label: "Overview" },

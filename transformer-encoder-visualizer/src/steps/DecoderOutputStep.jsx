@@ -112,49 +112,65 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
       </p>
 
       <div className="w-full flex flex-col items-center gap-4">
-        {/* Start hint */}
-        {stepIdx === 0 && (
-          <div className={`w-full max-w-[680px] rounded-xl border p-4 text-center ${isDark ? "border-slate-700 bg-slate-900/60" : "border-slate-300 bg-slate-50"}`}>
-            <p className={`text-sm font-medium mb-1 ${isDark ? "text-cyan-300" : "text-blue-800"}`}>How autoregressive generation works</p>
-            <p className={`text-[11px] leading-5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-              The decoder starts with only <strong>&lt;START&gt;</strong> and predicts one token. That token is added to the input, and the decoder runs again. This repeats until <strong>&lt;END&gt;</strong> is predicted.
+        {/* Current decoder input - grows with each run */}
+        <div
+          className={`w-full max-w-[680px] rounded-xl border p-4 ${
+            isDark ? "border-slate-700 bg-slate-900/60" : "border-slate-300 bg-slate-50"
+          }`}
+        >
+          <div
+            className={`text-[10px] uppercase tracking-wider font-semibold mb-3 ${
+              isDark ? "text-slate-500" : "text-slate-500"
+            }`}
+          >
+            Decoder input for next run
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {["<START>", ...translation.slice(0, stepIdx)].map((tok, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, scale: 0.75 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                className={`px-2.5 py-1 rounded-lg text-xs font-mono border ${
+                  tok === "<START>"
+                    ? isDark
+                      ? "border-purple-400 text-purple-300 bg-purple-400/10"
+                      : "border-purple-400 text-purple-700 bg-purple-100"
+                    : isDark
+                    ? "border-green-400 text-green-300 bg-green-400/10"
+                    : "border-green-400 text-green-700 bg-green-100"
+                }`}
+              >
+                {tok}
+              </motion.span>
+            ))}
+            {!isComplete && (
+              <span
+                className={`px-2.5 py-1 rounded-lg text-xs border border-dashed ${
+                  isDark ? "border-slate-600 text-slate-500" : "border-slate-300 text-slate-400"
+                }`}
+              >
+                → ?
+              </span>
+            )}
+          </div>
+          {stepIdx > 0 && !isComplete && (
+            <p
+              className={`mt-2 text-[10px] ${
+                isDark ? "text-slate-500" : "text-slate-500"
+              }`}
+            >
+              Run {stepIdx} predicted{" "}
+              <strong
+                className={isDark ? "text-green-300" : "text-green-700"}
+              >
+                {translation[stepIdx - 1]}
+              </strong>{" "}
+              - now feeding it back in and running again
             </p>
-          </div>
-        )}
-
-        {/* Generation History Log */}
-        {stepIdx > 0 && (
-          <div className={`w-full max-w-[680px] rounded-xl border p-3 ${isDark ? "border-slate-700 bg-slate-900/60" : "border-slate-300 bg-slate-50"}`}>
-            <div className={`text-[10px] uppercase tracking-wider font-semibold mb-2 flex items-center gap-2 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-              <span>Generation Log</span>
-              <span className={`px-1.5 py-0.5 rounded text-[9px] ${isDark ? "bg-slate-800 text-slate-400" : "bg-slate-200 text-slate-600"}`}>{stepIdx} run{stepIdx > 1 ? "s" : ""} so far</span>
-            </div>
-            <div className="space-y-1 max-h-[160px] overflow-y-auto">
-              {Array.from({ length: stepIdx }, (_, i) => {
-                const inputToks = ["<START>", ...translation.slice(0, i)];
-                const predicted = i < translation.length ? translation[i] : "<END>";
-                return (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0 }}
-                    className={`flex items-center gap-2 text-[10px] rounded-lg px-2 py-1.5 ${isDark ? "bg-slate-800/50" : "bg-white border border-slate-200"}`}
-                  >
-                    <span className={`font-mono shrink-0 w-10 ${isDark ? "text-slate-500" : "text-slate-400"}`}>Run {i + 1}:</span>
-                    <span className={`font-mono truncate ${isDark ? "text-slate-400" : "text-slate-600"}`}>[{inputToks.join(", ")}]</span>
-                    <span className={`shrink-0 ${isDark ? "text-slate-600" : "text-slate-400"}`}>→</span>
-                    <span className={`font-bold shrink-0 px-1.5 py-0.5 rounded ${
-                      predicted === "<END>"
-                        ? isDark ? "text-purple-300 bg-purple-400/15" : "text-purple-700 bg-purple-100"
-                        : isDark ? "text-green-300 bg-green-400/15" : "text-green-700 bg-green-100"
-                    }`}>{predicted}</span>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Controls */}
         <div className="flex gap-3 mt-1">
@@ -250,7 +266,7 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
           </p>
           <p>
             Generation stops when the model predicts the special &lt;END&gt;
-            token. This is also why text generation feels slower than encoding —
+            token. This is also why text generation feels slower than encoding -
             the decoder cannot produce all tokens in parallel.
           </p>
         </motion.div>

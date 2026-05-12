@@ -31,7 +31,7 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
   const [showExplanation, setShowExplanation] = useState(false);
 
   const safeTokens = useMemo(
-    () => (tokens.length ? tokens.slice(0, 3) : ["token"]),
+    () => (tokens.length ? tokens.slice(0, 10) : ["token"]),
     [tokens]
   );
 
