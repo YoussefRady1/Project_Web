@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import TokenInput from "./components/TokenInput";
+import StepSearch from "./components/StepSearch";
 import AnimationController from "./controllers/AnimationController";
 import MainCanvas, { FIRST_PAGE_NEEDING_TOKENS } from "./visualizers/MainCanvas";
 import { getModel } from "./steps/TransformerArchitectureStep";
@@ -202,6 +203,7 @@ function App() {
               Welcome, <span className="font-medium">{userName}</span>
             </span>
           )}
+          <StepSearch setStep={setStep} theme={theme} />
           <button
             onClick={() =>
               setTheme((prev) => (prev === "dark" ? "light" : "dark"))

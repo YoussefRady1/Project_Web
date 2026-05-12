@@ -80,7 +80,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
           isDark ? "text-slate-400" : "text-slate-700"
         }`}
       >
-        adds position information to each decoder vector to keep the correct output order
+        tells the decoder <em>which generation step</em> it is currently on, not just word order
       </p>
 
       <div
@@ -93,17 +93,17 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
             isDark ? "text-cyan-300" : "text-blue-800"
           }`}
         >
-          Why we use this step
+          Why we use this step — decoder purpose
         </div>
         <p
           className={`text-[11px] leading-5 max-w-[620px] ${
             isDark ? "text-slate-300" : "text-slate-700"
           }`}
         >
-          The decoder also processes tokens in parallel within each run, so it
-          needs positional encoding to know the order of the generated output
-          tokens — &lt;START&gt; is at position 0, the first predicted token is
-          at position 1, and so on.
+          Unlike the encoder where positional encoding orders the <strong>input</strong> words,
+          the decoder uses it to track which <strong>generation step</strong> it is currently on.
+          &lt;START&gt; is always step 0, the first predicted word is step 1, and so on.
+          Without this, the decoder cannot distinguish whether it is generating the 1st or the 5th output word.
         </p>
       </div>
 
@@ -162,19 +162,28 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
         }`}
       >
         {usePosition
-          ? "Show Without Positional Encoding"
-          : "Show With Positional Encoding"}
+          ? "Show Decoder Without Position Info"
+          : "Show Decoder With Position Info"}
       </button>
 
-      {usePosition && (
+      {usePosition ? (
         <p
           className={`text-[11px] text-center mb-4 ${
             isDark ? "text-slate-500" : "text-slate-600"
           }`}
         >
-          The purple positional vector is a fixed demo vector based on the token
-          position: &lt;START&gt; gets position 0, the first output token gets
-          position 1, and so on.
+          The purple positional vector marks the generation step: &lt;START&gt; = step 0,
+          first predicted word = step 1, and so on — different from the encoder where
+          positions simply order the input words.
+        </p>
+      ) : (
+        <p
+          className={`text-[11px] text-center mb-4 ${
+            isDark ? "text-red-400/70" : "text-red-600"
+          }`}
+        >
+          Without positional encoding the decoder cannot tell which generation step it is on —
+          all output positions appear equivalent, so the shuffled order below is indistinguishable.
         </p>
       )}
 

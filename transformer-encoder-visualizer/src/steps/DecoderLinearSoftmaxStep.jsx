@@ -80,6 +80,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
   const [showExplanation, setShowExplanation] = useState(false);
 
   const sentence = tokens.length ? tokens.join(" ") : "I love sunny days";
+  const inputWords = sentence.split(/\s+/);
   const translation = useMemo(() => getTranslation(sentence), [sentence]);
   const vocab = useMemo(() => buildVocab(translation), [translation]);
 
@@ -300,7 +301,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
                     : "text-slate-400"
                 }`}
               >
-                → {tokens[i] || tok}
+                → {inputWords[i] || tok}
               </span>
             </button>
           ))}

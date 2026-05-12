@@ -194,32 +194,49 @@ function DecoderStackStep({ active, tokens, theme }) {
               }`}
             >
               <div
-                className={`font-medium mb-1 ${
+                className={`font-medium mb-2 ${
                   isDark ? "text-cyan-300" : "text-blue-800"
                 }`}
               >
                 Correct decoder layer order
               </div>
 
-              <div className="grid grid-cols-2 gap-1.5 text-xs">
-                <div className={`px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
-                  ① Masked Self-Attention
-                </div>
-                <div className={`px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
-                  Add &amp; Norm
-                </div>
-                <div className={`px-2 py-1.5 rounded border text-center font-medium ${isDark ? "border-amber-500/60 text-amber-300" : "border-amber-300 text-amber-800 bg-amber-50"}`}>
-                  ② Cross-Attention ← Encoder
-                </div>
-                <div className={`px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
-                  Add &amp; Norm
-                </div>
-                <div className={`px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
-                  ③ Feed Forward
-                </div>
-                <div className={`px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
-                  Add &amp; Norm
-                </div>
+              <div className="flex flex-col gap-1 text-xs">
+                {[
+                  { label: "Masked Self-Attention", kind: "sub" },
+                  { label: "Add & Norm", kind: "norm" },
+                  { label: "Cross-Attention ← Encoder", kind: "sub" },
+                  { label: "Add & Norm", kind: "norm" },
+                  { label: "Feed Forward", kind: "sub" },
+                  { label: "Add & Norm", kind: "norm" },
+                ].map((row, i) => {
+                  const isNorm = row.kind === "norm";
+                  return (
+                    <div
+                      key={i}
+                      className={`flex items-center gap-2 px-2 py-1.5 rounded border ${
+                        isNorm
+                          ? isDark
+                            ? "border-slate-700 text-slate-300 bg-slate-900/40"
+                            : "border-slate-300 text-slate-700 bg-white"
+                          : isDark
+                          ? "border-slate-600 text-white bg-slate-900/60"
+                          : "border-slate-300 text-slate-900 bg-slate-50"
+                      }`}
+                    >
+                      <span
+                        className={`font-mono font-semibold w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0 ${
+                          isDark
+                            ? "bg-slate-800 text-slate-300"
+                            : "bg-slate-200 text-slate-700"
+                        }`}
+                      >
+                        {i + 1}
+                      </span>
+                      <span>{row.label}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -314,45 +331,181 @@ function DecoderStackStep({ active, tokens, theme }) {
               : "border-slate-400/70 bg-slate-50"
           }`}
         >
-          <h3
-            className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
-            }`}
-          >
-            Add &amp; Normalize
-          </h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3
+              className={`text-sm font-semibold ${
+                isDark ? "text-cyan-300" : "text-blue-800"
+              }`}
+            >
+              Add &amp; Normalize
+            </h3>
+            <span
+              className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                isDark
+                  ? "border-cyan-400/40 text-cyan-300 bg-cyan-400/10"
+                  : "border-blue-400 text-blue-700 bg-blue-50"
+              }`}
+            >
+              ×3 per layer
+            </span>
+          </div>
 
+          {/* Mini flow diagram */}
           <div
-            className={`text-[11px] leading-5 space-y-2 mb-3 ${
-              isDark ? "text-slate-300" : "text-slate-700"
+            className={`rounded-lg border p-3 mb-3 ${
+              isDark ? "border-slate-700 bg-slate-950/60" : "border-slate-300 bg-white"
             }`}
           >
-            <p>
-              After each sub-layer (masked attention, cross-attention, feed
-              forward), the model adds the original input back and normalizes.
-            </p>
-            <p>
-              This happens{" "}
-              <span className={isDark ? "text-white" : "text-slate-900"}>
-                three times
-              </span>{" "}
-              per decoder layer — once after each sub-layer.
-            </p>
-            <p>
-              It helps keep learning stable and preserves useful information
-              through the layer.
-            </p>
+            <div className="flex items-stretch justify-between gap-1 text-[10px]">
+              <div
+                className={`flex-1 px-2 py-1.5 rounded border text-center ${
+                  isDark
+                    ? "border-slate-600 text-slate-200 bg-slate-900"
+                    : "border-slate-300 text-slate-800 bg-slate-50"
+                }`}
+              >
+                <div className="font-mono font-semibold">x</div>
+                <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  token vector
+                </div>
+              </div>
+              <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-400"}`}>→</span>
+              <div
+                className={`flex-1 px-2 py-1.5 rounded border text-center ${
+                  isDark
+                    ? "border-cyan-500/40 text-cyan-300 bg-cyan-500/5"
+                    : "border-blue-400 text-blue-700 bg-blue-50"
+                }`}
+              >
+                <div className="font-semibold">Sub-Layer</div>
+                <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  attention / FFN
+                </div>
+              </div>
+              <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-400"}`}>→</span>
+              <div
+                className={`flex flex-col items-center justify-center px-1 ${
+                  isDark ? "text-amber-300" : "text-amber-700"
+                }`}
+              >
+                <div
+                  className={`w-6 h-6 rounded-full border flex items-center justify-center font-bold ${
+                    isDark
+                      ? "border-amber-500/60 bg-amber-500/10"
+                      : "border-amber-400 bg-amber-50"
+                  }`}
+                >
+                  +
+                </div>
+                <div className="text-[9px] mt-0.5">add x back</div>
+              </div>
+              <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-400"}`}>→</span>
+              <div
+                className={`flex-1 px-2 py-1.5 rounded border text-center ${
+                  isDark
+                    ? "border-emerald-500/40 text-emerald-300 bg-emerald-500/5"
+                    : "border-emerald-400 text-emerald-700 bg-emerald-50"
+                }`}
+              >
+                <div className="font-semibold">LayerNorm</div>
+                <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  rescale values
+                </div>
+              </div>
+              <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-400"}`}>→</span>
+              <div
+                className={`flex-1 px-2 py-1.5 rounded border text-center ${
+                  isDark
+                    ? "border-slate-600 text-slate-200 bg-slate-900"
+                    : "border-slate-300 text-slate-800 bg-slate-50"
+                }`}
+              >
+                <div className="font-mono font-semibold">out</div>
+                <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  refined vector
+                </div>
+              </div>
+            </div>
+            <div
+              className={`mt-2 text-center text-[10px] font-mono ${
+                isDark ? "text-slate-400" : "text-slate-600"
+              }`}
+            >
+              out = LayerNorm( x + SubLayer(x) )
+            </div>
+
+            {/* Legend explaining each symbol */}
+            <div
+              className={`mt-2 pt-2 border-t text-[10px] leading-4 space-y-1 ${
+                isDark ? "border-slate-700 text-slate-300" : "border-slate-200 text-slate-700"
+              }`}
+            >
+              <div>
+                <span className="font-mono font-semibold">x</span> — the token vector going into the sub-layer (e.g. the decoder vector for one word).
+              </div>
+              <div>
+                <span className={`font-semibold ${isDark ? "text-cyan-300" : "text-blue-700"}`}>Sub-Layer</span> — whichever operation is being applied: <em>masked self-attention</em>, <em>cross-attention</em>, or the <em>feed-forward</em> network.
+              </div>
+              <div>
+                <span className={`font-bold ${isDark ? "text-amber-300" : "text-amber-700"}`}>+</span> — the <em>residual connection</em>: we add the original <span className="font-mono">x</span> back to the sub-layer's output so nothing learned earlier is lost.
+              </div>
+              <div>
+                <span className={`font-semibold ${isDark ? "text-emerald-300" : "text-emerald-700"}`}>LayerNorm</span> — rescales the combined vector so its values have zero mean and unit variance, which keeps numbers stable across many stacked layers.
+              </div>
+            </div>
+          </div>
+
+          {/* Two compact info cards */}
+          <div className="grid grid-cols-2 gap-2 mb-2">
+            <div
+              className={`rounded-lg border p-2 ${
+                isDark ? "border-amber-500/40 bg-amber-500/5" : "border-amber-300 bg-amber-50"
+              }`}
+            >
+              <div
+                className={`text-[10px] font-semibold mb-0.5 ${
+                  isDark ? "text-amber-300" : "text-amber-800"
+                }`}
+              >
+                Add (residual)
+              </div>
+              <p
+                className={`text-[10px] leading-4 ${
+                  isDark ? "text-slate-300" : "text-slate-700"
+                }`}
+              >
+                Re-injects the original input so useful signal is never lost.
+              </p>
+            </div>
+            <div
+              className={`rounded-lg border p-2 ${
+                isDark ? "border-emerald-500/40 bg-emerald-500/5" : "border-emerald-300 bg-emerald-50"
+              }`}
+            >
+              <div
+                className={`text-[10px] font-semibold mb-0.5 ${
+                  isDark ? "text-emerald-300" : "text-emerald-800"
+                }`}
+              >
+                Normalize
+              </div>
+              <p
+                className={`text-[10px] leading-4 ${
+                  isDark ? "text-slate-300" : "text-slate-700"
+                }`}
+              >
+                Rescales each vector to zero mean &amp; unit variance — keeps training stable.
+              </p>
+            </div>
           </div>
 
           <p
-            className={`text-[11px] leading-5 mt-2 ${
+            className={`text-[10px] leading-4 ${
               isDark ? "text-slate-400" : "text-slate-600"
             }`}
           >
-            Layer normalization rescales each vector to have zero mean and unit
-            variance, keeping values stable as they pass through many layers.
-            Without it, activations can explode or vanish, making deep stacks
-            impossible to train effectively.
+            Applied after masked self-attention, cross-attention, and feed-forward.
+            Without it, activations would explode or vanish across deep stacks.
           </p>
         </div>
       </div>
@@ -438,19 +591,9 @@ function DecoderStackStep({ active, tokens, theme }) {
                 </div>
 
                 <div className="flex gap-2 mb-3 text-sm flex-wrap items-center">
-                  {(tokens.length ? tokens.slice(0, 3) : ["token"]).map((t, i) => (
-                    <motion.span
+                  {(tokens.length ? tokens.slice(0, 10) : ["token"]).map((t, i) => (
+                    <span
                       key={i}
-                      animate={{
-                        opacity: active && isActive ? 1 : 0.3,
-                        y: active && isActive ? [0, -2, 0] : 0,
-                        scale: active && isActive ? [1, 1.03 + index * 0.02, 1] : 1,
-                      }}
-                      transition={{
-                        duration: 1.2,
-                        repeat: Infinity,
-                        delay: i * 0.05 + index * 0.2,
-                      }}
                       className={`transition-colors duration-300 ${
                         isActive
                           ? layer.text
@@ -460,62 +603,41 @@ function DecoderStackStep({ active, tokens, theme }) {
                       }`}
                     >
                       {t}
-                    </motion.span>
-                  ))}
-                  {tokens.length > 3 && (
-                    <span
-                      className={`text-[10px] ${
-                        isDark ? "text-slate-500" : "text-slate-400"
-                      }`}
-                    >
-                      ...and {tokens.length - 3} more
                     </span>
-                  )}
+                  ))}
                 </div>
 
-                <div className="grid grid-cols-2 gap-1 mt-1">
-                  <motion.div
-                    animate={{ scale: active && isActive ? [1, 1.05, 1] : 1 }}
-                    transition={{ duration: 1.2, repeat: Infinity }}
-                    className={`text-center text-[9px] px-1.5 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}
-                  >
-                    Masked Attn
-                  </motion.div>
-                  <motion.div
-                    animate={{ scale: active && isActive ? [1, 1.05, 1] : 1 }}
-                    transition={{ duration: 1.2, repeat: Infinity, delay: 0.15 }}
-                    className={`text-center text-[9px] px-1.5 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}
-                  >
-                    Add &amp; Norm
-                  </motion.div>
-                  <motion.div
-                    animate={{ scale: active && isActive ? [1, 1.05, 1] : 1 }}
-                    transition={{ duration: 1.2, repeat: Infinity, delay: 0.3 }}
-                    className={`text-center text-[9px] px-1.5 py-1 rounded border ${isDark ? "border-amber-500/60 text-amber-300" : "border-amber-300 text-amber-800 bg-amber-50"}`}
-                  >
-                    Cross-Attn
-                  </motion.div>
-                  <motion.div
-                    animate={{ scale: active && isActive ? [1, 1.05, 1] : 1 }}
-                    transition={{ duration: 1.2, repeat: Infinity, delay: 0.45 }}
-                    className={`text-center text-[9px] px-1.5 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}
-                  >
-                    Add &amp; Norm
-                  </motion.div>
-                  <motion.div
-                    animate={{ scale: active && isActive ? [1, 1.05, 1] : 1 }}
-                    transition={{ duration: 1.2, repeat: Infinity, delay: 0.6 }}
-                    className={`text-center text-[9px] px-1.5 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}
-                  >
-                    Feed Forward
-                  </motion.div>
-                  <motion.div
-                    animate={{ scale: active && isActive ? [1, 1.05, 1] : 1 }}
-                    transition={{ duration: 1.2, repeat: Infinity, delay: 0.75 }}
-                    className={`text-center text-[9px] px-1.5 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}
-                  >
-                    Add &amp; Norm
-                  </motion.div>
+                <div className="flex flex-col gap-1 mt-1">
+                  {[
+                    { label: "Masked Self-Attention", highlight: false },
+                    { label: "Add & Norm", highlight: false },
+                    { label: "Cross-Attention ← Encoder", highlight: true },
+                    { label: "Add & Norm", highlight: false },
+                    { label: "Feed Forward", highlight: false },
+                    { label: "Add & Norm", highlight: false },
+                  ].map((row, n) => (
+                    <div
+                      key={n}
+                      className={`flex items-center gap-2 text-[10px] px-2 py-1 rounded border ${
+                        row.highlight
+                          ? isDark
+                            ? "border-amber-500/60 text-amber-300 bg-amber-500/5"
+                            : "border-amber-300 text-amber-800 bg-amber-50"
+                          : isDark
+                          ? "border-slate-600 text-white"
+                          : "border-slate-300 text-slate-900 bg-slate-50"
+                      }`}
+                    >
+                      <span
+                        className={`font-mono font-semibold w-4 shrink-0 ${
+                          isDark ? "text-slate-400" : "text-slate-500"
+                        }`}
+                      >
+                        {n + 1}.
+                      </span>
+                      <span>{row.label}</span>
+                    </div>
+                  ))}
                 </div>
               </motion.div>
 
