@@ -172,117 +172,189 @@ function SvgDefs({ color }) {
 
 /* ---------- stage detail views ---------- */
 
-function EmbedDetail({ p, sampleToken = "house" }) {
+function TokenizeDetail({ p }) {
+  const toks = ["The", "house", "is", "wonderful"];
+  const ids = ["37", "629", "19", "1627"];
   return (
-    <svg viewBox="0 0 900 240" className="w-full" style={{ minHeight: 240 }}>
+    <svg viewBox="0 0 900 210" className="w-full" style={{ minHeight: 210 }}>
       <SvgDefs color={p.sub} />
 
-      <Box x={20} y={105} w={80} h={34} label={sampleToken} color={p.text} accent />
-      <Arrow x1={100} y1={122} x2={160} y2={122} color={p.sub} />
+      <Box x={20} y={85} w={150} h={42} label="raw sentence" sub="plain text" color={p.text} accent />
 
-      <Box x={160} y={105} w={90} h={34} label="ID: 629" sub="vocab index" color={p.embed} />
-      <Arrow x1={250} y1={122} x2={310} y2={122} color={p.sub} label="lookup row" />
-
-      <Box
-        x={310}
-        y={95}
-        w={150}
-        h={54}
-        label="Embedding Matrix"
-        sub="32,128 × 512"
-        color={p.embed}
-        accent
-      />
-      <Arrow x1={460} y1={122} x2={510} y2={122} color={p.sub} />
-
-      <VectorViz x={510} y={105} dims={10} color={p.embed} label="token embedding (512-dim)" />
-
-      {/* Positional stream */}
-      <Box x={310} y={180} w={150} h={34} label="Position info" sub="position 2 in sentence" color={p.res} />
-      <Arrow x1={460} y1={197} x2={510} y2={197} color={p.sub} />
-      <VectorViz x={510} y={180} dims={10} color={p.res} label="position vector" />
-
-      <text x={675} y={148} fontSize={14} fill={p.text} fontWeight="700">
-        +
+      {toks.map((_, i) => (
+        <Arrow key={`a${i}`} x1={170} y1={106} x2={250} y2={45 + i * 40} color={p.sub} />
+      ))}
+      <text x={210} y={96} textAnchor="middle" fontSize={7.5} fill={p.sub} fontStyle="italic">
+        split
       </text>
 
-      <Arrow x1={700} y1={148} x2={760} y2={148} color={p.sub} curve label="sum" />
+      {toks.map((t, i) => (
+        <Box key={`t${i}`} x={250} y={30 + i * 40} w={120} h={30} label={t} sub="one token" color={p.embed} />
+      ))}
 
-      <VectorViz x={760} y={125} dims={10} color={p.embed} label="final input (512-dim)" />
+      {toks.map((_, i) => (
+        <Arrow key={`b${i}`} x1={370} y1={45 + i * 40} x2={440} y2={45 + i * 40} color={p.sub} />
+      ))}
+      <text x={405} y={20} textAnchor="middle" fontSize={7.5} fill={p.sub} fontStyle="italic">
+        look up ID
+      </text>
+
+      {ids.map((id, i) => (
+        <Box key={`i${i}`} x={440} y={30 + i * 40} w={100} h={30} label={`ID ${id}`} color={p.res} accent />
+      ))}
+
+      <Arrow x1={540} y1={106} x2={620} y2={106} color={p.sub} />
+      <text x={680} y={110} textAnchor="middle" fontSize={9} fill={p.text} opacity={0.75}>
+        numbers → Embed step
+      </text>
     </svg>
   );
 }
 
-function SelfAttnDetail({ p, isCross = false }) {
+function PositionalDetail({ p }) {
   return (
-    <svg viewBox="0 0 900 320" className="w-full" style={{ minHeight: 320 }}>
+    <svg viewBox="0 0 900 210" className="w-full" style={{ minHeight: 210 }}>
+      <SvgDefs color={p.sub} />
+
+      <Box x={20} y={40} w={150} h={38} label="token embedding" sub="meaning only" color={p.embed} accent />
+      <Arrow x1={170} y1={59} x2={210} y2={59} color={p.sub} />
+      <VectorViz x={210} y={45} dims={10} color={p.embed} label="" />
+
+      <Box x={20} y={140} w={150} h={38} label="position vector" sub="which slot in sentence" color={p.res} accent />
+      <Arrow x1={170} y1={159} x2={210} y2={159} color={p.sub} />
+      <VectorViz x={210} y={145} dims={10} color={p.res} label="" />
+
+      <text x={470} y={115} textAnchor="middle" fontSize={18} fontWeight="700" fill={p.text}>
+        +
+      </text>
+      <Arrow x1={420} y1={70} x2={500} y2={105} color={p.sub} curve />
+      <Arrow x1={420} y1={170} x2={500} y2={120} color={p.sub} curve />
+      <text x={530} y={100} textAnchor="middle" fontSize={7.5} fill={p.sub} fontStyle="italic">
+        add together
+      </text>
+
+      <Arrow x1={500} y1={112} x2={560} y2={112} color={p.sub} />
+      <VectorViz x={560} y={98} dims={10} color={p.embed} label="meaning + position" />
+
+      <text x={720} y={116} textAnchor="middle" fontSize={9} fill={p.text} opacity={0.75}>
+        → ready for attention
+      </text>
+    </svg>
+  );
+}
+
+function EmbedDetail({ p, sampleToken = "house" }) {
+  return (
+    <svg viewBox="0 0 900 200" className="w-full" style={{ minHeight: 200 }}>
+      <SvgDefs color={p.sub} />
+
+      {/* the word */}
+      <Box x={20} y={78} w={110} h={44} label={sampleToken} sub="one token" color={p.text} accent />
+      <Arrow x1={130} y1={100} x2={195} y2={100} color={p.sub} label="its ID" />
+
+      {/* its vocab ID */}
+      <Box x={195} y={78} w={110} h={44} label="ID 629" sub="row number" color={p.embed} />
+      <Arrow x1={305} y1={100} x2={375} y2={100} color={p.sub} label="pick that row" />
+
+      {/* the embedding table */}
+      <Box
+        x={375}
+        y={68}
+        w={185}
+        h={64}
+        label="Embedding table"
+        sub="32,128 words × 512 numbers"
+        color={p.embed}
+        accent
+      />
+      <Arrow x1={560} y1={100} x2={625} y2={100} color={p.sub} />
+
+      {/* the resulting vector */}
+      <VectorViz x={625} y={84} dims={10} color={p.embed} label="this word's vector (512 numbers)" />
+
+      <text x={760} y={165} textAnchor="middle" fontSize={9} fill={p.text} opacity={0.78}>
+        words with similar meaning get similar vectors
+      </text>
+    </svg>
+  );
+}
+
+function SelfAttnDetail({ p, isCross = false, isMasked = false }) {
+  const accent = isCross ? p.crossAttn : isMasked ? p.maskedAttn || p.selfAttn : p.selfAttn;
+  return (
+    <svg viewBox="0 0 900 330" className="w-full" style={{ minHeight: 330 }}>
       <SvgDefs color={p.sub} />
 
       {/* Input */}
       {isCross ? (
         <>
-          <Box x={10} y={30} w={130} h={36} label="Decoder state" sub="seq_dec × 512" color={p.crossAttn} accent />
-          <Box x={10} y={230} w={130} h={36} label="Encoder output" sub="seq_enc × 512" color={p.embed} accent />
+          <Box x={10} y={30} w={140} h={40} label="Decoder so far" sub="what we've written" color={p.crossAttn} accent />
+          <Box x={10} y={228} w={140} h={40} label="Encoder output" sub="the input sentence" color={p.embed} accent />
         </>
       ) : (
-        <Box x={10} y={135} w={130} h={40} label="Input X" sub="seq × 512" color={p.selfAttn} accent />
+        <Box x={10} y={133} w={140} h={44} label="Input tokens" sub="one vector per word" color={accent} accent />
       )}
 
       {/* Linear projections */}
-      <Box x={200} y={40} w={100} h={32} label="× W_Q" color={p.selfAttn} />
-      <Box x={200} y={135} w={100} h={32} label="× W_K" color={p.selfAttn} />
-      <Box x={200} y={230} w={100} h={32} label="× W_V" color={p.selfAttn} />
+      <Box x={210} y={38} w={110} h={36} label="× W_Q" sub="make Query" color={accent} />
+      <Box x={210} y={133} w={110} h={36} label="× W_K" sub="make Key" color={accent} />
+      <Box x={210} y={228} w={110} h={36} label="× W_V" sub="make Value" color={accent} />
 
       {isCross ? (
         <>
-          <Arrow x1={140} y1={48} x2={200} y2={56} color={p.crossAttn} />
-          <Arrow x1={140} y1={248} x2={200} y2={151} color={p.embed} />
-          <Arrow x1={140} y1={248} x2={200} y2={246} color={p.embed} />
+          <Arrow x1={150} y1={50} x2={210} y2={56} color={p.crossAttn} />
+          <Arrow x1={150} y1={248} x2={210} y2={151} color={p.embed} />
+          <Arrow x1={150} y1={248} x2={210} y2={246} color={p.embed} />
         </>
       ) : (
         <>
-          <Arrow x1={140} y1={155} x2={200} y2={56} color={p.selfAttn} />
-          <Arrow x1={140} y1={155} x2={200} y2={151} color={p.selfAttn} />
-          <Arrow x1={140} y1={155} x2={200} y2={246} color={p.selfAttn} />
+          <Arrow x1={150} y1={155} x2={210} y2={56} color={accent} />
+          <Arrow x1={150} y1={155} x2={210} y2={151} color={accent} />
+          <Arrow x1={150} y1={155} x2={210} y2={246} color={accent} />
         </>
       )}
 
       {/* Q, K, V vectors */}
-      <Box x={340} y={40} w={70} h={32} label="Q" sub="× 8 heads" color={p.selfAttn} accent />
-      <Box x={340} y={135} w={70} h={32} label="K" sub="× 8 heads" color={p.selfAttn} accent />
-      <Box x={340} y={230} w={70} h={32} label="V" sub="× 8 heads" color={p.selfAttn} accent />
+      <Box x={360} y={38} w={90} h={36} label="Q" sub="what I seek" color={accent} accent />
+      <Box x={360} y={133} w={90} h={36} label="K" sub="what I show" color={accent} accent />
+      <Box x={360} y={228} w={90} h={36} label="V" sub="my content" color={accent} accent />
 
-      <Arrow x1={300} y1={56} x2={340} y2={56} color={p.sub} />
-      <Arrow x1={300} y1={151} x2={340} y2={151} color={p.sub} />
-      <Arrow x1={300} y1={246} x2={340} y2={246} color={p.sub} />
+      <Arrow x1={320} y1={56} x2={360} y2={56} color={p.sub} />
+      <Arrow x1={320} y1={151} x2={360} y2={151} color={p.sub} />
+      <Arrow x1={320} y1={246} x2={360} y2={246} color={p.sub} />
 
       {/* Q · K^T */}
-      <Box x={460} y={85} w={110} h={32} label="Q · Kᵀ" sub="scores" color={p.selfAttn} />
-      <Arrow x1={410} y1={56} x2={460} y2={95} color={p.sub} />
-      <Arrow x1={410} y1={151} x2={460} y2={110} color={p.sub} />
+      <Box x={490} y={80} w={120} h={34} label="Q · Kᵀ" sub="how well they match" color={accent} />
+      <Arrow x1={450} y1={56} x2={490} y2={92} color={p.sub} />
+      <Arrow x1={450} y1={151} x2={490} y2={106} color={p.sub} />
 
-      <Box x={460} y={130} w={110} h={28} label="÷ √64" sub="scale" color={p.selfAttn} />
-      <Arrow x1={515} y1={117} x2={515} y2={130} color={p.sub} />
+      <Box x={490} y={124} w={120} h={30} label="÷ √64" sub="keep numbers calm" color={accent} />
+      <Arrow x1={550} y1={114} x2={550} y2={124} color={p.sub} />
 
-      <Box x={460} y={170} w={110} h={28} label="softmax" color={p.selfAttn} />
-      <Arrow x1={515} y1={158} x2={515} y2={170} color={p.sub} />
+      {isMasked && (
+        <Box x={490} y={162} w={120} h={30} label="apply mask" sub="hide future words" color={accent} accent />
+      )}
+      <Arrow x1={550} y1={154} x2={550} y2={isMasked ? 162 : 200} color={p.sub} />
 
-      <MatrixViz x={480} y={205} rows={3} cols={3} color={p.selfAttn} label="attention weights" />
+      <Box x={490} y={isMasked ? 200 : 162} w={120} h={30} label="softmax" sub="turn into % weights" color={accent} />
+      {isMasked && <Arrow x1={550} y1={192} x2={550} y2={200} color={p.sub} />}
+
+      <MatrixViz x={510} y={isMasked ? 238 : 200} rows={3} cols={3} color={accent} label="attention weights" />
 
       {/* × V */}
-      <Box x={620} y={135} w={90} h={32} label="× V" color={p.selfAttn} accent />
-      <Arrow x1={545} y1={235} x2={620} y2={155} color={p.sub} curve />
-      <Arrow x1={410} y1={246} x2={620} y2={160} color={p.sub} curve />
+      <Box x={660} y={133} w={100} h={36} label="× V" sub="blend the Values" color={accent} accent />
+      <Arrow x1={575} y1={isMasked ? 268 : 230} x2={660} y2={155} color={p.sub} curve />
+      <Arrow x1={450} y1={246} x2={660} y2={160} color={p.sub} curve />
 
       {/* concat + output projection */}
-      <Box x={750} y={110} w={130} h={32} label="Concat 8 heads" sub="→ 512-dim" color={p.selfAttn} />
-      <Arrow x1={710} y1={151} x2={750} y2={126} color={p.sub} />
+      <Box x={790} y={105} w={100} h={36} label="Concat heads" sub="join 8 views" color={accent} />
+      <Arrow x1={760} y1={151} x2={790} y2={123} color={p.sub} />
 
-      <Box x={750} y={160} w={130} h={32} label="× W_O" sub="output proj" color={p.selfAttn} accent />
-      <Arrow x1={815} y1={142} x2={815} y2={160} color={p.sub} />
+      <Box x={790} y={155} w={100} h={36} label="× W_O" sub="mix the heads" color={accent} accent />
+      <Arrow x1={840} y1={141} x2={840} y2={155} color={p.sub} />
 
-      <text x={815} y={215} textAnchor="middle" fontSize={8} fill={p.text} opacity={0.8}>
-        → seq × 512
+      <text x={840} y={210} textAnchor="middle" fontSize={8.5} fill={p.text} opacity={0.8}>
+        → refined vectors
       </text>
     </svg>
   );
@@ -312,18 +384,19 @@ function FFNDetail({ p }) {
 
 function OutputDetail({ p, liveOutput }) {
   const fallbackBars = [
-    { w: 60, l: "Bienvenue", p: "20%" },
-    { w: 54, l: "à", p: "18%" },
-    { w: 48, l: "votre", p: "16%" },
-    { w: 45, l: "voiture", p: "15%" },
-    { w: 40, l: "tout", p: "13%" },
+    { w: 110, l: "Bienvenue", p: "20%" },
+    { w: 98, l: "à", p: "18%" },
+    { w: 86, l: "votre", p: "16%" },
+    { w: 80, l: "voiture", p: "15%" },
+    { w: 70, l: "tout", p: "13%" },
   ];
 
   const hasLive = liveOutput && liveOutput.length > 0;
   const bars = hasLive
     ? liveOutput.slice(0, 5).map((item) => {
         const pct = (item.prob * 100).toFixed(1);
-        return { w: Math.max(20, item.prob * 300), l: item.tok, p: `${pct}%` };
+        // width is the final pixel length; capped so the % label always stays on-screen
+        return { w: Math.max(28, Math.min(180, item.prob * 180)), l: item.tok, p: `${pct}%` };
       })
     : fallbackBars;
 
@@ -351,12 +424,15 @@ function OutputDetail({ p, liveOutput }) {
 
       {/* Top-K bars */}
       <g>
+        <text x={640} y={48} fontSize={8} fontWeight="700" fill={p.output} opacity={0.7}>
+          most likely next words
+        </text>
         {bars.map((b, i) => (
           <g key={i}>
             <rect
               x={640}
               y={55 + i * 22}
-              width={b.w * 1.6}
+              width={b.w}
               height={16}
               rx={3}
               fill={p.output}
@@ -366,11 +442,12 @@ function OutputDetail({ p, liveOutput }) {
               {b.l}
             </text>
             <text
-              x={640 + b.w * 1.6 + 6}
+              x={640 + b.w + 6}
               y={67 + i * 22}
               fontSize={8}
+              fontWeight="700"
               fill={p.output}
-              opacity={0.8}
+              opacity={0.95}
             >
               {b.p}
             </text>
@@ -384,36 +461,145 @@ function OutputDetail({ p, liveOutput }) {
 /* ---------- main export ---------- */
 
 const EXPLANATIONS = {
-  embed: {
-    title: "Embed · Inside the Block",
+  tokens_enc: {
+    title: "Tokenization · Inside the Block",
     intuition:
-      "Imagine a giant dictionary where every word has its own 'profile card' with 512 numbers on it. The embedding step is just looking up that card. Two words with similar meaning end up with similar cards, 'cat' and 'kitten' live near each other in this 512-dimensional space.",
+      "Before a model can do any math, your sentence has to become numbers. Tokenization is the very first step: it chops the raw text into small pieces called tokens (whole words, word-parts, or punctuation) and gives each piece a fixed ID number from the model's vocabulary.",
     math: [
       {
-        step: "1. Turn the word into an ID",
-        formula: "\"house\" → 629",
-        detail: "The tokenizer assigns every word a fixed integer. T5 has 32,128 possible IDs.",
+        step: "1. Split the text into tokens",
+        formula: "\"The house is wonderful\" → [\"The\", \"house\", \"is\", \"wonderful\"]",
+        detail: "T5 uses a SentencePiece tokenizer. Rare or long words get broken into sub-word pieces so the vocabulary stays small.",
       },
       {
-        step: "2. Look up that row in the embedding matrix",
-        formula: "E[629]  →  [0.12, −0.43, 0.08, …]   (512 numbers)",
-        detail: "The embedding matrix is a learned table of shape (32,128 × 512). Row 629 is the vector for 'house'.",
+        step: "2. Map every token to its vocabulary ID",
+        formula: "[\"The\", \"house\", …] → [37, 629, 19, 1627]",
+        detail: "Each token has one fixed integer ID. T5's vocabulary has 32,128 entries.",
       },
       {
-        step: "3. Get a position vector for where the word sits",
-        formula: "P[2]  →  [0.02,  0.99, 0.03, …]",
-        detail: "Because attention is order-blind, we need to tell the model where each word is in the sentence.",
-      },
-      {
-        step: "4. Add them together (element-wise)",
-        formula: "final = E[629] + P[2]  →  [0.14, 0.56, 0.11, …]",
-        detail: "The result carries both meaning (from embedding) and position (from positional encoding).",
+        step: "3. Add the task prefix and end token",
+        formula: "[translate, English, to, French, :, …, </s>]",
+        detail: "T5 is told what to do with a text prefix, and a special </s> token marks where the sentence ends.",
       },
     ],
     insights: [
-      "Embedding values are learned during training, not computed from the letters of the word.",
-      "Without positional encoding the model cannot distinguish 'dog bites man' from 'man bites dog'.",
-      "Each of the 512 dimensions encodes some learned abstract feature of the word.",
+      "Tokenization happens on the CPU before any neural network runs, it is pure text processing.",
+      "The same word can split differently depending on context, e.g. 'wonderful' might become 'wonder' + 'ful'.",
+      "The model never sees letters, only the integer IDs produced here.",
+    ],
+  },
+  pos_enc: {
+    title: "Positional Encoding · Inside the Block",
+    intuition:
+      "Attention looks at every token at once, so on its own it has no idea which word came first. Positional encoding fixes this by adding a unique 'location stamp' to each token's embedding, telling the model where in the sentence that token sits.",
+    math: [
+      {
+        step: "1. Build a position vector for each slot",
+        formula: "P[pos] = [sin(pos/10000^0), cos(pos/10000^0), …]",
+        detail: "Each position gets a 512-dim vector made of sine and cosine waves at different frequencies, a unique fingerprint per slot.",
+      },
+      {
+        step: "2. Add it to the token embedding",
+        formula: "final = Embedding[token] + P[pos]",
+        detail: "Element-wise addition. The vector now carries both the word's meaning and its position.",
+      },
+      {
+        step: "3. The result feeds into the first attention layer",
+        formula: "X = [final₀, final₁, …, finalₙ]",
+        detail: "Every later layer can now use position information when deciding what to attend to.",
+      },
+    ],
+    insights: [
+      "Without positional encoding, 'dog bites man' and 'man bites dog' would look identical to the model.",
+      "Sine/cosine encoding lets the model generalize to sentence lengths it never saw in training.",
+      "It is added, not concatenated, so it does not increase the vector size.",
+    ],
+  },
+  maskedAttn: {
+    title: "Masked Self-Attention · Inside the Block",
+    intuition:
+      "This is self-attention inside the decoder, but with one rule added: a token may only look at itself and the tokens before it, never the future. This 'mask' is what forces the model to generate text one word at a time, left to right, without cheating by peeking ahead.",
+    math: [
+      {
+        step: "1. Create Q, K, V from the decoder input",
+        formula: "Q = X · W_Q     K = X · W_K     V = X · W_V",
+        detail: "Same projection as normal self-attention, all three come from the decoder's own tokens.",
+      },
+      {
+        step: "2. Score every token pair",
+        formula: "scores = Q · Kᵀ / √64",
+        detail: "A seq × seq matrix of how strongly each token matches every other token.",
+      },
+      {
+        step: "3. Apply the causal mask",
+        formula: "scores[i][j] = −∞   for every future position j > i",
+        detail: "Future positions are set to negative infinity so that, after softmax, their weight becomes exactly 0.",
+      },
+      {
+        step: "4. Softmax, then mix the Values",
+        formula: "output = softmax(masked scores) · V",
+        detail: "Each token ends up as a blend of only itself and the tokens to its left.",
+      },
+    ],
+    insights: [
+      "The mask is the ONLY difference from encoder self-attention, the math is otherwise identical.",
+      "Without the mask, the model could see the answer it is supposed to predict, useless for generation.",
+      "During training all positions are processed in parallel; the mask keeps each one honest.",
+    ],
+  },
+  linSoftmax: {
+    title: "Linear + Softmax · Inside the Block",
+    intuition:
+      "The decoder has produced a 512-dim summary for the next position. This stage turns that vector into an actual word: a linear layer gives every vocabulary word a raw score, and softmax turns those scores into probabilities that sum to 1.",
+    math: [
+      {
+        step: "1. Linear projection to vocabulary scores",
+        formula: "logits = y · W_out + b     (W_out is 512 × 32,128)",
+        detail: "One large matrix multiply produces one raw score (logit) for every possible token.",
+      },
+      {
+        step: "2. Softmax → probabilities",
+        formula: "P(w) = exp(logits_w) / Σ exp(logits_i)",
+        detail: "Exponentiate and normalize so every word gets a probability between 0 and 1, all summing to 1.",
+      },
+      {
+        step: "3. The probabilities feed the token picker",
+        formula: "P = [0.95, 0.03, 0.01, …]",
+        detail: "The highest-probability words become the candidates shown on the right of the diagram.",
+      },
+    ],
+    insights: [
+      "'Linear' and 'Softmax' are two steps but always run back-to-back, so the diagram shows them as one node.",
+      "Softmax amplifies gaps: logits of 5 vs 3 become ~0.88 vs ~0.12, not 5/8 vs 3/8.",
+      "The actual word chosen depends on the sampling strategy (greedy, top-p, beam search).",
+    ],
+  },
+  embed: {
+    title: "Embedding · Inside the Block",
+    intuition:
+      "A model can't do math on the word \"house\" — it needs numbers. Embedding is a giant lookup table: every word in the vocabulary owns one row of 512 numbers, and that row IS the word as far as the model is concerned. The numbers aren't random — training pulls words with similar meaning close together, so \"house\" and \"home\" end up with nearly the same row.",
+    math: [
+      {
+        step: "1. Start from the token's ID",
+        formula: "\"house\"  →  ID 629",
+        detail: "The Tokenization step already gave every word a fixed integer ID. Here we just use it.",
+      },
+      {
+        step: "2. Use the ID as a row number into the embedding table",
+        formula: "table shape = 32,128 words × 512 numbers",
+        detail: "The embedding table is one big learned grid: one row per possible word, each row 512 numbers long.",
+      },
+      {
+        step: "3. Read out that one row — that's the word's vector",
+        formula: "row 629  →  [0.12, −0.43, 0.08, … ]   (512 numbers)",
+        detail: "No calculation, just a lookup. This 512-number vector is the word's 'meaning' that flows into the rest of the model.",
+      },
+    ],
+    insights: [
+      "It is pure table lookup — no math on the letters of the word.",
+      "The 512 numbers are learned during training; before training they are random.",
+      "Similar words get similar rows, that is what lets the model 'understand' meaning.",
+      "Position is NOT added here — that happens in the next step, Positional Encoding.",
     ],
   },
   selfAttn: {
@@ -570,11 +756,15 @@ const EXPLANATIONS = {
 
 function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
   const content = {
+    tokens_enc: <TokenizeDetail p={p} />,
+    pos_enc: <PositionalDetail p={p} />,
     embed: <EmbedDetail p={p} />,
     selfAttn: <SelfAttnDetail p={p} />,
     encFFN: <FFNDetail p={p} />,
+    maskedAttn: <SelfAttnDetail p={p} isMasked />,
     decFFN: <FFNDetail p={p} />,
     crossAttn: <SelfAttnDetail p={p} isCross />,
+    linSoftmax: <OutputDetail p={p} liveOutput={liveOutput} />,
     outProj: <OutputDetail p={p} liveOutput={liveOutput} />,
   };
 
@@ -690,8 +880,8 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
               </ol>
             </div>
 
-            {/* Live worked example — Output Projection only */}
-            {stageKey === "outProj" && liveOutput && liveOutput.length > 0 && (() => {
+            {/* Live worked example — Output Projection / Linear+Softmax */}
+            {(stageKey === "outProj" || stageKey === "linSoftmax") && liveOutput && liveOutput.length > 0 && (() => {
               const top5 = liveOutput.slice(0, 5);
               const logits = top5.map((t) => Math.log(Math.max(t.prob, 1e-10)));
               const maxLogit = Math.max(...logits);
