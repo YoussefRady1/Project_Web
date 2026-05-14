@@ -70,8 +70,18 @@ function generateFeedForwardInput(word, index) {
   };
 }
 
+const BOX_TITLES = [
+  "Where do the negative values come from?",
+  "Why do we subtract a number here?",
+  "What is ReLU?",
+  "Why do we use ReLU?",
+  "Mini video",
+  "Worked example",
+];
+
 function FeedForwardStep({ active, tokens = [], theme }) {
   const [showOutput, setShowOutput] = useState(false);
+  const [boxIndex, setBoxIndex] = useState(0);
   const isDark = theme === "dark";
 
   const safeTokens = useMemo(
@@ -138,7 +148,60 @@ function FeedForwardStep({ active, tokens = [], theme }) {
   </p>
 </div>
       <div className="w-full flex flex-col gap-6 items-center">
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="w-full max-w-[640px] flex flex-col">
+          {/* Step-through navigation for the 6 explanation boxes */}
+          <div className="flex items-center justify-between mb-2 gap-2">
+            <button
+              onClick={() => setBoxIndex((i) => Math.max(0, i - 1))}
+              disabled={boxIndex === 0}
+              className={`px-3 py-1.5 text-xs rounded-lg border transition disabled:opacity-30 ${
+                isDark
+                  ? "border-slate-600 text-slate-300 hover:bg-slate-800"
+                  : "border-slate-300 text-slate-700 hover:bg-slate-100 bg-white"
+              }`}
+            >
+              ← Prev
+            </button>
+            <span
+              className={`text-xs font-semibold text-center flex-1 ${
+                isDark ? "text-cyan-300" : "text-blue-800"
+              }`}
+            >
+              {boxIndex + 1} / 6 · {BOX_TITLES[boxIndex]}
+            </span>
+            <button
+              onClick={() => setBoxIndex((i) => Math.min(5, i + 1))}
+              disabled={boxIndex === 5}
+              className={`px-3 py-1.5 text-xs rounded-lg border transition disabled:opacity-30 ${
+                isDark
+                  ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10"
+                  : "border-blue-400 text-blue-800 hover:bg-blue-100 bg-white"
+              }`}
+            >
+              Next →
+            </button>
+          </div>
+          {/* progress dots */}
+          <div className="flex justify-center gap-1.5 mb-3">
+            {BOX_TITLES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setBoxIndex(i)}
+                className={`h-2 rounded-full transition-all ${
+                  i === boxIndex
+                    ? isDark
+                      ? "w-5 bg-cyan-400"
+                      : "w-5 bg-blue-600"
+                    : isDark
+                    ? "w-2 bg-slate-700 hover:bg-slate-600"
+                    : "w-2 bg-slate-300 hover:bg-slate-400"
+                }`}
+                aria-label={`Box ${i + 1}`}
+              />
+            ))}
+          </div>
+
+          {boxIndex === 0 && (
           <div
             className={`rounded-xl border p-4 ${
               isDark
@@ -147,7 +210,7 @@ function FeedForwardStep({ active, tokens = [], theme }) {
             }`}
           >
             <h3
-              className={`text-sm font-semibold mb-2 ${
+              className={`text-base font-semibold mb-2 ${
                 isDark ? "text-cyan-300" : "text-blue-800"
               }`}
             >
@@ -210,7 +273,9 @@ function FeedForwardStep({ active, tokens = [], theme }) {
               </p>
             </div>
           </div>
+          )}
 
+          {boxIndex === 1 && (
           <div
             className={`rounded-xl border p-4 ${
               isDark
@@ -219,7 +284,7 @@ function FeedForwardStep({ active, tokens = [], theme }) {
             }`}
           >
             <h3
-              className={`text-sm font-semibold mb-2 ${
+              className={`text-base font-semibold mb-2 ${
                 isDark ? "text-cyan-300" : "text-blue-800"
               }`}
             >
@@ -247,7 +312,9 @@ function FeedForwardStep({ active, tokens = [], theme }) {
               </p>
             </div>
           </div>
+          )}
 
+          {boxIndex === 2 && (
           <div
             className={`rounded-xl border p-4 ${
               isDark
@@ -256,7 +323,7 @@ function FeedForwardStep({ active, tokens = [], theme }) {
             }`}
           >
             <h3
-              className={`text-sm font-semibold mb-2 ${
+              className={`text-base font-semibold mb-2 ${
                 isDark ? "text-cyan-300" : "text-blue-800"
               }`}
             >
@@ -291,7 +358,9 @@ function FeedForwardStep({ active, tokens = [], theme }) {
               </p>
             </div>
           </div>
+          )}
 
+          {boxIndex === 3 && (
           <div
             className={`rounded-xl border p-4 ${
               isDark
@@ -300,7 +369,7 @@ function FeedForwardStep({ active, tokens = [], theme }) {
             }`}
           >
             <h3
-              className={`text-sm font-semibold mb-2 ${
+              className={`text-base font-semibold mb-2 ${
                 isDark ? "text-cyan-300" : "text-blue-800"
               }`}
             >
@@ -330,7 +399,9 @@ function FeedForwardStep({ active, tokens = [], theme }) {
               </p>
             </div>
           </div>
+          )}
 
+          {boxIndex === 4 && (
           <div
             className={`rounded-xl border p-3 ${
               isDark
@@ -339,7 +410,7 @@ function FeedForwardStep({ active, tokens = [], theme }) {
             }`}
           >
             <div
-              className={`text-sm font-semibold mb-2 ${
+              className={`text-base font-semibold mb-2 ${
                 isDark ? "text-cyan-300" : "text-blue-800"
               }`}
             >
@@ -367,8 +438,9 @@ function FeedForwardStep({ active, tokens = [], theme }) {
               Short side video about the ReLU activation function.
             </p>
           </div>
+          )}
 
-          {sample && (
+          {boxIndex === 5 && sample && (
             <div
               className={`rounded-xl border p-4 ${
                 isDark
@@ -377,11 +449,11 @@ function FeedForwardStep({ active, tokens = [], theme }) {
               }`}
             >
               <h3
-                className={`text-sm font-semibold mb-2 ${
+                className={`text-base font-semibold mb-2 ${
                   isDark ? "text-cyan-300" : "text-blue-800"
                 }`}
               >
-                Example with: {sample.word}
+                Worked example with: {sample.word}
               </h3>
 
               <div

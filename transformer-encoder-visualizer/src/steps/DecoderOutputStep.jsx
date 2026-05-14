@@ -103,13 +103,29 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
       >
         Each click runs the whole decoder once and produces one new token
       </p>
-      <p
-        className={`text-[10px] text-center mb-4 ${
-          isDark ? "text-slate-500" : "text-slate-500"
+      <div
+        className={`mb-4 px-5 py-2.5 rounded-xl border text-center ${
+          isDark
+            ? "border-cyan-500/40 bg-cyan-500/10"
+            : "border-blue-300 bg-blue-50"
         }`}
       >
-        Translating <span className="italic">"{sentence}"</span> → French
-      </p>
+        <div
+          className={`text-[10px] uppercase tracking-wider font-semibold mb-0.5 ${
+            isDark ? "text-cyan-400/70" : "text-blue-500"
+          }`}
+        >
+          Task
+        </div>
+        <div
+          className={`text-lg font-bold ${
+            isDark ? "text-cyan-200" : "text-blue-800"
+          }`}
+        >
+          Translating <span className="italic">"{sentence}"</span>
+          <span className={isDark ? "text-cyan-400" : "text-blue-500"}> → French</span>
+        </div>
+      </div>
 
       <div className="w-full flex flex-col items-center gap-4">
         {/* Current decoder input - grows with each run */}

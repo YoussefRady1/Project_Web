@@ -68,6 +68,7 @@ const PAL = {
   dark: {
     embed: "#22d3ee",
     selfAttn: "#a78bfa",
+    maskedAttn: "#fb7185",
     ffn: "#fbbf24",
     crossAttn: "#4ade80",
     output: "#f472b6",
@@ -80,6 +81,7 @@ const PAL = {
   light: {
     embed: "#0891b2",
     selfAttn: "#7c3aed",
+    maskedAttn: "#e11d48",
     ffn: "#d97706",
     crossAttn: "#16a34a",
     output: "#db2777",
@@ -92,20 +94,31 @@ const PAL = {
 };
 
 const STAGES = [
-  { key: "embed", x: 140, c: "embed", l: "Embed" },
-  { key: "selfAttn", x: 270, c: "selfAttn", l: "Self-Attention" },
-  { key: "encFFN", x: 390, c: "ffn", l: "Feed-Forward" },
-  { key: "crossAttn", x: 560, c: "crossAttn", l: "Cross-Attention" },
-  { key: "decFFN", x: 690, c: "ffn", l: "Feed-Forward" },
+  { key: "tokens_enc", x: 115, c: "embed", l: "Tokenization" },
+  { key: "embed", x: 185, c: "embed", l: "Embedding" },
+  { key: "pos_enc", x: 255, c: "embed", l: "Positional" },
+  { key: "selfAttn", x: 325, c: "selfAttn", l: "Self-Attention" },
+  { key: "encFFN", x: 420, c: "ffn", l: "Feed-Forward" },
+  { key: "maskedAttn", x: 515, c: "maskedAttn", l: "Masked Self-Attn" },
+  { key: "crossAttn", x: 600, c: "crossAttn", l: "Cross-Attention" },
+  { key: "decFFN", x: 680, c: "ffn", l: "Feed-Forward" },
+  { key: "linSoftmax", x: 755, c: "output", l: "Lin+Softmax" },
   { key: "outProj", x: 820, c: "output", l: "Output" },
 ];
 
+// Quick lookup of a stage by key (for references that used to use STAGES[index]).
+const STAGE_BY = Object.fromEntries(STAGES.map((s) => [s.key, s]));
+
 const DESC = {
+  tokens_enc: "Splits your sentence into tokens",
   embed: "Turns each word into a numeric vector",
+  pos_enc: "Adds position info to each embedding",
   selfAttn: "Every word looks at the others",
   encFFN: "Refines each token on its own",
+  maskedAttn: "Each decoder word looks only at the words before it",
   crossAttn: "Decoder looks back at the encoder",
   decFFN: "Polishes the decoder's vectors",
+  linSoftmax: "Projects to vocab and normalises with softmax",
   outProj: "Picks the next word by probability",
 };
 
@@ -593,7 +606,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
   inToks.forEach((_, i) => {
     const bend = (i - (inToks.length - 1) / 2) * 12;
     flows.push({
-      d: bez(85, yPos(i, inToks.length), 128, CY, bend, 0),
+      d: bez(85, yPos(i, inToks.length), STAGE_BY.tokens_enc.x - 12, CY, bend, 0),
       c: p.embed,
       dl: i * 0.12,
     });
@@ -622,7 +635,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
   }
 
   flows.push({
-    d: `M${STAGES[2].x},${CY - 15} C${STAGES[2].x},${CY - 95} ${STAGES[3].x},${CY - 95} ${STAGES[3].x},${CY - 15}`,
+    d: `M${STAGE_BY.encFFN.x},${CY - 15} C${STAGE_BY.encFFN.x},${CY - 95} ${STAGE_BY.crossAttn.x},${CY - 95} ${STAGE_BY.crossAttn.x},${CY - 15}`,
     c: p.crossAttn,
     dl: 0.5,
     w: 1.8,
@@ -632,7 +645,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
 
   // Encoder residual: encFFN → selfAttn (reverse, below)
   flows.push({
-    d: `M${STAGES[2].x},${CY + 15} C${STAGES[2].x},${CY + 75} ${STAGES[1].x},${CY + 75} ${STAGES[1].x},${CY + 15}`,
+    d: `M${STAGE_BY.encFFN.x},${CY + 15} C${STAGE_BY.encFFN.x},${CY + 75} ${STAGE_BY.selfAttn.x},${CY + 75} ${STAGE_BY.selfAttn.x},${CY + 15}`,
     c: p.res,
     dl: 0.3,
     w: 1.4,
@@ -640,9 +653,9 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
     rev: true,
   });
 
-  // Decoder residual: decFFN → crossAttn (reverse, below)
+  // Decoder residual: decFFN → maskedAttn (reverse, below — spans full decoder stack)
   flows.push({
-    d: `M${STAGES[4].x},${CY + 15} C${STAGES[4].x},${CY + 75} ${STAGES[3].x},${CY + 75} ${STAGES[3].x},${CY + 15}`,
+    d: `M${STAGE_BY.decFFN.x},${CY + 15} C${STAGE_BY.decFFN.x},${CY + 75} ${STAGE_BY.maskedAttn.x},${CY + 75} ${STAGE_BY.maskedAttn.x},${CY + 15}`,
     c: p.res,
     dl: 0.6,
     w: 1.4,
@@ -653,7 +666,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
   outToks.forEach((item, i) => {
     const bend = (i - (outToks.length - 1) / 2) * 10;
     flows.push({
-      d: bez(832, CY, 863, yPos(i, outToks.length), 0, bend),
+      d: bez(STAGE_BY.outProj.x + 12, CY, 853, yPos(i, outToks.length), 0, bend),
       c: p.output,
       dl: 0.8 + i * 0.1,
       op: 0.1 + (item.prob || 0.5) * 0.3,
@@ -830,7 +843,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
         `}</style>
 
         <text
-          x={265}
+          x={267}
           y={38}
           textAnchor="middle"
           fontSize={11}
@@ -842,7 +855,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           ENCODER STACK
         </text>
         <text
-          x={690}
+          x={668}
           y={38}
           textAnchor="middle"
           fontSize={11}
@@ -854,7 +867,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           DECODER STACK
         </text>
         <text
-          x={(STAGES[2].x + STAGES[3].x) / 2}
+          x={(STAGE_BY.encFFN.x + STAGE_BY.crossAttn.x) / 2}
           y={CY - 90}
           textAnchor="middle"
           fontSize={7.5}
@@ -865,7 +878,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           encoder output
         </text>
         <text
-          x={(STAGES[1].x + STAGES[2].x) / 2}
+          x={(STAGE_BY.selfAttn.x + STAGE_BY.encFFN.x) / 2}
           y={CY + 88}
           textAnchor="middle"
           fontSize={7.5}
@@ -877,7 +890,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           ENCODER STACK
         </text>
         <text
-          x={(STAGES[3].x + STAGES[4].x) / 2}
+          x={(STAGE_BY.maskedAttn.x + STAGE_BY.decFFN.x) / 2}
           y={CY + 88}
           textAnchor="middle"
           fontSize={7.5}
@@ -911,7 +924,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           Your sentence
         </text>
         <text
-          x={922}
+          x={932}
           y={50}
           textAnchor="middle"
           fontSize={9}
@@ -923,7 +936,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           OUTPUT
         </text>
         <text
-          x={922}
+          x={932}
           y={62}
           textAnchor="middle"
           fontSize={6.5}
@@ -931,6 +944,16 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           opacity={0.5}
         >
           Model prediction
+        </text>
+        <text
+          x={932}
+          y={73}
+          textAnchor="middle"
+          fontSize={6}
+          fill={p.output}
+          opacity={0.6}
+        >
+          % = how sure the model is
         </text>
 
         <line
@@ -1144,35 +1167,35 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
               transition={{ delay: 0.3 + i * 0.08 }}
             >
               <rect
-                x={865}
-                y={y - 11}
-                width={115}
-                height={22}
-                rx={11}
+                x={855}
+                y={y - 14}
+                width={155}
+                height={28}
+                rx={14}
                 fill={p.pill}
                 stroke={p.output}
-                strokeWidth={0.6 + prob * 1.4}
-                strokeOpacity={0.3 + prob * 0.7}
+                strokeWidth={0.8 + prob * 1.6}
+                strokeOpacity={0.35 + prob * 0.65}
               />
               <text
-                x={912}
+                x={915}
                 y={y + 4}
                 textAnchor="middle"
-                fontSize={9.5}
-                fontWeight={prob > 0.6 ? "800" : "500"}
+                fontSize={11.5}
+                fontWeight={prob > 0.6 ? "800" : "600"}
                 fill={p.text}
-                opacity={0.4 + prob * 0.6}
+                opacity={0.45 + prob * 0.55}
               >
-                {item.tok.length > 11 ? item.tok.slice(0, 10) + "…" : item.tok}
+                {item.tok.length > 12 ? item.tok.slice(0, 11) + "…" : item.tok}
               </text>
               <text
-                x={974}
-                y={y + 3}
+                x={1000}
+                y={y + 3.5}
                 textAnchor="end"
-                fontSize={7}
-                fontWeight="700"
+                fontSize={9}
+                fontWeight="800"
                 fill={p.output}
-                opacity={0.4 + prob * 0.6}
+                opacity={0.45 + prob * 0.55}
               >
                 {pct}%
               </text>
@@ -1205,6 +1228,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
             {error}
           </text>
         )}
+
       </svg>
 
       <StageDetailView

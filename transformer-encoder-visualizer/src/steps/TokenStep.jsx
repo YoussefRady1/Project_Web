@@ -150,6 +150,22 @@ function TokenStep({ active, tokens = [], theme }) {
 </div>
 
       <div className="relative w-full flex-1 flex items-start justify-center mt-2">
+        {/* Before / After labels (left side, stacked) */}
+        <div
+          className={`absolute left-2 top-[10px] text-xs font-bold ${
+            isDark ? "text-cyan-400" : "text-blue-700"
+          }`}
+        >
+          Before:
+        </div>
+        <div
+          className={`absolute left-2 top-[68px] text-xs font-bold ${
+            isDark ? "text-cyan-400" : "text-blue-700"
+          }`}
+        >
+          After:
+        </div>
+
         {/* Sentence */}
         <motion.div
           animate={sentenceControls}

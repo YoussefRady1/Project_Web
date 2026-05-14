@@ -111,28 +111,33 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
 
   const FLOW = [
     {
+      num: 1,
       label: "Decoder Vector",
-      sub: "512 dimensions",
+      sub: "the decoder's 512-number summary",
       color: isDark ? "border-cyan-500/50 bg-cyan-500/10" : "border-blue-400 bg-blue-50",
     },
     {
+      num: 2,
       label: "Linear Layer",
-      sub: "× weight matrix",
+      sub: "gives every word a score",
       color: isDark ? "border-amber-500/50 bg-amber-500/10" : "border-amber-400 bg-amber-50",
     },
     {
+      num: 3,
       label: "Logits",
-      sub: `${vocab.length} raw scores`,
+      sub: `${vocab.length} raw scores — not % yet`,
       color: isDark ? "border-orange-500/50 bg-orange-500/10" : "border-orange-400 bg-orange-50",
     },
     {
+      num: 4,
       label: "Softmax",
-      sub: "e^z / Σe^z",
+      sub: "turns the scores into %",
       color: isDark ? "border-purple-500/50 bg-purple-500/10" : "border-purple-400 bg-purple-50",
     },
     {
+      num: 5,
       label: "Probabilities",
-      sub: "sum to 1",
+      sub: "a % per word, adding up to 100%",
       color: isDark ? "border-green-500/50 bg-green-500/10" : "border-green-400 bg-green-50",
     },
   ];
@@ -178,12 +183,28 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
       </button>
 
       {/* Visual flow pipeline */}
+      <div
+        className={`text-[10px] text-center mb-2 font-medium ${
+          isDark ? "text-slate-400" : "text-slate-600"
+        }`}
+      >
+        Follow the 5 steps: one decoder vector → a probability for every word
+      </div>
       <div className="flex items-center justify-center gap-1.5 mb-5 flex-wrap">
         {FLOW.map((item, i) => (
           <div key={i} className="flex items-center gap-1.5">
             <div
-              className={`px-3 py-2 rounded-lg border text-center ${item.color}`}
+              className={`relative px-3 py-2 rounded-lg border text-center min-w-[120px] ${item.color}`}
             >
+              <div
+                className={`absolute -top-2 -left-2 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border ${
+                  isDark
+                    ? "bg-slate-900 border-slate-600 text-white"
+                    : "bg-white border-slate-400 text-slate-800"
+                }`}
+              >
+                {item.num}
+              </div>
               <div
                 className={`text-[11px] font-semibold ${
                   isDark ? "text-white" : "text-slate-800"
@@ -192,7 +213,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
                 {item.label}
               </div>
               <div
-                className={`text-[9px] ${
+                className={`text-[9px] leading-3 mt-0.5 ${
                   isDark ? "text-slate-400" : "text-slate-500"
                 }`}
               >
