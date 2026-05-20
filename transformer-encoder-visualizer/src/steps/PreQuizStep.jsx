@@ -226,7 +226,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
           isDark ? "text-slate-500" : "text-slate-600"
         }`}
       >
-        Don't worry if you don't know the answers yet — this quiz is designed to
+        Don't worry if you don't know the answers yet this quiz is designed to
         activate your thinking before you explore each step in detail.
       </p>
 
@@ -336,7 +336,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
             >
               {scoreData.percentage >= 70
                 ? "Great foundation! Let's see how the visualizations deepen your understanding."
-                : "No worries — the upcoming steps will teach you everything. Press Next to continue!"}
+                : "No worries the upcoming steps will teach you everything. Press Next to continue!"}
             </p>
           </div>
 

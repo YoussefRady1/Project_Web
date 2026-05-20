@@ -226,7 +226,7 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
                 </div>
                 <div className={`text-[12px] leading-5 space-y-2 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
                   <p>
-                    The encoder has read your entire sentence and computed a rich vector for each word — capturing its meaning <em>in context</em>. These vectors encode the <strong>"understanding"</strong> of the input.
+                    The encoder has read your entire sentence and computed a rich vector for each word capturing its meaning <em>in context</em>. These vectors encode the <strong>"understanding"</strong> of the input.
                   </p>
                   <p>
                     The decoder cannot access this on its own. These vectors become <strong>Keys (K)</strong> and <strong>Values (V)</strong> in cross-attention, letting the decoder <em>"look back"</em> at the input while generating each output word.
@@ -441,12 +441,12 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
                 Transfer Complete ✓
               </div>
               <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                The decoder now has the encoder's understanding — it can start generating
+                The decoder now has the encoder's understanding it can start generating
               </p>
 
               <div className={`w-full max-w-[760px] rounded-xl border p-4 ${isDark ? "border-green-400/30 bg-green-400/5" : "border-green-300 bg-green-50"}`}>
                 <div className={`text-sm font-semibold mb-3 text-center ${isDark ? "text-green-300" : "text-green-700"}`}>
-                  What the decoder received — and how it uses these vectors
+                  What the decoder received and how it uses these vectors
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 mb-3">
@@ -455,7 +455,7 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
                       Used as Keys (K) in Cross-Attention
                     </div>
                     <div className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                      The decoder compares its Query against these to score relevance — <em>"which input word matters most right now?"</em>
+                      The decoder compares its Query against these to score relevance <em>"which input word matters most right now?"</em>
                     </div>
                   </div>
                   <div className={`rounded-lg border p-2 ${isDark ? "border-lime-400/30 bg-lime-400/5" : "border-lime-200 bg-lime-50"}`}>
@@ -514,7 +514,7 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
         </button>
 
         <div className={`text-[11px] ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-          Stage {stage + 1} of {STAGES.length} — <span className={isDark ? "text-cyan-300" : "text-blue-700"}>{STAGES[stage].label}</span>
+          Stage {stage + 1} of {STAGES.length} <span className={isDark ? "text-cyan-300" : "text-blue-700"}>{STAGES[stage].label}</span>
         </div>
 
         {stage < STAGES.length - 1 ? (

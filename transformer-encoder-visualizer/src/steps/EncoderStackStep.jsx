@@ -175,7 +175,7 @@ function EncoderStackStep({ active, tokens, theme }) {
             <div className={`rounded-lg border p-3 ${isDark ? "border-emerald-500/40 bg-emerald-500/5" : "border-emerald-300 bg-emerald-50"}`}>
               <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-emerald-300" : "text-emerald-800"}`}>Normalize</div>
               <p className={`text-[11px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
-                Rescales each vector to zero mean &amp; unit variance — keeps training stable across deep stacks.
+                Rescales each vector to zero mean &amp; unit variance keeps training stable across deep stacks.
               </p>
             </div>
           </div>
@@ -183,7 +183,7 @@ function EncoderStackStep({ active, tokens, theme }) {
           <div className={`w-full max-w-[760px] text-[11px] leading-5 space-y-2 mb-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
             <p>After <strong>self-attention</strong>, the model adds the original input back and normalizes the result.</p>
             <p>After <strong>feed forward</strong>, it does the same thing again: add the previous signal and normalize it.</p>
-            <p>This happens <strong>twice</strong> per encoder layer — once after each sub-layer.</p>
+            <p>This happens <strong>twice</strong> per encoder layer once after each sub-layer.</p>
           </div>
 
           <div className="w-full max-w-[760px] aspect-video rounded-lg overflow-hidden border border-slate-700">
@@ -347,12 +347,12 @@ function EncoderStackStep({ active, tokens, theme }) {
         </div>
         <div className={`text-[10px] text-center mt-1.5 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
           {layerCount === 1
-            ? "1 layer — basic word-to-word context begins"
+            ? "1 layer basic word-to-word context begins"
             : layerCount <= 2
-            ? `${layerCount} layers — short-range relationships forming`
+            ? `${layerCount} layers short-range relationships forming`
             : layerCount <= 4
-            ? `${layerCount} layers — grammar and phrase patterns emerging`
-            : `${layerCount} layers — rich, sentence-level understanding reached`}
+            ? `${layerCount} layers grammar and phrase patterns emerging`
+            : `${layerCount} layers rich, sentence-level understanding reached`}
         </div>
       </div>
 

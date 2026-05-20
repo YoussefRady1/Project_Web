@@ -72,7 +72,7 @@ const VARIANT_CONFIG = {
       "Residual connection + layer normalization after the feed-forward network",
     prevStep: "Feed Forward",
     explanation:
-      "After the feed-forward transformation, we add the input back and normalize one final time. This produces the final decoder layer output — a stable, well-conditioned vector ready for the next layer or the output projection.",
+      "After the feed-forward transformation, we add the input back and normalize one final time. This produces the final decoder layer output a stable, well-conditioned vector ready for the next layer or the output projection.",
     sublayerShift: [0.06, -0.11, 0.09, -0.02],
   },
 };
@@ -154,10 +154,10 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
         </p>
         <p className={`text-[10px] italic mt-2 pt-2 ${isDark ? "border-t border-slate-700/50 text-cyan-300/70" : "border-t border-slate-300/50 text-blue-600/80"}`}>
           {variant === "masked-attention"
-            ? "Like keeping a photocopy of your original draft before editing — if the edits go wrong, you still have the original."
+            ? "Like keeping a photocopy of your original draft before editing if the edits go wrong, you still have the original."
             : variant === "cross-attention"
-            ? "Like reviewing your notes after a meeting — you combine what you already knew with what you just learned."
-            : "Like proofreading a paragraph — you keep the structure but polish the details."}
+            ? "Like reviewing your notes after a meeting you combine what you already knew with what you just learned."
+            : "Like proofreading a paragraph you keep the structure but polish the details."}
         </p>
       </div>
 
@@ -169,7 +169,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
             {variant === "masked-attention"
               ? "Both the original input vectors (before masked attention) AND the masked self-attention output. Two separate data streams arrive here."
               : variant === "cross-attention"
-              ? "Both the vectors before cross-attention AND the cross-attention output. Again, two streams — the skip connection preserves the original signal."
+              ? "Both the vectors before cross-attention AND the cross-attention output. Again, two streams the skip connection preserves the original signal."
               : "Both the vectors before feed-forward AND the feed-forward output. The third and final Add & Normalize in each decoder layer."}
           </p>
         </div>
@@ -431,7 +431,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
 
       <div className={`w-full max-w-[760px] mt-5 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-400 bg-violet-50"}`}>
         <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-violet-300" : "text-violet-700"}`}>Key insight</div>
-        <p className={`text-[10px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>Residual connections prevent information loss through deep networks. Layer normalization keeps values stable so training converges. This Add &amp; Normalize pattern repeats three times in every decoder layer — it is the glue that holds each sub-layer together.</p>
+        <p className={`text-[10px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>Residual connections prevent information loss through deep networks. Layer normalization keeps values stable so training converges. This Add &amp; Normalize pattern repeats three times in every decoder layer it is the glue that holds each sub-layer together.</p>
       </div>
     </motion.div>
   );

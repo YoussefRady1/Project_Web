@@ -93,7 +93,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
             isDark ? "text-cyan-300" : "text-blue-800"
           }`}
         >
-          Why we use this step — decoder purpose
+          Why we use this step decoder purpose
         </div>
         <p
           className={`text-[11px] leading-5 max-w-[620px] ${
@@ -173,7 +173,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
           }`}
         >
           The purple positional vector marks the generation step: &lt;START&gt; = step 0,
-          first predicted word = step 1, and so on — different from the encoder where
+          first predicted word = step 1, and so on different from the encoder where
           positions simply order the input words.
         </p>
       ) : (
