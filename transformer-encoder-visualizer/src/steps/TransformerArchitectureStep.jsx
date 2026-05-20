@@ -288,7 +288,7 @@ function GenerationControls({
           isDark={isDark}
           text={
             isBeam
-              ? "Beam Search keeps several candidate translations alive at once and picks the best full path. Deterministic — same input gives the same output. Temperature, Top-P and Top-K are ignored."
+              ? "Beam Search keeps several candidate translations alive at once and picks the best full path. Deterministic same input gives the same output. Temperature, Top-P and Top-K are ignored."
               : "Sampling picks each next word with controlled randomness using Temperature, Top-P and Top-K. Set Beams = 1 to enable. Different runs can give different outputs."
           }
         />
@@ -310,7 +310,7 @@ function GenerationControls({
               ? "greedy/sampling mode"
               : `explores ${numBeams} paths in parallel`
           }
-          tooltip="How many candidate translations the model keeps alive at the same time. 1 = greedy/sampling (fastest). Higher values explore several full paths in parallel and pick the best — more careful but slower. Disables Temperature/Top-P/Top-K."
+          tooltip="How many candidate translations the model keeps alive at the same time. 1 = greedy/sampling (fastest). Higher values explore several full paths in parallel and pick the best more careful but slower. Disables Temperature/Top-P/Top-K."
         />
         <ControlSlider
           label="Temperature"
@@ -513,7 +513,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
         // Compute real per-token probabilities (when scores are available) and
         // merge subwords into whole-word pills. We decode cumulatively because
         // SentencePiece's leading-space marker (▁) is stripped when decoding a
-        // single id in isolation — so the only reliable way to detect a word
+        // single id in isolation so the only reliable way to detect a word
         // boundary is to diff each incremental decode against the previous.
         const firstScore = scores[0];
         const vocabSize =
@@ -653,7 +653,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
     rev: true,
   });
 
-  // Decoder residual: decFFN → maskedAttn (reverse, below — spans full decoder stack)
+  // Decoder residual: decFFN → maskedAttn (reverse, below spans full decoder stack)
   flows.push({
     d: `M${STAGE_BY.decFFN.x},${CY + 15} C${STAGE_BY.decFFN.x},${CY + 75} ${STAGE_BY.maskedAttn.x},${CY + 75} ${STAGE_BY.maskedAttn.x},${CY + 15}`,
     c: p.res,

@@ -53,7 +53,7 @@ function DecoderPreQuizStep({
       <h2 className={`font-semibold text-center ${isDark ? "text-cyan-300" : "text-blue-800"}`}>Decoder Pre-Quiz: What Do You Already Know?</h2>
       <p className={`text-xs text-center mb-1 ${isDark ? "text-slate-400" : "text-slate-700"}`}>Test your intuition about the decoder before exploring it.</p>
       <p className={`text-[11px] text-center mb-4 max-w-[700px] leading-5 ${isDark ? "text-slate-500" : "text-slate-600"}`}>
-        Don't worry if you don't know the answers yet — this quiz is designed to activate your thinking before you explore the decoder steps in detail.
+        Don't worry if you don't know the answers yet this quiz is designed to activate your thinking before you explore the decoder steps in detail.
       </p>
 
       <div className="w-full space-y-4">
@@ -87,7 +87,7 @@ function DecoderPreQuizStep({
             <p className={`mt-3 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
               {scoreData.percentage >= 70
                 ? "Great foundation! Let's see how the decoder visualizations deepen your understanding."
-                : "No worries — the upcoming decoder steps will teach you everything. Press Next to continue!"}
+                : "No worries the upcoming decoder steps will teach you everything. Press Next to continue!"}
             </p>
           </div>
           {wrongQuestions.length > 0 && (

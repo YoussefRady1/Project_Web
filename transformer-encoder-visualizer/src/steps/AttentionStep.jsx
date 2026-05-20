@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 const BOX_W = 980;
 
-// Graph area constants — unchanged so all node/edge geometry is identical
+// Graph area constants unchanged so all node/edge geometry is identical
 const GRAPH_W = 620;
 const GRAPH_H = 250;
 const GRAPH_X = 20;
@@ -1053,7 +1053,7 @@ const focusedUnderstandingLabel =
                     ? `0 0 0 2px rgba(34,211,238,0.22), ${color.glow}`
                     : color.glow,
                 }}
-                title={`${safeTokens[index]} — ${Math.round(ratio * 100)}% connected`}
+                title={`${safeTokens[index]} ${Math.round(ratio * 100)}% connected`}
               >
                 {safeTokens[index]}
               </motion.button>

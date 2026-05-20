@@ -97,7 +97,7 @@ function DecoderPostQuizStep({
     if (isImprovement && growth >= 30) { message = "Outstanding growth! You've mastered the decoder concepts."; emoji = "\u{1F680}"; badge = "Decoder Master"; }
     else if (isImprovement && growth >= 10) { message = "Great progress! The decoder visualizations clearly helped."; emoji = "\u{1F4C8}"; badge = "Rising Star"; }
     else if (isImprovement) { message = "Nice improvement! Every bit of learning counts."; emoji = "✨"; badge = "Steady Learner"; }
-    else if (isSame) { message = "You maintained your knowledge — consistency is key."; emoji = "\u{1F4A1}"; badge = "Consistent Performer"; }
+    else if (isSame) { message = "You maintained your knowledge consistency is key."; emoji = "\u{1F4A1}"; badge = "Consistent Performer"; }
     else { message = "Learning isn't always linear. Revisit the decoder steps to reinforce concepts."; emoji = "\u{1F504}"; badge = "Reviewer in Training"; }
 
     const accentText = isImprovement ? isDark ? "text-green-300" : "text-green-700" : isSame ? isDark ? "text-slate-300" : "text-slate-700" : isDark ? "text-amber-300" : "text-amber-700";
@@ -157,7 +157,7 @@ function DecoderPostQuizStep({
             <div>
               <div className={`text-xs uppercase tracking-wider font-semibold mb-1 ${accentText}`}>Insight</div>
               <div className={`text-sm ${isDark ? "text-slate-300" : "text-slate-700"}`}>
-                {isImprovement ? `That's a ${growthPct}% relative improvement — the decoder visualizations are working for you.` : isSame ? "You held steady from start to finish — your decoder knowledge is solid." : `${Math.abs(growthPct)}% relative dip — try revisiting the cross-attention and decoder steps.`}
+                {isImprovement ? `That's a ${growthPct}% relative improvement the decoder visualizations are working for you.` : isSame ? "You held steady from start to finish your decoder knowledge is solid." : `${Math.abs(growthPct)}% relative dip try revisiting the cross-attention and decoder steps.`}
               </div>
             </div>
             <div className={`text-3xl font-bold ${accentText}`}>{isImprovement ? "+" : ""}{growthPct}%</div>

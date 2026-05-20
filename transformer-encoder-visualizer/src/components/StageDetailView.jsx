@@ -577,7 +577,7 @@ const EXPLANATIONS = {
   embed: {
     title: "Embedding · Inside the Block",
     intuition:
-      "A model can't do math on the word \"house\" — it needs numbers. Embedding is a giant lookup table: every word in the vocabulary owns one row of 512 numbers, and that row IS the word as far as the model is concerned. The numbers aren't random — training pulls words with similar meaning close together, so \"house\" and \"home\" end up with nearly the same row.",
+      "A model can't do math on the word \"house\" it needs numbers. Embedding is a giant lookup table: every word in the vocabulary owns one row of 512 numbers, and that row IS the word as far as the model is concerned. The numbers aren't random training pulls words with similar meaning close together, so \"house\" and \"home\" end up with nearly the same row.",
     math: [
       {
         step: "1. Start from the token's ID",
@@ -590,16 +590,16 @@ const EXPLANATIONS = {
         detail: "The embedding table is one big learned grid: one row per possible word, each row 512 numbers long.",
       },
       {
-        step: "3. Read out that one row — that's the word's vector",
+        step: "3. Read out that one row that's the word's vector",
         formula: "row 629  →  [0.12, −0.43, 0.08, … ]   (512 numbers)",
         detail: "No calculation, just a lookup. This 512-number vector is the word's 'meaning' that flows into the rest of the model.",
       },
     ],
     insights: [
-      "It is pure table lookup — no math on the letters of the word.",
+      "It is pure table lookup no math on the letters of the word.",
       "The 512 numbers are learned during training; before training they are random.",
       "Similar words get similar rows, that is what lets the model 'understand' meaning.",
-      "Position is NOT added here — that happens in the next step, Positional Encoding.",
+      "Position is NOT added here that happens in the next step, Positional Encoding.",
     ],
   },
   selfAttn: {
@@ -689,7 +689,7 @@ const EXPLANATIONS = {
       {
         step: "3. Compress",
         formula: "out = h' · W₂ + b₂     (2048 → 512)",
-        detail: "Back down to 512-dim — ready for the next decoder layer.",
+        detail: "Back down to 512-dim ready for the next decoder layer.",
       },
     ],
     insights: [
@@ -714,7 +714,7 @@ const EXPLANATIONS = {
         detail: "X_encoder is the FINAL encoder output (the green line in the main diagram). It represents the fully-processed input sentence.",
       },
       {
-        step: "3. Scaled dot-product attention — same math as self-attention",
+        step: "3. Scaled dot-product attention same math as self-attention",
         formula: "attn = softmax(Q · Kᵀ / √64) · V",
         detail: "Every decoder position looks at every encoder position, weighted by how relevant each input token is to what's being generated.",
       },
@@ -880,7 +880,7 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
               </ol>
             </div>
 
-            {/* Live worked example — Output Projection / Linear+Softmax */}
+            {/* Live worked example Output Projection / Linear+Softmax */}
             {(stageKey === "outProj" || stageKey === "linSoftmax") && liveOutput && liveOutput.length > 0 && (() => {
               const top5 = liveOutput.slice(0, 5);
               const logits = top5.map((t) => Math.log(Math.max(t.prob, 1e-10)));
@@ -903,7 +903,7 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
                       isDark ? "text-amber-300" : "text-amber-700"
                     }`}
                   >
-                    Worked example — live from T5-small
+                    Worked example live from T5-small
                   </div>
 
                   <div

@@ -169,14 +169,14 @@ function DecoderCrossAttentionStep({ active, tokens = [], theme }) {
             isDark ? "border-slate-700 bg-slate-900/70 text-slate-300" : "border-slate-300 bg-slate-50 text-slate-700"
           }`}
         >
-          Cross-attention is the bridge between encoder and decoder. The decoder sends Queries from its own tokens, while the encoder provides Keys and Values from its output vectors. This lets the decoder "look at" the original input while generating each output token — like a translator glancing back at the source text.
+          Cross-attention is the bridge between encoder and decoder. The decoder sends Queries from its own tokens, while the encoder provides Keys and Values from its output vectors. This lets the decoder "look at" the original input while generating each output token like a translator glancing back at the source text.
         </motion.div>
       )}
 
       {/* 4-step process guide */}
       <div className={`w-full max-w-[760px] mb-5 rounded-xl border p-4 ${isDark ? "border-slate-700 bg-slate-900/80" : "border-slate-400/70 bg-slate-50"}`}>
         <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-cyan-300" : "text-blue-800"}`}>
-          How Cross-Attention Works — 4 Steps
+          How Cross-Attention Works 4 Steps
         </h3>
         <div className="grid grid-cols-2 gap-2 mb-3">
           <div className={`rounded-lg border p-2.5 ${isDark ? "border-amber-400/30 bg-amber-400/5" : "border-amber-200 bg-amber-50"}`}>
@@ -193,11 +193,11 @@ function DecoderCrossAttentionStep({ active, tokens = [], theme }) {
           </div>
           <div className={`rounded-lg border p-2.5 ${isDark ? "border-lime-400/30 bg-lime-400/5" : "border-lime-200 bg-lime-50"}`}>
             <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-lime-300" : "text-lime-700"}`}>④ Encoder Values (V) are blended</div>
-            <div className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Weighted mix of encoder Values becomes the decoder's new context — what it "learned" from the input.</div>
+            <div className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Weighted mix of encoder Values becomes the decoder's new context what it "learned" from the input.</div>
           </div>
         </div>
         <div className={`rounded-lg p-2 text-center text-[10px] italic ${isDark ? "bg-slate-950/50 text-slate-400 border border-slate-800" : "bg-white text-slate-500 border border-slate-200"}`}>
-          Analogy: Like a translator glancing back at the source text — the decoder "looks at" encoder output for every word it generates
+          Analogy: Like a translator glancing back at the source text the decoder "looks at" encoder output for every word it generates
         </div>
       </div>
 
@@ -213,7 +213,7 @@ function DecoderCrossAttentionStep({ active, tokens = [], theme }) {
           {/* LEFT: Decoder tokens (Q source) */}
           <div className="flex flex-col gap-2 w-[36%]">
             <div className={`text-[10px] font-semibold uppercase tracking-wide text-center mb-1 px-2 py-1 rounded-lg ${isDark ? "bg-amber-400/10 text-amber-300" : "bg-amber-50 text-amber-700 border border-amber-200"}`}>
-              DECODER — sends Query (Q)
+              DECODER sends Query (Q)
             </div>
             {decoderVectors.map((dec, i) => (
               <motion.div
@@ -304,7 +304,7 @@ function DecoderCrossAttentionStep({ active, tokens = [], theme }) {
           {/* RIGHT: Encoder outputs (K, V source) */}
           <div className="flex flex-col gap-2 w-[36%]">
             <div className={`text-[10px] font-semibold uppercase tracking-wide text-center mb-1 px-2 py-1 rounded-lg ${isDark ? "bg-green-400/10 text-green-300" : "bg-green-50 text-green-700 border border-green-200"}`}>
-              ENCODER — provides K &amp; V
+              ENCODER provides K &amp; V
             </div>
             {encoderOutputs.map((enc, i) => (
               <motion.div

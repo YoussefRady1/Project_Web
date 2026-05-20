@@ -125,7 +125,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
     {
       num: 3,
       label: "Logits",
-      sub: `${vocab.length} raw scores — not % yet`,
+      sub: `${vocab.length} raw scores not % yet`,
       color: isDark ? "border-orange-500/50 bg-orange-500/10" : "border-orange-400 bg-orange-50",
     },
     {

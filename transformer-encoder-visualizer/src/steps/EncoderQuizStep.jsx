@@ -100,7 +100,7 @@ function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizComplet
       emoji = "✨";
       badge = "Steady Learner";
     } else if (isSame) {
-      message = "You maintained your knowledge — consistency is key.";
+      message = "You maintained your knowledge consistency is key.";
       emoji = "💡";
       badge = "Consistent Performer";
     } else {
@@ -340,10 +340,10 @@ function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizComplet
               </div>
               <div className={`text-sm ${isDark ? "text-slate-300" : "text-slate-700"}`}>
                 {isImprovement
-                  ? `That's a ${growthPct}% relative improvement — the visualizations are working for you.`
+                  ? `That's a ${growthPct}% relative improvement the visualizations are working for you.`
                   : isSame
-                  ? "You held steady from start to finish — your prior knowledge is solid."
-                  : `${Math.abs(growthPct)}% relative dip — try revisiting the attention and encoder steps.`}
+                  ? "You held steady from start to finish your prior knowledge is solid."
+                  : `${Math.abs(growthPct)}% relative dip try revisiting the attention and encoder steps.`}
               </div>
             </div>
             <div className={`text-3xl font-bold ${accentText}`}>
@@ -388,7 +388,7 @@ function EncoderQuizStep({ active, setStep, theme, preQuizScore, postQuizComplet
                       isDark ? "text-slate-500" : "text-slate-500"
                     }`}
                   >
-                    {reviewWrong.length} question{reviewWrong.length === 1 ? "" : "s"} to revisit — jump back to the matching step to study it again.
+                    {reviewWrong.length} question{reviewWrong.length === 1 ? "" : "s"} to revisit jump back to the matching step to study it again.
                   </div>
                 </div>
                 <button

@@ -256,16 +256,16 @@ function DecoderStackStep({ active, tokens, theme }) {
                 }`}
               >
                 <div>
-                  <span className="font-mono font-semibold">x</span> — the token vector going into the sub-layer (e.g. the decoder vector for one word).
+                  <span className="font-mono font-semibold">x</span> the token vector going into the sub-layer (e.g. the decoder vector for one word).
                 </div>
                 <div>
-                  <span className={`font-semibold ${isDark ? "text-cyan-300" : "text-blue-700"}`}>Sub-Layer</span> — whichever operation is being applied: <em>masked self-attention</em>, <em>cross-attention</em>, or the <em>feed-forward</em> network.
+                  <span className={`font-semibold ${isDark ? "text-cyan-300" : "text-blue-700"}`}>Sub-Layer</span> whichever operation is being applied: <em>masked self-attention</em>, <em>cross-attention</em>, or the <em>feed-forward</em> network.
                 </div>
                 <div>
-                  <span className={`font-bold ${isDark ? "text-amber-300" : "text-amber-700"}`}>+</span> — the <em>residual connection</em>: we add the original <span className="font-mono">x</span> back to the sub-layer's output so nothing learned earlier is lost.
+                  <span className={`font-bold ${isDark ? "text-amber-300" : "text-amber-700"}`}>+</span> the <em>residual connection</em>: we add the original <span className="font-mono">x</span> back to the sub-layer's output so nothing learned earlier is lost.
                 </div>
                 <div>
-                  <span className={`font-semibold ${isDark ? "text-emerald-300" : "text-emerald-700"}`}>LayerNorm</span> — rescales the combined vector so its values have zero mean and unit variance, which keeps numbers stable across many stacked layers.
+                  <span className={`font-semibold ${isDark ? "text-emerald-300" : "text-emerald-700"}`}>LayerNorm</span> rescales the combined vector so its values have zero mean and unit variance, which keeps numbers stable across many stacked layers.
                 </div>
               </div>
             </div>
@@ -309,7 +309,7 @@ function DecoderStackStep({ active, tokens, theme }) {
                     isDark ? "text-slate-300" : "text-slate-700"
                   }`}
                 >
-                  Rescales each vector to zero mean &amp; unit variance — keeps training stable.
+                  Rescales each vector to zero mean &amp; unit variance keeps training stable.
                 </p>
               </div>
             </div>
@@ -466,7 +466,7 @@ function DecoderStackStep({ active, tokens, theme }) {
                 Key difference from encoder
               </div>
               <p>
-                The decoder layer has an extra sub-layer — cross-attention —
+                The decoder layer has an extra sub-layer cross-attention —
                 which connects it to the encoder's output. This is the bridge
                 between understanding the input and generating the output.
               </p>
@@ -563,12 +563,12 @@ function DecoderStackStep({ active, tokens, theme }) {
         </div>
         <div className={`text-[10px] text-center mt-1.5 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
           {layerCount === 1
-            ? "1 layer — basic context processing begins"
+            ? "1 layer basic context processing begins"
             : layerCount <= 2
-            ? `${layerCount} layers — alignment with encoder growing`
+            ? `${layerCount} layers alignment with encoder growing`
             : layerCount <= 4
-            ? `${layerCount} layers — deeper cross-attention patterns forming`
-            : `${layerCount} layers — rich, full understanding reached`}
+            ? `${layerCount} layers deeper cross-attention patterns forming`
+            : `${layerCount} layers rich, full understanding reached`}
         </div>
       </div>
 
