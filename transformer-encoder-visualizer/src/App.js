@@ -25,14 +25,8 @@ function App() {
   const [preQuizCompleted, setPreQuizCompleted] = useState(
     () => localStorage.getItem("preQuizCompleted") === "true"
   );
-  const [postQuizCompleted, setPostQuizCompleted] = useState(
-    () => localStorage.getItem("postQuizCompleted") === "true"
-  );
   const [preQuizScore, setPreQuizScore] = useState(
     () => Number(localStorage.getItem("preQuizScore")) || 0
-  );
-  const [postQuizScore, setPostQuizScore] = useState(
-    () => Number(localStorage.getItem("postQuizScore")) || 0
   );
 
   const [encoderPostCompleted, setEncoderPostCompleted] = useState(
@@ -58,8 +52,6 @@ function App() {
     setDbRecordId(null);
     setPreQuizCompleted(false);
     setPreQuizScore(0);
-    setPostQuizCompleted(false);
-    setPostQuizScore(0);
     setEncoderPostCompleted(false);
     setEncoderPostScore(0);
     setDecoderPreCompleted(false);
@@ -70,11 +62,9 @@ function App() {
     [
       "dbRecordId",
       "preQuizCompleted", "preQuizScore",
-      "postQuizCompleted", "postQuizScore",
       "encoderPostCompleted", "encoderPostScore",
       "decoderPreCompleted", "decoderPreScore",
       "decoderPostCompleted", "decoderPostScore",
-      "postQuizAnswers",
       "encoderPostQuizAnswers",
       "decoderPostQuizAnswers",
     ].forEach((key) => localStorage.removeItem(key));
@@ -99,29 +89,11 @@ function App() {
     } catch (_) {}
   };
 
-  const submitPostQuiz = async (score) => {
-    setPostQuizScore(score);
-    setPostQuizCompleted(true);
-    localStorage.setItem("postQuizCompleted", "true");
-    localStorage.setItem("postQuizScore", String(score));
-    try {
-      await fetch("/api/save-post-quiz", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: dbRecordId, postQuizScore: score }),
-      });
-    } catch (_) {}
-  };
-
   const submitEncoderPostQuiz = async (score) => {
     setEncoderPostScore(score);
     setEncoderPostCompleted(true);
     localStorage.setItem("encoderPostCompleted", "true");
     localStorage.setItem("encoderPostScore", String(score));
-    setPostQuizScore(score);
-    setPostQuizCompleted(true);
-    localStorage.setItem("postQuizCompleted", "true");
-    localStorage.setItem("postQuizScore", String(score));
     try {
       await fetch("/api/save-quiz", {
         method: "POST",
@@ -244,11 +216,8 @@ function App() {
           userName={userName}
           setUserName={setUserName}
           preQuizCompleted={preQuizCompleted}
-          postQuizCompleted={postQuizCompleted}
           preQuizScore={preQuizScore}
-          postQuizScore={postQuizScore}
           submitPreQuiz={submitPreQuiz}
-          submitPostQuiz={submitPostQuiz}
           resetSession={resetSession}
           encoderPostCompleted={encoderPostCompleted}
           encoderPostScore={encoderPostScore}

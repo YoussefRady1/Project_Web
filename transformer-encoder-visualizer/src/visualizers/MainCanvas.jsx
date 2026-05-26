@@ -66,11 +66,8 @@ function MainCanvas({
   userName,
   setUserName,
   preQuizCompleted,
-  postQuizCompleted,
   preQuizScore,
-  postQuizScore,
   submitPreQuiz,
-  submitPostQuiz,
   encoderPostCompleted,
   encoderPostScore,
   submitEncoderPostQuiz,
@@ -244,11 +241,8 @@ function MainCanvas({
                 userName={userName}
                 setUserName={setUserName}
                 preQuizCompleted={preQuizCompleted}
-                postQuizCompleted={postQuizCompleted}
                 preQuizScore={preQuizScore}
-                postQuizScore={postQuizScore}
                 submitPreQuiz={submitPreQuiz}
-                submitPostQuiz={submitPostQuiz}
                 encoderPostCompleted={encoderPostCompleted}
                 encoderPostScore={encoderPostScore}
                 submitEncoderPostQuiz={submitEncoderPostQuiz}
