@@ -1,171 +1,161 @@
+// Post-Decoder Quiz: 10 questions that map onto the decoder visualizations
+// the learner just walked through. stepIndex/stepLabel are used by
+// DecoderPostQuizStep to offer a "Go to step" jump-back on wrong answers.
 const decoderPostQuiz = [
   {
     id: 1,
-    question:
-      "What does the encoder-to-decoder transition transfer?",
+    question: "What does the encoder hand over to the decoder?",
     options: [
-      "The original input sentence as plain text",
-      "Context-aware vectors (memory) from the encoder's final output",
-      "The tokenizer's vocabulary list",
-      "Only the attention scores from the encoder",
+      "The original input text, unchanged",
+      "Its final context-aware vectors, used as decoder memory",
+      "Only the largest attention score",
+      "A copy of the vocabulary list",
     ],
     correctAnswer:
-      "Context-aware vectors (memory) from the encoder's final output",
+      "Its final context-aware vectors, used as decoder memory",
     stepIndex: 0,
     stepLabel: "Encoder → Decoder Transfer",
     explanation:
-      "The transition passes the encoder's final context-aware representations to the decoder, which uses them as memory during cross-attention.",
+      "The encoder's output is a sequence of refined vectors. The decoder treats this as memory and consults it through cross-attention while generating.",
   },
   {
     id: 2,
-    question:
-      "What is the first token the decoder receives as input?",
+    question: "What is the very first input fed into the decoder?",
     options: [
-      "The last token of the encoder input",
-      "A random token from the vocabulary",
-      "The <START> token to begin generation",
-      "The most common word in the language",
+      "The last token of the input sentence",
+      "A randomly picked word from the vocabulary",
+      "A special <START> token",
+      "Nothing — the decoder starts on its own",
     ],
-    correctAnswer: "The <START> token to begin generation",
+    correctAnswer: "A special <START> token",
     stepIndex: 1,
     stepLabel: "Output Tokenization",
     explanation:
-      "The decoder starts with a special <START> token as its initial input, which it uses to predict the first output token.",
+      "Generation needs a seed. The <START> token sits at position 0 and is what the decoder reads in order to predict the first real output word.",
   },
   {
     id: 3,
-    question:
-      "How does the decoder embed its input tokens?",
+    question: "How is the <START> token represented inside the decoder?",
     options: [
-      "It copies the encoder's embeddings directly",
-      "Each token is converted into a numeric vector, with <START> using a fixed vector",
-      "Tokens are left as one-hot encodings",
-      "Only the <START> token is embedded; others are skipped",
+      "It's skipped during embedding",
+      "It uses a fixed, predefined embedding vector",
+      "It's kept as plain text",
+      "It reuses the encoder's first vector",
     ],
-    correctAnswer:
-      "Each token is converted into a numeric vector, with <START> using a fixed vector",
+    correctAnswer: "It uses a fixed, predefined embedding vector",
     stepIndex: 2,
     stepLabel: "Output Embedding",
     explanation:
-      "The decoder has its own embedding layer that maps each token to a vector. The <START> token uses a fixed, predefined embedding vector.",
+      "Like every other token, <START> needs to become a vector before anything else. In the visualization it uses a constant predefined vector.",
   },
   {
     id: 4,
-    question:
-      "Why does the decoder add positional encoding to its embeddings?",
+    question: "Why does the decoder also add positional encoding to its tokens?",
     options: [
-      "To make all tokens look the same",
-      "To tell the model the order of the output tokens being generated",
-      "To compress the vectors into smaller representations",
-      "To connect the decoder to the encoder",
+      "To compress the decoder's vectors",
+      "To copy the encoder's pattern exactly",
+      "So it knows the order of the tokens being generated",
+      "To remove noise from earlier predictions",
     ],
-    correctAnswer:
-      "To tell the model the order of the output tokens being generated",
+    correctAnswer: "So it knows the order of the tokens being generated",
     stepIndex: 3,
     stepLabel: "Positional Encoding",
     explanation:
-      "Just like the encoder, the decoder needs positional information so it knows which position each token occupies in the output sequence.",
+      "Self-attention is still order-blind on the decoder side. Positional encoding lets it tell first, second, and third output positions apart.",
   },
   {
     id: 5,
-    question:
-      "In masked self-attention, why are future positions blocked?",
+    question: "In masked self-attention, what gets blocked, and why?",
     options: [
-      "To save computation time",
-      "To prevent the decoder from seeing tokens it hasn't generated yet",
-      "To remove unimportant tokens",
-      "To match the encoder's attention pattern",
+      "Future positions, so the decoder can't peek at words it hasn't generated yet",
+      "Past positions, to force it to use only the present",
+      "Stop words, to save memory",
+      "Repeating words, to add variety",
     ],
     correctAnswer:
-      "To prevent the decoder from seeing tokens it hasn't generated yet",
+      "Future positions, so the decoder can't peek at words it hasn't generated yet",
     stepIndex: 4,
     stepLabel: "Decoder Stack",
     explanation:
-      "Masked self-attention ensures each position can only attend to earlier positions, preserving the autoregressive property of left-to-right generation.",
+      "Each position is only allowed to attend to itself and earlier positions. That's what preserves the left-to-right, one-at-a-time nature of generation.",
   },
   {
     id: 6,
-    question:
-      "In cross-attention, what does the decoder use from the encoder?",
+    question: "In cross-attention, where do Q, K, and V come from?",
     options: [
-      "Only the encoder's first token",
-      "The encoder's Key and Value vectors as context",
-      "The encoder's loss function",
-      "Nothing — the decoder works independently",
+      "Q from the encoder; K and V from the decoder",
+      "All three from the encoder",
+      "All three from the decoder",
+      "Q from the decoder; K and V from the encoder",
     ],
-    correctAnswer:
-      "The encoder's Key and Value vectors as context",
+    correctAnswer: "Q from the decoder; K and V from the encoder",
     stepIndex: 4,
     stepLabel: "Decoder Stack",
     explanation:
-      "Cross-attention lets the decoder query (Q) the encoder's output, which provides the Key (K) and Value (V) vectors. This is how the decoder accesses the input context.",
+      "The decoder asks the question (Q), and the encoder supplies what's available to attend over (K and V). That's how the decoder grounds its output in the input.",
   },
   {
     id: 7,
-    question:
-      "What does the feed-forward network do in a decoder layer?",
+    question: "What's the feed-forward sublayer of a decoder layer doing?",
     options: [
-      "Mixes information between different tokens",
-      "Transforms each token's vector independently through a non-linear network",
-      "Generates the final translation directly",
-      "Removes noise from the attention output",
+      "Mixing information across different tokens",
+      "Applying the same small network to each token's vector on its own",
+      "Producing the final words directly",
+      "Computing attention scores",
     ],
     correctAnswer:
-      "Transforms each token's vector independently through a non-linear network",
+      "Applying the same small network to each token's vector on its own",
     stepIndex: 4,
     stepLabel: "Decoder Stack",
     explanation:
-      "The feed-forward network applies the same two-layer MLP to each token position independently, adding non-linear transformation capacity.",
+      "After attention has shared information across positions, the feed-forward layer refines each position independently — no cross-token mixing here.",
   },
   {
     id: 8,
-    question:
-      "What does the linear layer produce from the decoder's output vectors?",
+    question: "What does the linear layer at the end of the decoder produce?",
     options: [
-      "Attention scores for the next layer",
-      "A single number representing confidence",
-      "Logits — a raw score for every word in the vocabulary",
-      "The final translated sentence as text",
+      "A single accuracy score",
+      "The next attention map",
+      "One raw score (logit) per word in the vocabulary",
+      "The final text, already as letters",
     ],
-    correctAnswer:
-      "Logits — a raw score for every word in the vocabulary",
+    correctAnswer: "One raw score (logit) per word in the vocabulary",
     stepIndex: 5,
     stepLabel: "Linear + Softmax",
     explanation:
-      "The linear layer projects each decoder output vector to the vocabulary size, producing logits (raw scores) that indicate how likely each word is.",
+      "The linear layer projects each decoder vector up to vocabulary size. Every word in the vocabulary ends up with a score saying how likely it is to come next.",
   },
   {
     id: 9,
-    question:
-      "What does softmax do to the logits?",
+    question: "What does softmax do with those logits?",
     options: [
-      "Picks the largest value and discards the rest",
-      "Converts them into probabilities that sum to 1",
-      "Rounds each value to the nearest integer",
-      "Applies ReLU to remove negatives",
+      "Turns them into a probability for every word, all summing to 1",
+      "Picks the largest and discards the rest",
+      "Rounds them to the nearest integer",
+      "Applies ReLU and removes negatives",
     ],
-    correctAnswer: "Converts them into probabilities that sum to 1",
+    correctAnswer:
+      "Turns them into a probability for every word, all summing to 1",
     stepIndex: 5,
     stepLabel: "Linear + Softmax",
     explanation:
-      "Softmax normalizes the raw logits into a probability distribution, so we can interpret each value as the likelihood of that word being the next token.",
+      "Softmax normalizes the raw scores into a clean probability distribution. From there we can sample the next token or just take the most likely one.",
   },
   {
     id: 10,
-    question:
-      "How does the decoder generate a full output sentence?",
+    question: "How does the decoder build up a complete output sentence?",
     options: [
-      "It generates all tokens at once in a single pass",
-      "It generates tokens one at a time, feeding each back as input for the next",
-      "It copies words from the encoder input",
-      "It randomly selects tokens until the sentence is long enough",
+      "All tokens are produced in parallel in a single shot",
+      "One token at a time, with each prediction fed back as the next input",
+      "By copying chunks of the encoder input directly",
+      "By picking words at random until it hits a target length",
     ],
     correctAnswer:
-      "It generates tokens one at a time, feeding each back as input for the next",
+      "One token at a time, with each prediction fed back as the next input",
     stepIndex: 6,
     stepLabel: "Output Prediction",
     explanation:
-      "This is autoregressive generation: the decoder predicts one token, appends it to the input, and repeats until it produces an <END> token.",
+      "This is autoregressive generation: predict one token, append it, predict the next, and keep going until the model outputs a stop signal.",
   },
 ];
 

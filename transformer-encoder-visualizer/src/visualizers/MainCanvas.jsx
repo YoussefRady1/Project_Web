@@ -21,7 +21,7 @@ import DecoderPostQuizStep from "../steps/DecoderPostQuizStep";
 
 const PAGE_CONFIG = [
   { component: TransformerIntroStep, title: "Transformer Overview", label: "Overview", section: "overview", keywords: "intro welcome start what is transformer introduction" },
-  { component: PreQuizStep, title: "Encoder Pre-Quiz", label: "Pre-Quiz", section: "overview", keywords: "prequiz assessment baseline before encoder" },
+  { component: PreQuizStep, title: "Encoder Pre-Quiz", label: "Pre-Quiz", section: "pre-encoder-quiz", keywords: "prequiz assessment baseline before encoder" },
   { component: TransformerArchitectureStep, title: "Architecture Overview", label: "Architecture", section: "architecture", keywords: "t5 model translation full diagram architecture" },
   { component: TokenStep, title: "Step 1: Tokenization", label: "Encoder 1 of 5", section: "encoder", keywords: "tokens splitting words pieces tokenize" },
   { component: EmbeddingStep, title: "Step 2: Embedding", label: "Encoder 2 of 5", section: "encoder", keywords: "vector word embedding numeric representation" },
@@ -44,14 +44,15 @@ export { PAGE_CONFIG };
 
 const SECTION_MAP = [
   { id: "overview", label: "Overview" },
+  { id: "pre-encoder-quiz", label: "Pre Encoder Quiz" },
   { id: "architecture", label: "Architecture" },
   { id: "encoder", label: "Encoder" },
-  { id: "encoder-quiz", label: "Encoder Quiz" },
-  { id: "decoder-quiz", label: "Decoder Quiz" },
+  { id: "encoder-quiz", label: "Post Encoder Quiz" },
+  { id: "decoder-quiz", label: "Pre Decoder Quiz" },
   { id: "decoder", label: "Decoder" },
   { id: "linear", label: "Linear + Softmax" },
   { id: "output", label: "Output" },
-  { id: "final-quiz", label: "Final Quiz" },
+  { id: "final-quiz", label: "Post Decoder Quiz" },
 ];
 
 export const TOTAL_PAGES = PAGE_CONFIG.length;

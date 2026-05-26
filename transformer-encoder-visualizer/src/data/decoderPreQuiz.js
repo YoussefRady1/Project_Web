@@ -1,150 +1,157 @@
+// Pre-Decoder Quiz: 10 conceptual questions for someone who has seen the encoder
+// material but hasn't yet studied the decoder. Focuses on intuition about
+// generation, sequential prediction, and what a "decoder" might need from an
+// "encoder" — not on counting sub-layers or memorizing structure.
+//
+// Correct-answer positions are intentionally varied across A/B/C/D
+// (distribution: A×3, B×2, C×2, D×3) so position is never a tell.
 const decoderPreQuiz = [
   {
     id: "dpre-1",
     question:
-      "Why does the decoder mask future positions during self-attention?",
+      "If a model produces a sentence one word at a time, how should it decide each new word?",
     options: [
-      "To speed up training by skipping tokens",
-      "To prevent the model from cheating by looking at tokens it hasn't generated yet",
-      "To remove stop words from the sequence",
-      "To reduce the size of the attention matrix",
+      "Wait for the user to type the next word",
+      "Always output the same word",
+      "Pick a word completely at random",
+      "Use the words it has already written as context",
     ],
-    correctAnswer:
-      "To prevent the model from cheating by looking at tokens it hasn't generated yet",
+    correctAnswer: "Use the words it has already written as context",
     explanation:
-      "During autoregressive generation the decoder produces one token at a time. Masking future positions ensures each token can only attend to previously generated tokens, preserving the left-to-right generation order.",
+      "Generation is sequential. Each new word naturally depends on what was just written, so the model conditions on its own previous output to stay coherent.",
   },
   {
     id: "dpre-2",
     question:
-      "In cross-attention, where do the Query, Key, and Value vectors come from?",
+      "While translating an English sentence into French, the decoder is writing the French version. What should it have access to?",
     options: [
-      "All three come from the decoder",
-      "All three come from the encoder",
-      "Query from the decoder; Key and Value from the encoder",
-      "Query from the encoder; Key and Value from the decoder",
+      "Nothing — translation is one-to-one substitution",
+      "Both the English sentence and the French it has produced so far",
+      "Only the most recent French word it produced",
+      "Only the original English sentence",
     ],
     correctAnswer:
-      "Query from the decoder; Key and Value from the encoder",
+      "Both the English sentence and the French it has produced so far",
     explanation:
-      "Cross-attention lets the decoder query the encoder's output. The decoder provides Q (what it's looking for), while the encoder provides K and V (what information is available).",
+      "Good translation needs both sides: the original sentence (what to translate) and the partial output (what's already there). The decoder uses both.",
   },
   {
     id: "dpre-3",
     question:
-      "What is the role of the feed-forward network inside a decoder layer?",
+      "A decoder is being trained to write the next word of a story. While predicting word #5, should it be allowed to peek at words #6, #7, and so on?",
     options: [
-      "It connects the decoder to the encoder",
-      "It independently transforms each token's vector through a non-linear projection",
-      "It generates the final output probabilities",
-      "It computes attention scores between tokens",
+      "No — that would let it cheat instead of actually predicting",
+      "Yes — more information always helps",
+      "Yes, but only at the very last word",
+      "Only during training, never at use time",
     ],
     correctAnswer:
-      "It independently transforms each token's vector through a non-linear projection",
+      "No — that would let it cheat instead of actually predicting",
     explanation:
-      "The position-wise FFN applies a two-layer MLP with a non-linearity (ReLU) to each token independently, adding representational capacity after attention has mixed context.",
+      "If the model is allowed to see future words during training, it stops learning to predict them. To learn real generation, future positions must be hidden.",
   },
   {
     id: "dpre-4",
     question:
-      "How many Add & Normalize operations are inside each decoder layer?",
+      "What's a sensible way for a generator to decide when to stop producing words?",
     options: [
-      "One — after cross-attention only",
-      "Two — after masked self-attention and cross-attention",
-      "Three — after masked self-attention, cross-attention, and feed-forward",
-      "Zero — the decoder doesn't use normalization",
+      "The user clicks a stop button",
+      "It always produces exactly 100 words",
+      "It outputs a special end-of-sentence signal",
+      "It stops when the input runs out of letters",
     ],
-    correctAnswer:
-      "Three — after masked self-attention, cross-attention, and feed-forward",
+    correctAnswer: "It outputs a special end-of-sentence signal",
     explanation:
-      "Each decoder layer has three sub-layers (masked self-attention, cross-attention, FFN), and each is followed by a residual connection plus layer normalization.",
+      "Generation length is variable. The cleanest signal is a dedicated stop token that the model learns to produce when the sentence feels finished.",
   },
   {
     id: "dpre-5",
     question:
-      "What does the linear projection layer do after the decoder stack?",
+      "How might the decoder start, given that it has nothing of its own to begin from?",
     options: [
-      "Reduces the sequence length to one vector",
-      "Projects the decoder output to the vocabulary size to produce logits for each word",
-      "Converts vectors back into character-level tokens",
-      "Applies dropout for regularization",
+      "It uses a special \"start\" marker as its first input",
+      "It picks the most common word in the language",
+      "It waits for the user to type something first",
+      "It copies the encoder's first token",
     ],
-    correctAnswer:
-      "Projects the decoder output to the vocabulary size to produce logits for each word",
+    correctAnswer: "It uses a special \"start\" marker as its first input",
     explanation:
-      "The linear layer maps each decoder output vector (dimension d_model) to a vector of size |vocabulary|, producing raw scores (logits) for every possible next token.",
+      "A dedicated start token acts as the seed. The decoder treats it as position 0 and uses it to predict the first real output word.",
   },
   {
     id: "dpre-6",
     question:
-      "What does the softmax function do to the logits from the linear layer?",
+      "If the decoder produces a \"probability\" for every word in the vocabulary, what does that mean?",
     options: [
-      "Sets negative values to zero",
-      "Normalizes them into a probability distribution that sums to 1",
-      "Selects the top-K largest values",
-      "Applies temperature scaling only",
+      "Each value is a whole number like 1, 2, or 3",
+      "Values are between -1 and 0",
+      "Each value is either exactly 0 or exactly 1",
+      "All values are positive and add up to 1 across the vocabulary",
     ],
     correctAnswer:
-      "Normalizes them into a probability distribution that sums to 1",
+      "All values are positive and add up to 1 across the vocabulary",
     explanation:
-      "Softmax exponentiates each logit and divides by the sum of all exponentials, turning raw scores into probabilities so we can sample or pick the most likely token.",
+      "A probability distribution by definition has non-negative values that sum to 1. That's what lets us treat each value as \"chance this word comes next.\"",
   },
   {
     id: "dpre-7",
-    question: "What does 'autoregressive generation' mean in a decoder?",
+    question:
+      "Why would a translation decoder need to look back at the encoder's output, not only its own previous words?",
     options: [
-      "The decoder processes all output tokens in parallel at once",
-      "Each generated token is fed back as input for predicting the next token",
-      "The decoder copies the encoder's output directly",
-      "Tokens are generated in random order and sorted later",
+      "To copy the encoder's weights into itself",
+      "To make the encoder run faster",
+      "Because each output word should be grounded in the original sentence",
+      "Because the encoder stores the user's settings",
     ],
     correctAnswer:
-      "Each generated token is fed back as input for predicting the next token",
+      "Because each output word should be grounded in the original sentence",
     explanation:
-      "Autoregressive means the model generates one token at a time, feeding each prediction back as part of the input sequence for the next step.",
+      "Without referring back to the source, the decoder would just be making up plausible-sounding text. Cross-attention is what keeps the output faithful to the input.",
   },
   {
     id: "dpre-8",
-    question: "What signals the decoder to stop generating tokens?",
+    question:
+      "Like the encoder, the decoder also adds positional information to its tokens. Why?",
     options: [
-      "When the attention scores drop below a threshold",
-      "When the decoder runs out of memory",
-      "When the model predicts a special end-of-sequence token (e.g. <END> or <EOS>)",
-      "After exactly as many steps as the input length",
+      "So the model knows which output position it's currently working on",
+      "To match the output length to the input length",
+      "To compress vectors into smaller representations",
+      "Because positional vectors are required by all neural networks",
     ],
     correctAnswer:
-      "When the model predicts a special end-of-sequence token (e.g. <END> or <EOS>)",
+      "So the model knows which output position it's currently working on",
     explanation:
-      "Generation continues until the model produces a special <END>/<EOS> token or hits a maximum length limit.",
+      "Position 3 in the output is different from position 7. The decoder needs to know where it is in the sequence to produce the right word for that slot.",
   },
   {
     id: "dpre-9",
     question:
-      "What is the purpose of the <START> (or <BOS>) token in the decoder?",
+      "Could a generator produce every word of a sentence at the same time, in parallel?",
     options: [
-      "It marks the boundary between encoder and decoder",
-      "It provides the initial input to kick off autoregressive generation",
-      "It replaces the first encoder token",
-      "It is used only during training, not inference",
+      "Yes — it would always be faster and equally accurate",
+      "No — hardware does not allow parallel work",
+      "Yes, but only for sentences longer than 50 words",
+      "Each word usually depends on earlier words, so producing them in order makes more sense",
     ],
     correctAnswer:
-      "It provides the initial input to kick off autoregressive generation",
+      "Each word usually depends on earlier words, so producing them in order makes more sense",
     explanation:
-      "The <START> token is the seed: the decoder uses it as its first input to predict the very first output token, then continues autoregressively.",
+      "Later words are conditioned on earlier ones. Generating in parallel would mean each word is chosen without knowing what came before it, which usually hurts quality.",
   },
   {
     id: "dpre-10",
     question:
-      "What is the correct order of sub-layers inside a single decoder layer?",
+      "How might we turn a list of raw scores (one per word) into values we can read as \"how likely is each word\"?",
     options: [
-      "Cross-Attention → Masked Self-Attention → FFN",
-      "FFN → Masked Self-Attention → Cross-Attention",
-      "Masked Self-Attention → Cross-Attention → FFN",
-      "Masked Self-Attention → FFN → Cross-Attention",
+      "Round every score to the nearest integer",
+      "Normalize them so all become positive and add up to 1",
+      "Pick the largest and throw the rest away",
+      "Subtract the smallest score from every other",
     ],
-    correctAnswer: "Masked Self-Attention → Cross-Attention → FFN",
+    correctAnswer:
+      "Normalize them so all become positive and add up to 1",
     explanation:
-      "Each decoder layer first does masked self-attention (look at own past tokens), then cross-attention (look at encoder output), then a feed-forward network.",
+      "Raw scores can be negative or huge. Normalizing them into a proper probability distribution is exactly what the softmax step does at the end of the decoder.",
   },
 ];
 
