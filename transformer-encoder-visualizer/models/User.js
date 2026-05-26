@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   preQuizScore: { type: Number, default: null },
-  postQuizScore: { type: Number, default: null },
   encoderPostScore: { type: Number, default: null },
   decoderPreScore: { type: Number, default: null },
   decoderPostScore: { type: Number, default: null },

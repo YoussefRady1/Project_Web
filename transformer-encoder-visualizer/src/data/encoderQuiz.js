@@ -1,7 +1,7 @@
 // Post-Quiz: 10 fixed straightforward questions covering exactly what the
 // visualizations teach (one question per concept, two per heavier topic).
 // Designed so a learner who completed the visualizations can score high.
-// stepIndex maps to STEP_INDEX_TO_PAGE in EncoderQuizStep for "Go to step" navigation.
+// stepIndex maps to STEP_INDEX_TO_PAGE in EncoderPostQuizStep for "Go to step" navigation.
 const encoderQuiz = [
   {
     id: 1,

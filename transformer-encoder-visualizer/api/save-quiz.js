@@ -22,7 +22,6 @@ module.exports = async function handler(req, res) {
     await connectToDatabase();
 
     const update = { [quizType]: score };
-    if (quizType === "encoderPostScore") update.postQuizScore = score;
 
     const updated = await User.findByIdAndUpdate(id, update, {
       returnDocument: "after",
