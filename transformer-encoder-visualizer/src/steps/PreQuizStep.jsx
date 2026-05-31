@@ -22,9 +22,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
     return { correct, total, percentage };
   }, [answers, questions]);
 
-  const wrongQuestions = questions.filter(
-    (q) => submitted && answers[q.id] !== q.correctAnswer
-  );
+  const reviewQuestions = submitted ? questions : [];
 
   const handleNameConfirm = () => {
     const trimmed = nameInput.trim();
@@ -340,7 +338,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
             </p>
           </div>
 
-          {wrongQuestions.length > 0 && (
+          {reviewQuestions.length > 0 && (
             <div
               className={`rounded-xl border p-5 ${
                 isDark
@@ -349,66 +347,106 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
               }`}
             >
               <div
-                className={`text-lg font-semibold mb-4 ${
+                className={`text-lg font-semibold mb-1 ${
                   isDark ? "text-cyan-300" : "text-blue-800"
                 }`}
               >
-                Review Answers
+                Review All Answers
               </div>
+              <p
+                className={`text-xs mb-4 ${
+                  isDark ? "text-slate-400" : "text-slate-600"
+                }`}
+              >
+                Walk through every question with the correct answer and explanation.
+              </p>
 
               <div className="space-y-4">
-                {wrongQuestions.map((q) => (
-                  <div
-                    key={q.id}
-                    className={`rounded-lg border p-4 ${
-                      isDark
-                        ? "border-slate-700 bg-slate-950/70"
-                        : "border-slate-400/70 bg-white"
-                    }`}
-                  >
+                {reviewQuestions.map((q, index) => {
+                  const userAnswer = answers[q.id];
+                  const isUserCorrect = userAnswer === q.correctAnswer;
+                  return (
                     <div
-                      className={
+                      key={q.id}
+                      className={`rounded-lg border p-4 ${
                         isDark
-                          ? "text-red-300 font-medium mb-2"
-                          : "text-red-700 font-medium mb-2"
-                      }
-                    >
-                      {q.question}
-                    </div>
-
-                    <div
-                      className={`text-sm mb-1 ${
-                        isDark ? "text-slate-300" : "text-slate-700"
+                          ? "border-slate-700 bg-slate-950/70"
+                          : "border-slate-400/70 bg-white"
                       }`}
                     >
-                      Your answer:{" "}
-                      <span className={isDark ? "text-red-300" : "text-red-700"}>
-                        {answers[q.id] || "No answer"}
-                      </span>
-                    </div>
-
-                    <div
-                      className={`text-sm mb-2 ${
-                        isDark ? "text-slate-300" : "text-slate-700"
-                      }`}
-                    >
-                      Correct answer:{" "}
-                      <span
-                        className={isDark ? "text-green-300" : "text-green-700"}
+                      <div
+                        className={`flex items-start justify-between gap-3 mb-2 ${
+                          isUserCorrect
+                            ? isDark
+                              ? "text-green-300"
+                              : "text-green-700"
+                            : isDark
+                            ? "text-red-300"
+                            : "text-red-700"
+                        } font-medium`}
                       >
-                        {q.correctAnswer}
-                      </span>
-                    </div>
+                        <span>
+                          {index + 1}. {q.question}
+                        </span>
+                        <span
+                          className={`shrink-0 text-[11px] px-2 py-0.5 rounded-full border ${
+                            isUserCorrect
+                              ? isDark
+                                ? "border-green-400/50 text-green-300 bg-green-400/10"
+                                : "border-green-500 text-green-700 bg-green-100"
+                              : isDark
+                              ? "border-red-400/50 text-red-300 bg-red-400/10"
+                              : "border-red-400 text-red-700 bg-red-100"
+                          }`}
+                        >
+                          {isUserCorrect ? "Correct" : "Incorrect"}
+                        </span>
+                      </div>
 
-                    <div
-                      className={`text-sm ${
-                        isDark ? "text-slate-400" : "text-slate-600"
-                      }`}
-                    >
-                      {q.explanation}
+                      <div
+                        className={`text-sm mb-1 ${
+                          isDark ? "text-slate-300" : "text-slate-700"
+                        }`}
+                      >
+                        Your answer:{" "}
+                        <span
+                          className={
+                            isUserCorrect
+                              ? isDark
+                                ? "text-green-300"
+                                : "text-green-700"
+                              : isDark
+                              ? "text-red-300"
+                              : "text-red-700"
+                          }
+                        >
+                          {userAnswer || "No answer"}
+                        </span>
+                      </div>
+
+                      <div
+                        className={`text-sm mb-2 ${
+                          isDark ? "text-slate-300" : "text-slate-700"
+                        }`}
+                      >
+                        Correct answer:{" "}
+                        <span
+                          className={isDark ? "text-green-300" : "text-green-700"}
+                        >
+                          {q.correctAnswer}
+                        </span>
+                      </div>
+
+                      <div
+                        className={`text-sm ${
+                          isDark ? "text-slate-400" : "text-slate-600"
+                        }`}
+                      >
+                        {q.explanation}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}

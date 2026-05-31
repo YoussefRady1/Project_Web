@@ -94,16 +94,19 @@ const PAL = {
 };
 
 const STAGES = [
-  { key: "tokens_enc", x: 115, c: "embed", l: "Tokenization" },
-  { key: "embed", x: 185, c: "embed", l: "Embedding" },
-  { key: "pos_enc", x: 255, c: "embed", l: "Positional" },
-  { key: "selfAttn", x: 325, c: "selfAttn", l: "Self-Attention" },
-  { key: "encFFN", x: 420, c: "ffn", l: "Feed-Forward" },
-  { key: "maskedAttn", x: 515, c: "maskedAttn", l: "Masked Self-Attn" },
-  { key: "crossAttn", x: 600, c: "crossAttn", l: "Cross-Attention" },
-  { key: "decFFN", x: 680, c: "ffn", l: "Feed-Forward" },
-  { key: "linSoftmax", x: 755, c: "output", l: "Lin+Softmax" },
-  { key: "outProj", x: 820, c: "output", l: "Output" },
+  { key: "tokens_enc", x: 130, c: "embed", l: "Tokenization" },
+  { key: "embed", x: 200, c: "embed", l: "Embedding" },
+  { key: "pos_enc", x: 270, c: "embed", l: "Positional" },
+  { key: "selfAttn", x: 345, c: "selfAttn", l: "Self-Attention" },
+  { key: "encFFN", x: 425, c: "ffn", l: "Feed-Forward" },
+  { key: "tokens_dec", x: 530, c: "embed", l: "Tokenization" },
+  { key: "embed_dec", x: 600, c: "embed", l: "Embedding" },
+  { key: "pos_dec", x: 670, c: "embed", l: "Positional" },
+  { key: "maskedAttn", x: 750, c: "maskedAttn", l: "Masked Self-Attn" },
+  { key: "crossAttn", x: 830, c: "crossAttn", l: "Cross-Attention" },
+  { key: "decFFN", x: 905, c: "ffn", l: "Feed-Forward" },
+  { key: "linSoftmax", x: 975, c: "output", l: "Lin+Softmax" },
+  { key: "outProj", x: 1040, c: "output", l: "Output" },
 ];
 
 // Quick lookup of a stage by key (for references that used to use STAGES[index]).
@@ -115,6 +118,9 @@ const DESC = {
   pos_enc: "Adds position info to each embedding",
   selfAttn: "Every word looks at the others",
   encFFN: "Refines each token on its own",
+  tokens_dec: "Tokenizes the words already predicted (starts with <START>)",
+  embed_dec: "Looks up a vector for each output token",
+  pos_dec: "Stamps each output token with its position",
   maskedAttn: "Each decoder word looks only at the words before it",
   crossAttn: "Decoder looks back at the encoder",
   decFFN: "Polishes the decoder's vectors",
@@ -129,8 +135,8 @@ const EXAMPLES = [
 ];
 
 const CY = 220;
-const SVG_W = 1020;
-const SVG_H = 440;
+const SVG_W = 1255;
+const SVG_H = 470;
 
 function InfoTip({ text, isDark }) {
   const [show, setShow] = useState(false);
@@ -615,6 +621,9 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
   for (let si = 0; si < STAGES.length - 1; si++) {
     const s = STAGES[si];
     const nx = STAGES[si + 1];
+    // Skip encoder→decoder direct flow: encoder output reaches the decoder
+    // via cross-attention, not by feeding decoder tokenization.
+    if (s.key === "encFFN" && nx.key === "tokens_dec") continue;
     const col = p[s.c];
     [-12, 0, 12].forEach((off, li) => {
       flows.push({
@@ -635,7 +644,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
   }
 
   flows.push({
-    d: `M${STAGE_BY.encFFN.x},${CY - 15} C${STAGE_BY.encFFN.x},${CY - 95} ${STAGE_BY.crossAttn.x},${CY - 95} ${STAGE_BY.crossAttn.x},${CY - 15}`,
+    d: `M${STAGE_BY.encFFN.x},${CY - 15} C${STAGE_BY.encFFN.x},${CY - 115} ${STAGE_BY.crossAttn.x},${CY - 115} ${STAGE_BY.crossAttn.x},${CY - 15}`,
     c: p.crossAttn,
     dl: 0.5,
     w: 1.8,
@@ -666,7 +675,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
   outToks.forEach((item, i) => {
     const bend = (i - (outToks.length - 1) / 2) * 10;
     flows.push({
-      d: bez(STAGE_BY.outProj.x + 12, CY, 853, yPos(i, outToks.length), 0, bend),
+      d: bez(STAGE_BY.outProj.x + 12, CY, 1063, yPos(i, outToks.length), 0, bend),
       c: p.output,
       dl: 0.8 + i * 0.1,
       op: 0.1 + (item.prob || 0.5) * 0.3,
@@ -696,7 +705,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
     <motion.div
       animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
       transition={{ duration: 0.3 }}
-      className={`w-[1080px] flex flex-col gap-2 p-5 rounded-2xl border ${
+      className={`w-[1060px] max-w-full flex flex-col gap-2 p-5 rounded-2xl border ${
         isDark
           ? "border-cyan-500/20 bg-slate-950/90"
           : "border-blue-200 bg-white"
@@ -843,7 +852,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
         `}</style>
 
         <text
-          x={267}
+          x={277}
           y={38}
           textAnchor="middle"
           fontSize={11}
@@ -855,7 +864,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           ENCODER STACK
         </text>
         <text
-          x={668}
+          x={785}
           y={38}
           textAnchor="middle"
           fontSize={11}
@@ -868,7 +877,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
         </text>
         <text
           x={(STAGE_BY.encFFN.x + STAGE_BY.crossAttn.x) / 2}
-          y={CY - 90}
+          y={CY - 110}
           textAnchor="middle"
           fontSize={7.5}
           fontWeight="600"
@@ -924,7 +933,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           Your sentence
         </text>
         <text
-          x={932}
+          x={1150}
           y={50}
           textAnchor="middle"
           fontSize={9}
@@ -936,7 +945,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           OUTPUT
         </text>
         <text
-          x={932}
+          x={1150}
           y={62}
           textAnchor="middle"
           fontSize={6.5}
@@ -946,7 +955,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           Model prediction
         </text>
         <text
-          x={932}
+          x={1150}
           y={73}
           textAnchor="middle"
           fontSize={6}
@@ -957,15 +966,57 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
         </text>
 
         <line
-          x1={475}
+          x1={478}
           y1={55}
-          x2={475}
-          y2={SVG_H - 25}
+          x2={478}
+          y2={SVG_H - 60}
           stroke={p.dim}
           strokeWidth={1}
           strokeDasharray="3 5"
           strokeOpacity={0.4}
         />
+
+        {/* Autoregressive feedback loop: last output token becomes next decoder input */}
+        <g style={{ pointerEvents: "none" }}>
+          <path
+            d={`M${STAGE_BY.outProj.x},${CY + 15} C${STAGE_BY.outProj.x},${CY + 200} ${STAGE_BY.tokens_dec.x},${CY + 200} ${STAGE_BY.tokens_dec.x},${CY + 15}`}
+            fill="none"
+            stroke={p.output}
+            strokeWidth={1.6}
+            strokeOpacity={0.35}
+            strokeDasharray="6 8"
+            style={{
+              animation: rules.autoPlay ? `dr 3.4s linear infinite` : "none",
+            }}
+          />
+          <polygon
+            points={`${STAGE_BY.tokens_dec.x - 5},${CY + 27} ${STAGE_BY.tokens_dec.x + 5},${CY + 27} ${STAGE_BY.tokens_dec.x},${CY + 17}`}
+            fill={p.output}
+            opacity={0.7}
+          />
+          <rect
+            x={(STAGE_BY.tokens_dec.x + STAGE_BY.outProj.x) / 2 - 165}
+            y={CY + 190}
+            width={330}
+            height={22}
+            rx={11}
+            fill={isDark ? "#0f172aee" : "#ffffffee"}
+            stroke={p.output}
+            strokeWidth={0.8}
+            strokeOpacity={0.5}
+          />
+          <text
+            x={(STAGE_BY.tokens_dec.x + STAGE_BY.outProj.x) / 2}
+            y={CY + 205}
+            textAnchor="middle"
+            fontSize={9.5}
+            fontWeight="700"
+            fill={p.output}
+            opacity={0.85}
+          >
+            ↻  autoregressive loop · last output → next decoder input
+          </text>
+        </g>
 
         {flowing &&
           visibleFlows.map((f, i) => {
@@ -1167,9 +1218,9 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
               transition={{ delay: 0.3 + i * 0.08 }}
             >
               <rect
-                x={855}
+                x={1065}
                 y={y - 14}
-                width={155}
+                width={180}
                 height={28}
                 rx={14}
                 fill={p.pill}
@@ -1178,7 +1229,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
                 strokeOpacity={0.35 + prob * 0.65}
               />
               <text
-                x={915}
+                x={1130}
                 y={y + 4}
                 textAnchor="middle"
                 fontSize={11.5}
@@ -1189,7 +1240,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
                 {item.tok.length > 12 ? item.tok.slice(0, 11) + "…" : item.tok}
               </text>
               <text
-                x={1000}
+                x={1235}
                 y={y + 3.5}
                 textAnchor="end"
                 fontSize={9}

@@ -21,9 +21,7 @@ function DecoderPreQuizStep({
     return { correct, total, percentage };
   }, [answers, questions]);
 
-  const wrongQuestions = questions.filter(
-    (q) => submitted && answers[q.id] !== q.correctAnswer
-  );
+  const reviewQuestions = submitted ? questions : [];
 
   const handleSubmit = () => {
     setSubmitted(true);
@@ -90,18 +88,28 @@ function DecoderPreQuizStep({
                 : "No worries the upcoming decoder steps will teach you everything. Press Next to continue!"}
             </p>
           </div>
-          {wrongQuestions.length > 0 && (
+          {reviewQuestions.length > 0 && (
             <div className={`rounded-xl border p-5 ${isDark ? "border-slate-700 bg-slate-900/80" : "border-slate-400/70 bg-slate-50"}`}>
-              <div className={`text-lg font-semibold mb-4 ${isDark ? "text-cyan-300" : "text-blue-800"}`}>Review Answers</div>
+              <div className={`text-lg font-semibold mb-1 ${isDark ? "text-cyan-300" : "text-blue-800"}`}>Review All Answers</div>
+              <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Walk through every question with the correct answer and explanation.</p>
               <div className="space-y-4">
-                {wrongQuestions.map((q) => (
-                  <div key={q.id} className={`rounded-lg border p-4 ${isDark ? "border-slate-700 bg-slate-950/70" : "border-slate-400/70 bg-white"}`}>
-                    <div className={isDark ? "text-red-300 font-medium mb-2" : "text-red-700 font-medium mb-2"}>{q.question}</div>
-                    <div className={`text-sm mb-1 ${isDark ? "text-slate-300" : "text-slate-700"}`}>Your answer: <span className={isDark ? "text-red-300" : "text-red-700"}>{answers[q.id] || "No answer"}</span></div>
-                    <div className={`text-sm mb-2 ${isDark ? "text-slate-300" : "text-slate-700"}`}>Correct answer: <span className={isDark ? "text-green-300" : "text-green-700"}>{q.correctAnswer}</span></div>
-                    <div className={`text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>{q.explanation}</div>
-                  </div>
-                ))}
+                {reviewQuestions.map((q, index) => {
+                  const userAnswer = answers[q.id];
+                  const isUserCorrect = userAnswer === q.correctAnswer;
+                  return (
+                    <div key={q.id} className={`rounded-lg border p-4 ${isDark ? "border-slate-700 bg-slate-950/70" : "border-slate-400/70 bg-white"}`}>
+                      <div className={`flex items-start justify-between gap-3 mb-2 font-medium ${isUserCorrect ? (isDark ? "text-green-300" : "text-green-700") : (isDark ? "text-red-300" : "text-red-700")}`}>
+                        <span>{index + 1}. {q.question}</span>
+                        <span className={`shrink-0 text-[11px] px-2 py-0.5 rounded-full border ${isUserCorrect ? (isDark ? "border-green-400/50 text-green-300 bg-green-400/10" : "border-green-500 text-green-700 bg-green-100") : (isDark ? "border-red-400/50 text-red-300 bg-red-400/10" : "border-red-400 text-red-700 bg-red-100")}`}>
+                          {isUserCorrect ? "Correct" : "Incorrect"}
+                        </span>
+                      </div>
+                      <div className={`text-sm mb-1 ${isDark ? "text-slate-300" : "text-slate-700"}`}>Your answer: <span className={isUserCorrect ? (isDark ? "text-green-300" : "text-green-700") : (isDark ? "text-red-300" : "text-red-700")}>{userAnswer || "No answer"}</span></div>
+                      <div className={`text-sm mb-2 ${isDark ? "text-slate-300" : "text-slate-700"}`}>Correct answer: <span className={isDark ? "text-green-300" : "text-green-700"}>{q.correctAnswer}</span></div>
+                      <div className={`text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>{q.explanation}</div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
