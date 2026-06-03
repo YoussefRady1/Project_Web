@@ -2,13 +2,20 @@ import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import decoderPreQuiz from "../data/decoderPreQuiz";
 
+const ANSWERS_KEY = "decoderPreQuizAnswers";
+
 function DecoderPreQuizStep({
   active, theme,
   decoderPreCompleted, decoderPreScore,
   submitDecoderPreQuiz,
 }) {
   const isDark = theme === "dark";
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState(() => {
+    try {
+      const saved = localStorage.getItem(ANSWERS_KEY);
+      return saved ? JSON.parse(saved) : {};
+    } catch { return {}; }
+  });
   const [submitted, setSubmitted] = useState(false);
   const [showReview, setShowReview] = useState(false);
 
@@ -29,19 +36,62 @@ function DecoderPreQuizStep({
     let correct = 0;
     questions.forEach((q) => { if (answers[q.id] === q.correctAnswer) correct += 1; });
     const percentage = Math.round((correct / questions.length) * 100);
+    try { localStorage.setItem(ANSWERS_KEY, JSON.stringify(answers)); } catch {}
     submitDecoderPreQuiz(percentage);
   };
 
-  if (decoderPreCompleted && !submitted) {
+  const renderReviewList = () => (
+    <div className="space-y-4">
+      {questions.map((q, index) => {
+        const userAnswer = answers[q.id];
+        const isUserCorrect = userAnswer === q.correctAnswer;
+        return (
+          <div key={q.id} className={`rounded-lg border p-4 text-left ${isDark ? "border-slate-700 bg-slate-950/70" : "border-slate-400/70 bg-white"}`}>
+            <div className={`flex items-start justify-between gap-3 mb-2 font-medium ${isUserCorrect ? (isDark ? "text-green-300" : "text-green-700") : (isDark ? "text-red-300" : "text-red-700")}`}>
+              <span>{index + 1}. {q.question}</span>
+              <span className={`shrink-0 text-[11px] px-2 py-0.5 rounded-full border ${isUserCorrect ? (isDark ? "border-green-400/50 text-green-300 bg-green-400/10" : "border-green-500 text-green-700 bg-green-100") : (isDark ? "border-red-400/50 text-red-300 bg-red-400/10" : "border-red-400 text-red-700 bg-red-100")}`}>
+                {isUserCorrect ? "Correct" : "Incorrect"}
+              </span>
+            </div>
+            <div className={`text-sm mb-1 ${isDark ? "text-slate-300" : "text-slate-700"}`}>Your answer: <span className={isUserCorrect ? (isDark ? "text-green-300" : "text-green-700") : (isDark ? "text-red-300" : "text-red-700")}>{userAnswer || "No answer"}</span></div>
+            <div className={`text-sm mb-2 ${isDark ? "text-slate-300" : "text-slate-700"}`}>Correct answer: <span className={isDark ? "text-green-300" : "text-green-700"}>{q.correctAnswer}</span></div>
+            <div className={`text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>{q.explanation}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  if (decoderPreCompleted) {
+    const hasStoredAnswers = Object.keys(answers).length > 0;
     return (
       <motion.div animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }} transition={{ duration: 0.3 }}
-        className={`p-6 border rounded-2xl w-[980px] min-h-[400px] flex flex-col items-center justify-center ${isDark ? "border-cyan-500 bg-transparent" : "border-blue-400/80 bg-white shadow-sm"}`}>
-        <div className={`text-5xl mb-4 ${isDark ? "text-cyan-400" : "text-blue-600"}`}>✓</div>
+        className={`p-6 border rounded-2xl w-[980px] min-h-[400px] flex flex-col items-center ${isDark ? "border-cyan-500 bg-transparent" : "border-blue-400/80 bg-white shadow-sm"}`}>
+        <div className={`text-5xl mb-4 mt-6 ${isDark ? "text-cyan-400" : "text-blue-600"}`}>✓</div>
         <h2 className={`text-xl font-semibold mb-3 ${isDark ? "text-cyan-300" : "text-blue-800"}`}>Decoder Pre-Quiz Already Completed</h2>
         <div className="text-3xl font-bold mb-2">
           <span className={isDark ? "text-white" : "text-slate-900"}>Your score: {decoderPreScore}%</span>
         </div>
         <p className={`text-sm mt-2 ${isDark ? "text-slate-400" : "text-slate-600"}`}>You have already submitted this quiz. Use the Next button to continue.</p>
+        {hasStoredAnswers && (
+          <button
+            onClick={() => setShowReview((v) => !v)}
+            className={`mt-5 px-4 py-2 rounded-lg border text-xs font-medium transition ${
+              isDark
+                ? "border-cyan-400/60 text-cyan-300 bg-cyan-400/10 hover:bg-cyan-400/20"
+                : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+            }`}
+          >
+            {showReview ? "Hide review" : "Review the full exam"}
+          </button>
+        )}
+        {hasStoredAnswers && showReview && (
+          <div className={`w-full mt-6 rounded-xl border p-5 ${isDark ? "border-slate-700 bg-slate-900/80" : "border-slate-400/70 bg-slate-50"}`}>
+            <div className={`text-lg font-semibold mb-1 ${isDark ? "text-cyan-300" : "text-blue-800"}`}>Review All Answers</div>
+            <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Walk through every question with the correct answer and explanation.</p>
+            {renderReviewList()}
+          </div>
+        )}
       </motion.div>
     );
   }
