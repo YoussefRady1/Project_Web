@@ -10,6 +10,7 @@ function DecoderPreQuizStep({
   const isDark = theme === "dark";
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [showReview, setShowReview] = useState(false);
 
   const questions = useMemo(() => decoderPreQuiz, []);
 
@@ -21,7 +22,7 @@ function DecoderPreQuizStep({
     return { correct, total, percentage };
   }, [answers, questions]);
 
-  const reviewQuestions = submitted ? questions : [];
+  const reviewQuestions = submitted && showReview ? questions : [];
 
   const handleSubmit = () => {
     setSubmitted(true);
@@ -31,7 +32,7 @@ function DecoderPreQuizStep({
     submitDecoderPreQuiz(percentage);
   };
 
-  if (decoderPreCompleted) {
+  if (decoderPreCompleted && !submitted) {
     return (
       <motion.div animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }} transition={{ duration: 0.3 }}
         className={`p-6 border rounded-2xl w-[980px] min-h-[400px] flex flex-col items-center justify-center ${isDark ? "border-cyan-500 bg-transparent" : "border-blue-400/80 bg-white shadow-sm"}`}>
@@ -87,6 +88,16 @@ function DecoderPreQuizStep({
                 ? "Great foundation! Let's see how the decoder visualizations deepen your understanding."
                 : "No worries the upcoming decoder steps will teach you everything. Press Next to continue!"}
             </p>
+            <button
+              onClick={() => setShowReview((v) => !v)}
+              className={`mt-4 px-3 py-1.5 rounded-md border text-[11px] font-medium transition ${
+                isDark
+                  ? "border-cyan-400/60 text-cyan-300 bg-cyan-400/10 hover:bg-cyan-400/20"
+                  : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+              }`}
+            >
+              {showReview ? "Hide review" : "Review full exam with my answers"}
+            </button>
           </div>
           {reviewQuestions.length > 0 && (
             <div className={`rounded-xl border p-5 ${isDark ? "border-slate-700 bg-slate-900/80" : "border-slate-400/70 bg-slate-50"}`}>

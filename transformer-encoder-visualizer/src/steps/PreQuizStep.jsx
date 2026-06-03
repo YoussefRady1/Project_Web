@@ -9,6 +9,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
   const [nameConfirmed, setNameConfirmed] = useState(!!userName);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [showReview, setShowReview] = useState(false);
 
   const questions = useMemo(() => preQuiz, []);
 
@@ -22,7 +23,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
     return { correct, total, percentage };
   }, [answers, questions]);
 
-  const reviewQuestions = submitted ? questions : [];
+  const reviewQuestions = submitted && showReview ? questions : [];
 
   const handleNameConfirm = () => {
     const trimmed = nameInput.trim();
@@ -60,7 +61,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
     submitPreQuiz(percentage);
   };
 
-  if (preQuizCompleted) {
+  if (preQuizCompleted && !submitted) {
     return (
       <motion.div
         animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
@@ -336,6 +337,16 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
                 ? "Great foundation! Let's see how the visualizations deepen your understanding."
                 : "No worries the upcoming steps will teach you everything. Press Next to continue!"}
             </p>
+            <button
+              onClick={() => setShowReview((v) => !v)}
+              className={`mt-4 px-3 py-1.5 rounded-md border text-[11px] font-medium transition ${
+                isDark
+                  ? "border-cyan-400/60 text-cyan-300 bg-cyan-400/10 hover:bg-cyan-400/20"
+                  : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+              }`}
+            >
+              {showReview ? "Hide review" : "Review full exam with my answers"}
+            </button>
           </div>
 
           {reviewQuestions.length > 0 && (
