@@ -1,150 +1,153 @@
-// Pre-Quiz: 10 fixed challenging questions designed to surface gaps before learning.
-// Questions probe specifics (mechanism details, ordering, math) so an untrained user
-// will typically score low — that's intentional, the post-quiz then measures growth.
+// Pre-Encoder Quiz: 10 conceptual questions for someone who hasn't studied
+// transformers yet. The goal is to probe intuition about sequences, attention,
+// and word meaning — not to test formulas. A thoughtful learner should be able
+// to reason their way through most of these without prior NLP training.
+//
+// Correct-answer positions are intentionally varied across A/B/C/D
+// (distribution: A×3, B×2, C×3, D×2) so position is never a tell.
 const preQuiz = [
   {
     id: "pre-1",
     question:
-      "Inside scaled dot-product attention, how is the raw score between Query Q and Key K computed before softmax?",
+      "When a language model is given the sentence \"The cat sat on the mat,\" what is the most natural first step for it to take?",
     options: [
-      "Q × K^T, then divided by √(d_k)",
-      "softmax(Q + K)",
-      "Element-wise subtraction Q − K",
-      "Dot product of Q and V",
+      "Break the sentence into smaller pieces it can work with",
+      "Memorize the whole sentence as a single image",
+      "Translate it into another language first",
+      "Look up the sentence in a stored list of examples",
     ],
-    correctAnswer: "Q × K^T, then divided by √(d_k)",
+    correctAnswer: "Break the sentence into smaller pieces it can work with",
     explanation:
-      "Attention scores are the dot product of Q and K^T, scaled by √(d_k) to keep softmax gradients stable.",
+      "Models don't operate on whole sentences directly. The first move is to split the input into smaller units (tokens) that can be processed one at a time.",
   },
   {
     id: "pre-2",
     question:
-      "In the base Transformer's position-wise feed-forward network, how does the inner hidden dimension d_ff relate to the model dimension d_model?",
+      "Why would a model represent each word as a list of numbers instead of keeping it as text?",
     options: [
-      "d_ff is the same as d_model",
-      "d_ff is roughly 4 times d_model (e.g. 2048 vs 512)",
-      "d_ff is half of d_model",
-      "d_ff equals the number of attention heads",
+      "Numbers take up less space on disk",
+      "Programming languages require it",
+      "Math only works on numbers, not on letters",
+      "It makes the output easier to display",
     ],
-    correctAnswer: "d_ff is roughly 4 times d_model (e.g. 2048 vs 512)",
+    correctAnswer: "Math only works on numbers, not on letters",
     explanation:
-      "The original Transformer uses d_model = 512 and an FFN inner size d_ff = 2048, a 4× expansion that gives the position-wise MLP enough capacity to transform each token.",
+      "Neural networks are layers of mathematical operations. To feed words into that machinery, each word has to first become a vector of numbers.",
   },
   {
     id: "pre-3",
     question:
-      "What does the 'Add' in 'Add & Normalize' refer to inside an encoder layer?",
+      "\"The dog chased the cat\" and \"The cat chased the dog\" use the exact same words. What does the difference between them tell us a model needs to track?",
     options: [
-      "Adding learned bias terms",
-      "A residual (skip) connection: input + sublayer output",
-      "Adding random Gaussian noise",
-      "Adding the embedding to itself again",
+      "Punctuation",
+      "Spelling",
+      "Sentence length",
+      "Word order",
     ],
-    correctAnswer: "A residual (skip) connection: input + sublayer output",
+    correctAnswer: "Word order",
     explanation:
-      "The 'Add' is a residual connection that adds the sublayer's input to its output, preserving information across depth.",
+      "Same words, different order, different meaning. A model that ignores position would treat both sentences as identical, which is clearly wrong.",
   },
   {
     id: "pre-4",
     question:
-      "Which positional encoding scheme is introduced in the original Transformer paper?",
+      "The word \"attention\" suggests the model is doing what while it reads a sentence?",
     options: [
-      "Learned absolute embeddings only",
-      "Sine and cosine functions at different frequencies",
-      "One-hot position vectors",
-      "Random Gaussian noise per position",
+      "Reading the sentence in reverse",
+      "Focusing more on certain words when interpreting another",
+      "Skipping unimportant words completely",
+      "Counting how often each word appears",
     ],
-    correctAnswer: "Sine and cosine functions at different frequencies",
+    correctAnswer: "Focusing more on certain words when interpreting another",
     explanation:
-      "Vaswani et al. use fixed sinusoids of varying frequencies so the model can extrapolate to longer sequences.",
+      "Attention is the idea that when you process one word, you weigh how much each other word matters for its meaning — exactly like a human focusing on relevant context.",
   },
   {
     id: "pre-5",
     question:
-      "How is the position-wise Feed-Forward Network applied inside the encoder?",
+      "Why isn't translating English to French as easy as replacing every English word with its French equivalent?",
     options: [
-      "Once per layer, mixing all token positions together",
-      "Independently at each token position with shared weights",
-      "Only to the first token of the sequence",
-      "Only at the residual connections",
+      "French dictionaries are not available online",
+      "French has fewer words than English",
+      "Translation requires special hardware",
+      "Word-for-word swaps miss grammar and context",
     ],
-    correctAnswer:
-      "Independently at each token position with shared weights",
+    correctAnswer: "Word-for-word swaps miss grammar and context",
     explanation:
-      "The FFN is applied to each position separately and identically — that's why it's called 'position-wise'.",
+      "Languages reorder words, use different idioms, and rely on context. A meaningful translation has to consider the whole sentence, not just dictionary entries.",
   },
   {
     id: "pre-6",
     question:
-      "What concrete advantage does multi-head attention give over a single attention head?",
+      "The word \"bank\" means something different in \"river bank\" than in \"bank account.\" What does a model need in order to tell them apart?",
     options: [
-      "It runs faster on a CPU",
-      "Each head attends to a different learned subspace of the representation",
-      "Each head sees a different subset of tokens",
-      "All heads share weights to reduce parameters",
+      "Read each word completely in isolation",
+      "Replace \"bank\" with its longest definition",
+      "Use the surrounding words to figure out meaning",
+      "Ask the user which meaning they intended",
     ],
-    correctAnswer:
-      "Each head attends to a different learned subspace of the representation",
+    correctAnswer: "Use the surrounding words to figure out meaning",
     explanation:
-      "Multi-head attention projects Q/K/V into multiple subspaces so the model can jointly attend to different relations.",
+      "Most words are ambiguous on their own. Context — the words nearby — is what disambiguates them, and any useful model must take that into account.",
   },
   {
     id: "pre-7",
     question:
-      "In an encoder–decoder Transformer, where is the encoder's final output consumed?",
+      "When a model writes a sentence one word at a time, what's the most sensible way to choose each new word?",
     options: [
-      "By another stack of encoder layers",
-      "By the decoder's cross-attention (encoder-decoder attention) sublayers",
-      "By the tokenizer for re-tokenization",
-      "By the loss function directly, with no further processing",
+      "Use the words generated so far to predict what comes next",
+      "Pick a random word from the dictionary",
+      "Always pick the most frequent word in the language",
+      "Copy the next word from the input sentence",
     ],
     correctAnswer:
-      "By the decoder's cross-attention (encoder-decoder attention) sublayers",
+      "Use the words generated so far to predict what comes next",
     explanation:
-      "Each decoder layer attends to the encoder's outputs through a cross-attention sublayer.",
+      "Generation is sequential: each new word depends on the ones already written, the same way you finish someone else's sentence based on what they've said so far.",
   },
   {
     id: "pre-8",
     question:
-      "What happens to a Transformer encoder if positional encodings are removed entirely?",
+      "Why might a model apply the same kind of operation repeatedly (stacked layers) instead of one giant custom step?",
     options: [
-      "Nothing — attention already encodes order",
-      "It becomes permutation-invariant: word order stops mattering",
-      "It crashes because shapes no longer match",
-      "It produces the exact same outputs but slower",
+      "Repeating layers is easier to debug",
+      "Computers can only execute one type of layer",
+      "Each repetition can refine the model's understanding a bit further",
+      "It's a hardware requirement",
     ],
     correctAnswer:
-      "It becomes permutation-invariant: word order stops mattering",
+      "Each repetition can refine the model's understanding a bit further",
     explanation:
-      "Self-attention by itself is order-agnostic; without positional information, shuffling the input gives the same outputs.",
+      "Stacking small, similar layers lets the model build up complex understanding gradually, with each layer slightly improving on the previous one's output.",
   },
   {
     id: "pre-9",
     question:
-      "After embedding and positional encoding, what is the shape of the input fed into the encoder stack?",
+      "A transformer has two main parts: an encoder and a decoder. What's the most reasonable split of jobs between them?",
     options: [
-      "A single d-dimensional vector summarizing the whole sentence",
-      "One d-dimensional vector per token in the sequence",
-      "A scalar per token",
-      "A 2-D image-like tensor per token",
+      "The encoder writes the output; the decoder reads the input",
+      "The encoder reads the input; the decoder produces the output",
+      "Both do the same thing twice for safety",
+      "The encoder shrinks the data; the decoder grows it back unchanged",
     ],
-    correctAnswer: "One d-dimensional vector per token in the sequence",
+    correctAnswer:
+      "The encoder reads the input; the decoder produces the output",
     explanation:
-      "The encoder receives a sequence of vectors — one d-dimensional vector per token position.",
+      "The names are a hint. The encoder builds an understanding of the input sentence, and the decoder uses that understanding to write the output sentence.",
   },
   {
     id: "pre-10",
     question:
-      "Within a single encoder layer, what is the exact order of sub-operations?",
+      "If you shuffle a sentence's words (\"mat the cat the on sat\"), the meaning falls apart for a human. For a model to behave the same way, what does it need to keep track of?",
     options: [
-      "FFN → Add & Norm → Self-Attention → Add & Norm",
-      "Self-Attention → Add & Norm → FFN → Add & Norm",
-      "Self-Attention → FFN → Add & Norm",
-      "Add & Norm → Self-Attention → Add & Norm → FFN",
+      "The position of each word in the sentence",
+      "How many words are in the sentence",
+      "Which letters are capitalized",
+      "How long each word is",
     ],
-    correctAnswer: "Self-Attention → Add & Norm → FFN → Add & Norm",
+    correctAnswer: "The position of each word in the sentence",
     explanation:
-      "Each encoder layer is: multi-head self-attention, residual+LayerNorm, position-wise FFN, residual+LayerNorm.",
+      "Without positional information, a model treats a sentence as an unordered bag of words and loses access to grammatical structure entirely.",
   },
 ];
 

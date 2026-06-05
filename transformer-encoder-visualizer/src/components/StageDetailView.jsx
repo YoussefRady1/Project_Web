@@ -179,7 +179,7 @@ function TokenizeDetail({ p }) {
     <svg viewBox="0 0 900 210" className="w-full" style={{ minHeight: 210 }}>
       <SvgDefs color={p.sub} />
 
-      <Box x={20} y={85} w={150} h={42} label="raw sentence" sub="plain text" color={p.text} accent />
+      <Box x={20} y={85} w={150} h={42} label="raw sentence" color={p.text} accent />
 
       {toks.map((_, i) => (
         <Arrow key={`a${i}`} x1={170} y1={106} x2={250} y2={45 + i * 40} color={p.sub} />
@@ -189,7 +189,7 @@ function TokenizeDetail({ p }) {
       </text>
 
       {toks.map((t, i) => (
-        <Box key={`t${i}`} x={250} y={30 + i * 40} w={120} h={30} label={t} sub="one token" color={p.embed} />
+        <Box key={`t${i}`} x={250} y={30 + i * 40} w={120} h={30} label={t} color={p.embed} />
       ))}
 
       {toks.map((_, i) => (
@@ -216,11 +216,11 @@ function PositionalDetail({ p }) {
     <svg viewBox="0 0 900 210" className="w-full" style={{ minHeight: 210 }}>
       <SvgDefs color={p.sub} />
 
-      <Box x={20} y={40} w={150} h={38} label="token embedding" sub="meaning only" color={p.embed} accent />
+      <Box x={20} y={40} w={150} h={38} label="token embedding" color={p.embed} accent />
       <Arrow x1={170} y1={59} x2={210} y2={59} color={p.sub} />
       <VectorViz x={210} y={45} dims={10} color={p.embed} label="" />
 
-      <Box x={20} y={140} w={150} h={38} label="position vector" sub="which slot in sentence" color={p.res} accent />
+      <Box x={20} y={140} w={150} h={38} label="position vector" color={p.res} accent />
       <Arrow x1={170} y1={159} x2={210} y2={159} color={p.sub} />
       <VectorViz x={210} y={145} dims={10} color={p.res} label="" />
 
@@ -229,9 +229,6 @@ function PositionalDetail({ p }) {
       </text>
       <Arrow x1={420} y1={70} x2={500} y2={105} color={p.sub} curve />
       <Arrow x1={420} y1={170} x2={500} y2={120} color={p.sub} curve />
-      <text x={530} y={100} textAnchor="middle" fontSize={7.5} fill={p.sub} fontStyle="italic">
-        add together
-      </text>
 
       <Arrow x1={500} y1={112} x2={560} y2={112} color={p.sub} />
       <VectorViz x={560} y={98} dims={10} color={p.embed} label="meaning + position" />
@@ -249,12 +246,12 @@ function EmbedDetail({ p, sampleToken = "house" }) {
       <SvgDefs color={p.sub} />
 
       {/* the word */}
-      <Box x={20} y={78} w={110} h={44} label={sampleToken} sub="one token" color={p.text} accent />
+      <Box x={20} y={78} w={110} h={44} label={sampleToken} color={p.text} accent />
       <Arrow x1={130} y1={100} x2={195} y2={100} color={p.sub} label="its ID" />
 
       {/* its vocab ID */}
-      <Box x={195} y={78} w={110} h={44} label="ID 629" sub="row number" color={p.embed} />
-      <Arrow x1={305} y1={100} x2={375} y2={100} color={p.sub} label="pick that row" />
+      <Box x={195} y={78} w={110} h={44} label="ID 629" color={p.embed} />
+      <Arrow x1={305} y1={100} x2={375} y2={100} color={p.sub} label="pick row" />
 
       {/* the embedding table */}
       <Box
@@ -263,17 +260,17 @@ function EmbedDetail({ p, sampleToken = "house" }) {
         w={185}
         h={64}
         label="Embedding table"
-        sub="32,128 words × 512 numbers"
+        sub="32,128 × 512"
         color={p.embed}
         accent
       />
       <Arrow x1={560} y1={100} x2={625} y2={100} color={p.sub} />
 
       {/* the resulting vector */}
-      <VectorViz x={625} y={84} dims={10} color={p.embed} label="this word's vector (512 numbers)" />
+      <VectorViz x={625} y={84} dims={10} color={p.embed} label="word vector (512-dim)" />
 
       <text x={760} y={165} textAnchor="middle" fontSize={9} fill={p.text} opacity={0.78}>
-        words with similar meaning get similar vectors
+        similar meaning → similar vectors
       </text>
     </svg>
   );
@@ -288,17 +285,17 @@ function SelfAttnDetail({ p, isCross = false, isMasked = false }) {
       {/* Input */}
       {isCross ? (
         <>
-          <Box x={10} y={30} w={140} h={40} label="Decoder so far" sub="what we've written" color={p.crossAttn} accent />
-          <Box x={10} y={228} w={140} h={40} label="Encoder output" sub="the input sentence" color={p.embed} accent />
+          <Box x={10} y={30} w={140} h={40} label="Decoder so far" color={p.crossAttn} accent />
+          <Box x={10} y={228} w={140} h={40} label="Encoder output" color={p.embed} accent />
         </>
       ) : (
-        <Box x={10} y={133} w={140} h={44} label="Input tokens" sub="one vector per word" color={accent} accent />
+        <Box x={10} y={133} w={140} h={44} label="Input tokens" color={accent} accent />
       )}
 
       {/* Linear projections */}
-      <Box x={210} y={38} w={110} h={36} label="× W_Q" sub="make Query" color={accent} />
-      <Box x={210} y={133} w={110} h={36} label="× W_K" sub="make Key" color={accent} />
-      <Box x={210} y={228} w={110} h={36} label="× W_V" sub="make Value" color={accent} />
+      <Box x={210} y={38} w={110} h={36} label="× W_Q" color={accent} />
+      <Box x={210} y={133} w={110} h={36} label="× W_K" color={accent} />
+      <Box x={210} y={228} w={110} h={36} label="× W_V" color={accent} />
 
       {isCross ? (
         <>
@@ -315,42 +312,42 @@ function SelfAttnDetail({ p, isCross = false, isMasked = false }) {
       )}
 
       {/* Q, K, V vectors */}
-      <Box x={360} y={38} w={90} h={36} label="Q" sub="what I seek" color={accent} accent />
-      <Box x={360} y={133} w={90} h={36} label="K" sub="what I show" color={accent} accent />
-      <Box x={360} y={228} w={90} h={36} label="V" sub="my content" color={accent} accent />
+      <Box x={360} y={38} w={90} h={36} label="Q" color={accent} accent />
+      <Box x={360} y={133} w={90} h={36} label="K" color={accent} accent />
+      <Box x={360} y={228} w={90} h={36} label="V" color={accent} accent />
 
       <Arrow x1={320} y1={56} x2={360} y2={56} color={p.sub} />
       <Arrow x1={320} y1={151} x2={360} y2={151} color={p.sub} />
       <Arrow x1={320} y1={246} x2={360} y2={246} color={p.sub} />
 
       {/* Q · K^T */}
-      <Box x={490} y={80} w={120} h={34} label="Q · Kᵀ" sub="how well they match" color={accent} />
+      <Box x={490} y={80} w={120} h={34} label="Q · Kᵀ" color={accent} />
       <Arrow x1={450} y1={56} x2={490} y2={92} color={p.sub} />
       <Arrow x1={450} y1={151} x2={490} y2={106} color={p.sub} />
 
-      <Box x={490} y={124} w={120} h={30} label="÷ √64" sub="keep numbers calm" color={accent} />
+      <Box x={490} y={124} w={120} h={30} label="÷ √64" color={accent} />
       <Arrow x1={550} y1={114} x2={550} y2={124} color={p.sub} />
 
       {isMasked && (
-        <Box x={490} y={162} w={120} h={30} label="apply mask" sub="hide future words" color={accent} accent />
+        <Box x={490} y={162} w={120} h={30} label="apply mask" color={accent} accent />
       )}
       <Arrow x1={550} y1={154} x2={550} y2={isMasked ? 162 : 200} color={p.sub} />
 
-      <Box x={490} y={isMasked ? 200 : 162} w={120} h={30} label="softmax" sub="turn into % weights" color={accent} />
+      <Box x={490} y={isMasked ? 200 : 162} w={120} h={30} label="softmax" color={accent} />
       {isMasked && <Arrow x1={550} y1={192} x2={550} y2={200} color={p.sub} />}
 
       <MatrixViz x={510} y={isMasked ? 238 : 200} rows={3} cols={3} color={accent} label="attention weights" />
 
       {/* × V */}
-      <Box x={660} y={133} w={100} h={36} label="× V" sub="blend the Values" color={accent} accent />
+      <Box x={660} y={133} w={100} h={36} label="× V" color={accent} accent />
       <Arrow x1={575} y1={isMasked ? 268 : 230} x2={660} y2={155} color={p.sub} curve />
       <Arrow x1={450} y1={246} x2={660} y2={160} color={p.sub} curve />
 
       {/* concat + output projection */}
-      <Box x={790} y={105} w={100} h={36} label="Concat heads" sub="join 8 views" color={accent} />
+      <Box x={790} y={105} w={100} h={36} label="Concat heads" color={accent} />
       <Arrow x1={760} y1={151} x2={790} y2={123} color={p.sub} />
 
-      <Box x={790} y={155} w={100} h={36} label="× W_O" sub="mix the heads" color={accent} accent />
+      <Box x={790} y={155} w={100} h={36} label="× W_O" color={accent} accent />
       <Arrow x1={840} y1={141} x2={840} y2={155} color={p.sub} />
 
       <text x={840} y={210} textAnchor="middle" fontSize={8.5} fill={p.text} opacity={0.8}>
@@ -365,19 +362,19 @@ function FFNDetail({ p }) {
     <svg viewBox="0 0 900 180" className="w-full" style={{ minHeight: 180 }}>
       <SvgDefs color={p.sub} />
 
-      <Box x={30} y={70} w={120} h={40} label="Input" sub="512-dim" color={p.ffn} accent />
+      <Box x={30} y={70} w={120} h={40} label="Input" color={p.ffn} accent />
       <Arrow x1={150} y1={90} x2={210} y2={90} color={p.sub} />
 
       <Box x={210} y={60} w={160} h={60} label="Linear 1" sub="512 → 2048" color={p.ffn} accent />
       <Arrow x1={370} y1={90} x2={430} y2={90} color={p.sub} label="expand" />
 
-      <Box x={430} y={70} w={110} h={40} label="ReLU" sub="max(0, x)" color={p.ffn} />
+      <Box x={430} y={70} w={110} h={40} label="ReLU" color={p.ffn} />
       <Arrow x1={540} y1={90} x2={600} y2={90} color={p.sub} label="nonlinear" />
 
       <Box x={600} y={60} w={160} h={60} label="Linear 2" sub="2048 → 512" color={p.ffn} accent />
       <Arrow x1={760} y1={90} x2={820} y2={90} color={p.sub} />
 
-      <Box x={820} y={70} w={70} h={40} label="Output" sub="512-dim" color={p.ffn} accent />
+      <Box x={820} y={70} w={70} h={40} label="Output" color={p.ffn} accent />
     </svg>
   );
 }
@@ -404,7 +401,7 @@ function OutputDetail({ p, liveOutput }) {
     <svg viewBox="0 0 900 220" className="w-full" style={{ minHeight: 220 }}>
       <SvgDefs color={p.sub} />
 
-      <Box x={20} y={90} w={140} h={40} label="Decoder output" sub="512-dim" color={p.output} accent />
+      <Box x={20} y={90} w={140} h={40} label="Decoder output" color={p.output} accent />
       <Arrow x1={160} y1={110} x2={220} y2={110} color={p.sub} />
 
       <Box
@@ -413,7 +410,7 @@ function OutputDetail({ p, liveOutput }) {
         w={180}
         h={60}
         label="Linear projection"
-        sub="512 → 32,128 (vocab)"
+        sub="512 → 32,128"
         color={p.output}
         accent
       />
@@ -572,6 +569,87 @@ const EXPLANATIONS = {
       "'Linear' and 'Softmax' are two steps but always run back-to-back, so the diagram shows them as one node.",
       "Softmax amplifies gaps: logits of 5 vs 3 become ~0.88 vs ~0.12, not 5/8 vs 3/8.",
       "The actual word chosen depends on the sampling strategy (greedy, top-p, beam search).",
+    ],
+  },
+  tokens_dec: {
+    title: "Output Tokenization · Inside the Block",
+    intuition:
+      "The decoder cannot read; it can only read tokens it has already written. At the very first step that sequence is just the special <START> marker. After each prediction, the new word is tokenized and appended, so the next step sees one more token than the last. This is the entry point of the autoregressive loop.",
+    math: [
+      {
+        step: "Start the sequence with <START>",
+        formula: "decoder_input₀ = [<START>]",
+        detail: "A reserved token id (often 0 in T5) that tells the model 'begin generating'. It has no meaning of its own.",
+      },
+      {
+        step: "After each prediction, append the new token",
+        formula: "decoder_inputₜ = [<START>, w₁, w₂, …, wₜ]",
+        detail: "The output of step t becomes part of the input at step t+1. The sequence grows by one token per step.",
+      },
+      {
+        step: "Convert every token to its vocabulary ID",
+        formula: "[<START>, 'Le', 'maison'] → [0, 644, 2410]",
+        detail: "The same SentencePiece vocabulary the encoder uses, so encoder and decoder share one 32,128-entry vocabulary in T5.",
+      },
+    ],
+    insights: [
+      "<START> is the only token the decoder ever sees at step 0; everything after that is fed back from its own output.",
+      "Encoder and decoder share the same vocabulary in T5, so token IDs mean the same thing on both sides.",
+      "This stage is exactly why the architecture is called 'autoregressive': each new output regresses on past outputs.",
+    ],
+  },
+  embed_dec: {
+    title: "Output Embedding · Inside the Block",
+    intuition:
+      "Same lookup table as the encoder, used in the other direction. Each decoder token id (including <START>) is turned into a 512-number vector by reading one row from the shared embedding matrix. From here on, the decoder works with vectors, not words.",
+    math: [
+      {
+        step: "Take each decoder token's ID",
+        formula: "[0, 644, 2410]  →  rows 0, 644, 2410",
+        detail: "These are the IDs produced by Output Tokenization, including the <START> token's reserved ID.",
+      },
+      {
+        step: "Read those rows from the embedding table",
+        formula: "table shape = 32,128 × 512  (shared with encoder)",
+        detail: "T5 ties encoder embeddings, decoder embeddings, and the output projection to the same matrix, so one table is reused three times.",
+      },
+      {
+        step: "The result is a stack of vectors",
+        formula: "X_dec ∈ ℝ^(seq_len × 512)",
+        detail: "Ready to be combined with positional encoding in the next stage.",
+      },
+    ],
+    insights: [
+      "Encoder and decoder use the SAME embedding matrix in T5; this is called 'weight tying'.",
+      "<START> has its own learned row just like every other token; nothing else is special about it.",
+      "Because the matrix is shared, words that mean similar things have similar vectors on both sides of the model.",
+    ],
+  },
+  pos_dec: {
+    title: "Output Positional Encoding · Inside the Block",
+    intuition:
+      "Attention is position-blind, so the decoder needs the same kind of location stamp the encoder gets. A position vector is added to each output token's embedding, telling the model where in the generated sentence that token sits.",
+    math: [
+      {
+        step: "Build a position vector per decoder slot",
+        formula: "P[pos] = [sin(pos/10000^0), cos(pos/10000^0), …]",
+        detail: "T5 actually uses a learned relative-position bias added inside attention, but conceptually each position still gets a unique signal.",
+      },
+      {
+        step: "Add it to the decoder embedding",
+        formula: "X_dec[pos] = Embedding[token] + P[pos]",
+        detail: "Element-wise addition. The vector now carries both meaning and 'I am the t-th word generated'.",
+      },
+      {
+        step: "Hand off to masked self-attention",
+        formula: "X_dec → masked self-attention",
+        detail: "The decoder stack can now respect token order while still using attention.",
+      },
+    ],
+    insights: [
+      "Positions in the decoder count from <START>, so <START> is always position 0.",
+      "Without this, the decoder would treat 'le chat noir' and 'noir chat le' as identical bags of tokens.",
+      "The position signal is what lets the causal mask in the next stage actually mean 'past' vs 'future'.",
     ],
   },
   embed: {
@@ -761,6 +839,9 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
     embed: <EmbedDetail p={p} />,
     selfAttn: <SelfAttnDetail p={p} />,
     encFFN: <FFNDetail p={p} />,
+    tokens_dec: <TokenizeDetail p={p} />,
+    embed_dec: <EmbedDetail p={p} sampleToken="<START>" />,
+    pos_dec: <PositionalDetail p={p} />,
     maskedAttn: <SelfAttnDetail p={p} isMasked />,
     decFFN: <FFNDetail p={p} />,
     crossAttn: <SelfAttnDetail p={p} isCross />,
@@ -776,28 +857,44 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
-          className={`mt-3 rounded-xl border overflow-hidden ${
+          className={`mt-3 rounded-2xl border overflow-hidden shadow-lg ${
             isDark
-              ? "bg-slate-900/60 border-slate-700"
-              : "bg-slate-50 border-slate-300"
+              ? "bg-slate-900/70 border-slate-700"
+              : "bg-white border-slate-300"
           }`}
         >
           <div
-            className={`flex items-center justify-between px-4 py-2 border-b ${
-              isDark ? "border-slate-700" : "border-slate-300"
+            className={`flex items-center justify-between px-5 py-3 border-b ${
+              isDark
+                ? "border-slate-700 bg-gradient-to-r from-slate-900 via-slate-900 to-cyan-950/40"
+                : "border-slate-300 bg-gradient-to-r from-blue-50 via-white to-blue-50"
             }`}
           >
-            <span
-              className={`text-[12px] font-bold tracking-wide ${
-                isDark ? "text-cyan-300" : "text-blue-700"
-              }`}
-            >
-              {EXPLANATIONS[stageKey]?.title}
-            </span>
+            <div className="flex items-center gap-2.5">
+              <span
+                className={`inline-flex items-center justify-center w-6 h-6 rounded-md text-[12px] font-bold ${
+                  isDark
+                    ? "bg-cyan-500/15 text-cyan-300 border border-cyan-500/40"
+                    : "bg-blue-100 text-blue-700 border border-blue-300"
+                }`}
+                aria-hidden
+              >
+                ⓘ
+              </span>
+              <span
+                className={`text-[13px] font-bold tracking-wide ${
+                  isDark ? "text-cyan-300" : "text-blue-700"
+                }`}
+              >
+                {EXPLANATIONS[stageKey]?.title}
+              </span>
+            </div>
             <button
               onClick={onClose}
-              className={`text-[14px] leading-none px-2 py-0.5 rounded hover:opacity-70 transition ${
-                isDark ? "text-slate-400" : "text-slate-500"
+              className={`text-[14px] leading-none w-6 h-6 inline-flex items-center justify-center rounded-md transition ${
+                isDark
+                  ? "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
               }`}
               aria-label="Close"
             >
@@ -805,26 +902,35 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
             </button>
           </div>
 
-          <div className="px-4 py-3">{content[stageKey]}</div>
+          <div
+            className={`px-4 py-4 border-b ${
+              isDark
+                ? "border-slate-800 bg-slate-950/30"
+                : "border-slate-200 bg-slate-50/60"
+            }`}
+          >
+            {content[stageKey]}
+          </div>
 
-          <div className="px-5 pb-4 space-y-3">
+          <div className="px-5 py-4 space-y-4">
             {/* Intuition */}
             <div
-              className={`rounded-lg border p-3 ${
+              className={`rounded-xl border p-3.5 ${
                 isDark
                   ? "border-cyan-500/30 bg-cyan-500/5"
-                  : "border-blue-400 bg-blue-50"
+                  : "border-blue-300 bg-blue-50"
               }`}
             >
               <div
-                className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${
+                className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider mb-1.5 ${
                   isDark ? "text-cyan-300" : "text-blue-700"
                 }`}
               >
-                The Intuition
+                <span aria-hidden>💡</span>
+                <span>The Intuition</span>
               </div>
               <p
-                className={`text-[11.5px] leading-[1.55] ${
+                className={`text-[11.5px] leading-[1.6] ${
                   isDark ? "text-slate-200" : "text-slate-700"
                 }`}
               >
@@ -834,32 +940,42 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
 
             {/* Math walkthrough */}
             <div
-              className={`rounded-lg border p-3 ${
+              className={`rounded-xl border p-3.5 ${
                 isDark
-                  ? "border-slate-700 bg-slate-950/40"
-                  : "border-slate-400/70 bg-white"
+                  ? "border-slate-700 bg-slate-950/50"
+                  : "border-slate-300 bg-white"
               }`}
             >
               <div
-                className={`text-[10px] font-bold uppercase tracking-wider mb-2 ${
+                className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider mb-3 ${
                   isDark ? "text-amber-300" : "text-amber-600"
                 }`}
               >
-                Step-by-step math
+                <span aria-hidden>🧮</span>
+                <span>Step-by-step math</span>
               </div>
-              <ol className="space-y-2.5">
+              <ol className="space-y-3">
                 {EXPLANATIONS[stageKey]?.math.map((m, i) => (
                   <li key={i} className="flex gap-3">
+                    <span
+                      className={`shrink-0 inline-flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-bold ${
+                        isDark
+                          ? "bg-amber-500/15 text-amber-300 border border-amber-500/40"
+                          : "bg-amber-100 text-amber-700 border border-amber-300"
+                      }`}
+                    >
+                      {i + 1}
+                    </span>
                     <div className="flex-1 min-w-0">
                       <div
-                        className={`text-[11.5px] font-semibold mb-0.5 ${
+                        className={`text-[11.5px] font-semibold mb-1 ${
                           isDark ? "text-slate-100" : "text-slate-800"
                         }`}
                       >
-                        {m.step}
+                        {m.step.replace(/^\d+\.\s*/, "")}
                       </div>
                       <div
-                        className={`font-mono text-[11px] rounded px-2 py-1 mb-1 inline-block ${
+                        className={`font-mono text-[11px] rounded-md px-2.5 py-1.5 mb-1.5 inline-block ${
                           isDark
                             ? "bg-slate-900 text-cyan-300 border border-slate-700"
                             : "bg-slate-100 text-blue-800 border border-slate-200"
@@ -868,7 +984,7 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
                         {m.formula}
                       </div>
                       <div
-                        className={`text-[10.5px] leading-[1.5] ${
+                        className={`text-[10.5px] leading-[1.55] ${
                           isDark ? "text-slate-400" : "text-slate-600"
                         }`}
                       >
@@ -970,26 +1086,37 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
 
             {/* Key insights */}
             <div
-              className={`rounded-lg border p-3 ${
+              className={`rounded-xl border p-3.5 ${
                 isDark
-                  ? "border-slate-700 bg-slate-900/40"
-                  : "border-slate-400/70 bg-slate-50"
+                  ? "border-emerald-500/30 bg-emerald-500/5"
+                  : "border-emerald-300 bg-emerald-50"
               }`}
             >
               <div
-                className={`text-[10px] font-bold uppercase tracking-wider mb-2 ${
+                className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider mb-2 ${
                   isDark ? "text-emerald-300" : "text-emerald-700"
                 }`}
               >
-                Key insights
+                <span aria-hidden>✨</span>
+                <span>Key insights</span>
               </div>
-              <ul
-                className={`space-y-1.5 text-[11px] leading-5 list-disc pl-4 ${
-                  isDark ? "text-slate-300" : "text-slate-700"
-                }`}
-              >
+              <ul className="space-y-1.5">
                 {EXPLANATIONS[stageKey]?.insights.map((b, i) => (
-                  <li key={i}>{b}</li>
+                  <li key={i} className="flex gap-2 items-start">
+                    <span
+                      className={`shrink-0 mt-1 w-1.5 h-1.5 rounded-full ${
+                        isDark ? "bg-emerald-400" : "bg-emerald-500"
+                      }`}
+                      aria-hidden
+                    />
+                    <span
+                      className={`text-[11px] leading-5 ${
+                        isDark ? "text-slate-300" : "text-slate-700"
+                      }`}
+                    >
+                      {b}
+                    </span>
+                  </li>
                 ))}
               </ul>
             </div>

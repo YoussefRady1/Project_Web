@@ -1,164 +1,163 @@
-// Post-Quiz: 10 fixed straightforward questions covering exactly what the
-// visualizations teach (one question per concept, two per heavier topic).
-// Designed so a learner who completed the visualizations can score high.
-// stepIndex maps to STEP_INDEX_TO_PAGE in EncoderPostQuizStep for "Go to step" navigation.
+// Post-Encoder Quiz: 10 questions that map directly onto the encoder
+// visualizations the learner just walked through. stepIndex/stepLabel are used
+// by EncoderPostQuizStep so wrong answers offer a "Go to step" jump-back.
 const encoderQuiz = [
   {
     id: 1,
-    question: "What does tokenization do?",
+    question:
+      "After tokenization runs on the sentence \"I love pizza,\" what does the encoder see?",
     options: [
-      "Adds positional vectors to words",
-      "Splits a sentence into individual tokens",
-      "Predicts the next word in the sentence",
-      "Computes attention scores",
+      "A single combined vector",
+      "Three separate tokens: \"I\", \"love\", \"pizza\"",
+      "One long string with spaces removed",
+      "Three random numbers",
     ],
-    correctAnswer: "Splits a sentence into individual tokens",
+    correctAnswer: "Three separate tokens: \"I\", \"love\", \"pizza\"",
     stepIndex: 0,
     stepLabel: "Tokenization",
     explanation:
-      "Tokenization breaks the input sentence into smaller units (tokens) so the model can process them one by one.",
+      "Tokenization slices the sentence into individual units. From here on, every later step works on these tokens one position at a time.",
   },
   {
     id: 2,
-    question: "What is the purpose of embedding?",
+    question: "What does the embedding step do to each token?",
     options: [
-      "To translate the sentence to another language",
-      "To remove punctuation from the text",
-      "To convert each token into a vector of numbers",
-      "To shorten the sentence",
+      "Replaces it with a synonym",
+      "Converts it into a vector of numbers the model can compute on",
+      "Counts how many times it appears",
+      "Turns it into a single 0 or 1",
     ],
-    correctAnswer: "To convert each token into a vector of numbers",
+    correctAnswer: "Converts it into a vector of numbers the model can compute on",
     stepIndex: 1,
     stepLabel: "Embedding",
     explanation:
-      "Embedding maps each token to a numeric vector that the neural network can actually process.",
+      "Each token is mapped to a fixed-size numeric vector. That vector is what flows into every layer that follows.",
   },
   {
     id: 3,
-    question: "Why do we add positional encoding?",
+    question:
+      "Self-attention on its own ignores word order. What fixes that inside the encoder?",
     options: [
-      "To make the sentence shorter",
-      "To remove the meaning of words",
-      "To merge multiple tokens together",
-      "To give each token information about its position in the sentence",
+      "Adding a positional encoding to each token's embedding",
+      "Sorting tokens alphabetically",
+      "Removing duplicate words",
+      "Doubling the number of attention heads",
     ],
     correctAnswer:
-      "To give each token information about its position in the sentence",
+      "Adding a positional encoding to each token's embedding",
     stepIndex: 2,
     stepLabel: "Positional Encoding",
     explanation:
-      "Self-attention is order-agnostic, so positional encoding is added to tell the model where each token sits in the sequence.",
+      "A position vector is added to each token's embedding so the model can tell first from second from third, even though attention itself is order-blind.",
   },
   {
     id: 4,
     question:
-      "In the positional encoding step, what two vectors are added together?",
+      "How is the positional encoding combined with the token embedding?",
     options: [
-      "Query and Key",
-      "The encoder output and decoder output",
-      "The token embedding and the position vector",
-      "ReLU output and feed-forward bias",
+      "By multiplying the two vectors",
+      "By replacing the embedding with the position vector",
+      "By concatenating them into a longer vector",
+      "By adding them element by element",
     ],
-    correctAnswer: "The token embedding and the position vector",
+    correctAnswer: "By adding them element by element",
     stepIndex: 2,
     stepLabel: "Positional Encoding",
     explanation:
-      "The position vector is added element-wise to the token embedding to produce the input fed into the encoder stack.",
+      "Position and meaning are mixed by simple element-wise addition. The output keeps the same shape as the embedding.",
   },
   {
     id: 5,
-    question: "What is the main purpose of self-attention?",
+    question: "Inside the encoder stack, what does self-attention let each token do?",
     options: [
-      "To delete unimportant words",
-      "To let each token use information from other tokens in the sentence",
-      "To predict only the first token",
-      "To convert text into images",
+      "Look at every other token in the same sentence",
+      "Look only at the token directly before it",
+      "Ignore the rest of the sentence",
+      "Predict the next sentence",
     ],
-    correctAnswer:
-      "To let each token use information from other tokens in the sentence",
+    correctAnswer: "Look at every other token in the same sentence",
     stepIndex: 3,
     stepLabel: "Encoder Stack",
     explanation:
-      "Self-attention lets every token look at the others to build a context-aware representation of itself.",
+      "Self-attention is what gives each token a context-aware representation: it gets to inspect every other token in the same input and pull in what's relevant.",
   },
   {
     id: 6,
-    question: "What is the encoder stack made of?",
+    question: "Why does the encoder repeat the same kind of layer several times?",
     options: [
-      "Only one embedding layer",
-      "Only feed-forward layers",
-      "Only positional encoding layers",
-      "Repeated encoder layers stacked on top of each other",
+      "Because the hardware requires repetition",
+      "Each repetition refines the token representations further",
+      "To slow training down deliberately",
+      "Because layers share no parameters between calls",
     ],
-    correctAnswer: "Repeated encoder layers stacked on top of each other",
+    correctAnswer: "Each repetition refines the token representations further",
     stepIndex: 3,
     stepLabel: "Encoder Stack",
     explanation:
-      "The encoder is built by repeating the same encoder layer multiple times to progressively refine token representations.",
+      "Stacking lets the encoder build understanding gradually. Earlier layers capture local relationships; later layers compose them into richer ones.",
   },
   {
     id: 7,
     question:
-      "What does the feed-forward layer do inside an encoder layer?",
+      "What does the feed-forward part of an encoder layer do?",
     options: [
-      "Splits the sentence into tokens",
-      "Predicts the next sentence",
-      "Further transforms each token's representation independently",
-      "Adds positional vectors to embeddings",
+      "Mixes tokens together again",
+      "Transforms each token's vector on its own",
+      "Splits the sentence into smaller tokens",
+      "Predicts the final translation",
     ],
-    correctAnswer:
-      "Further transforms each token's representation independently",
+    correctAnswer: "Transforms each token's vector on its own",
     stepIndex: 3,
     stepLabel: "Encoder Stack",
     explanation:
-      "After attention mixes context across tokens, the feed-forward layer refines each token's vector on its own.",
+      "After attention shares information across tokens, the feed-forward network refines each token independently, without looking at its neighbors.",
   },
   {
     id: 8,
-    question: "What does 'Add & Normalize' help with inside the encoder?",
+    question: "What is the \"Add\" inside \"Add & Normalize\" actually adding?",
     options: [
-      "Splitting the sentence into tokens",
-      "Generating new tokens",
-      "Translating text to another language",
-      "Stabilizing training and preserving information from earlier layers",
+      "Two different sentences",
+      "Random noise to prevent overfitting",
+      "The sublayer's input back onto its output (a residual connection)",
+      "A learned bias to the loss",
     ],
     correctAnswer:
-      "Stabilizing training and preserving information from earlier layers",
+      "The sublayer's input back onto its output (a residual connection)",
     stepIndex: 3,
     stepLabel: "Encoder Stack",
     explanation:
-      "The residual addition keeps earlier signal intact, and layer normalization keeps activations well-scaled across depth.",
+      "Each sublayer's output is added back to its input. This residual shortcut preserves earlier information and makes deep stacks easier to train.",
   },
   {
     id: 9,
-    question: "What does the encoder output represent?",
+    question: "When the encoder is finished, what does it actually output?",
     options: [
-      "The translated sentence in another language",
-      "Final context-aware vectors, one per input token",
-      "A single random number for the sentence",
-      "The original sentence unchanged",
+      "One context-aware vector per input token",
+      "A single number for the whole sentence",
+      "The sentence translated into another language",
+      "The original tokens, unchanged",
     ],
-    correctAnswer: "Final context-aware vectors, one per input token",
+    correctAnswer: "One context-aware vector per input token",
     stepIndex: 4,
     stepLabel: "Encoder Output",
     explanation:
-      "Each input token receives a refined vector that carries information about itself plus the surrounding context.",
+      "The encoder keeps the sequence length the same. What changes is each vector: every position now carries information about itself and its neighbors.",
   },
   {
     id: 10,
-    question: "Which of these is the correct order of the encoder pipeline?",
+    question: "Which sequence describes the encoder pipeline from start to finish?",
     options: [
-      "Embedding → Tokenization → Positional Encoding → Output",
-      "Encoder Output → Encoder Stack → Tokenization",
+      "Encoder Stack → Tokenization → Embedding → Output",
       "Tokenization → Embedding → Positional Encoding → Encoder Stack → Encoder Output",
-      "Tokenization → Output → Embedding → Positional Encoding",
+      "Embedding → Tokenization → Encoder Output → Encoder Stack",
+      "Positional Encoding → Tokenization → Embedding → Encoder Output",
     ],
     correctAnswer:
       "Tokenization → Embedding → Positional Encoding → Encoder Stack → Encoder Output",
     stepIndex: 4,
     stepLabel: "Encoder Output",
     explanation:
-      "This is the top-level encoder flow you walked through across the visualization steps.",
+      "This is the order you walked through. Each step depends on the previous one's output, building up from raw text to context-aware vectors.",
   },
 ];
 

@@ -67,6 +67,8 @@ function App() {
       "decoderPostCompleted", "decoderPostScore",
       "encoderPostQuizAnswers",
       "decoderPostQuizAnswers",
+      "preQuizAnswers",
+      "decoderPreQuizAnswers",
     ].forEach((key) => localStorage.removeItem(key));
   };
 

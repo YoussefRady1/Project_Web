@@ -48,11 +48,9 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
   const [showExplanation, setShowExplanation] = useState(false);
 
   const safeTokens = useMemo(
-    () => (tokens.length ? tokens.slice(0, 3) : ["token"]),
+    () => (tokens.length ? tokens.slice(0, 10) : ["token"]),
     [tokens]
   );
-
-  const extraCount = Math.max(0, tokens.length - 3);
 
   const decoderTokens = useMemo(
     () => ["<START>", ...safeTokens],
@@ -333,16 +331,6 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
             </div>
           </motion.div>
         ))}
-        {extraCount > 0 && (
-          <div
-            className={`text-center text-xs py-2 ${
-              isDark ? "text-slate-500" : "text-slate-500"
-            }`}
-          >
-            ...and {extraCount} more token{extraCount > 1 ? "s" : ""} processed
-            the same way
-          </div>
-        )}
       </div>
 
       <div className={`w-full max-w-[760px] mt-5 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-400 bg-violet-50"}`}>
