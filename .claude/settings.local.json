@@ -29,7 +29,8 @@
       "Bash(node -e \"console.log\\(process.version\\)\")",
       "Bash(node convert.js)",
       "Bash(node -e \"require\\('./src/data/decoderPreQuiz.js'\\) && require\\('./src/data/decoderPostQuiz.js'\\) && console.log\\('Data files OK'\\)\")",
-      "Bash(npx eslint *)"
+      "Bash(npx eslint *)",
+      "Bash(node -e \"require\\('@babel/parser'\\).parse\\(require\\('fs'\\).readFileSync\\('src/steps/DecoderCrossAttentionStep.jsx','utf8'\\), {sourceType:'module', plugins:['jsx']}\\); console.log\\('OK'\\)\")"
     ]
   },
   "model": "claude-opus-4-7"

@@ -54,9 +54,7 @@ function generateEncoderOutputVector(word, index, tokenCount) {
 }
 
 const WQ = [0.9, 0.3, 0.6, 0.2];
-const WK = [0.2, 0.8, 0.4, 0.7];
 const Q_SHIFT = [0.03, 0.05, 0.02, 0.04];
-const K_SHIFT = [0.04, 0.02, 0.05, 0.03];
 
 function projectVector(input, weights, shift) {
   return input.map((v, i) =>
@@ -64,12 +62,19 @@ function projectVector(input, weights, shift) {
   );
 }
 
-function dotProduct(a, b) {
-  return a.reduce((s, v, i) => s + v * b[i], 0);
-}
-
-function normalizeScore(score) {
-  return Math.min(0.99, Math.max(0.01, score / 2.5));
+// Pedagogical attention rule: each decoder position aligns to its
+// corresponding encoder position (decoder i ↔ encoder i-1), with a soft
+// Gaussian falloff to neighbours. This mimics the diagonal alignment a
+// trained translation model usually learns, so the pattern is interpretable.
+function alignmentWeights(decIndex, encCount) {
+  const target = decIndex === 0 ? 0 : decIndex - 1;
+  const sigma = 1.0;
+  const raw = Array.from({ length: encCount }, (_, encI) => {
+    const dist = encI - target;
+    return Math.exp(-(dist * dist) / (2 * sigma * sigma));
+  });
+  const sum = raw.reduce((s, v) => s + v, 0) || 1;
+  return raw.map((v) => Number((v / sum).toFixed(2)));
 }
 
 function DecoderCrossAttentionStep({ active, tokens = [], theme }) {
@@ -108,24 +113,12 @@ function DecoderCrossAttentionStep({ active, tokens = [], theme }) {
     [decoderTokens]
   );
 
-  const encoderKeys = useMemo(
-    () =>
-      encoderOutputs.map((enc) => ({
-        word: enc.word,
-        key: projectVector(enc.vector, WK, K_SHIFT),
-      })),
-    [encoderOutputs]
-  );
-
   const crossMatrix = useMemo(
     () =>
-      decoderVectors.map((dec) =>
-        encoderKeys.map((enc) => {
-          const raw = dotProduct(dec.query, enc.key);
-          return Number(normalizeScore(raw).toFixed(2));
-        })
+      decoderTokens.map((_, decI) =>
+        alignmentWeights(decI, encoderOutputs.length)
       ),
-    [decoderVectors, encoderKeys]
+    [decoderTokens, encoderOutputs.length]
   );
 
   return (
@@ -201,12 +194,135 @@ function DecoderCrossAttentionStep({ active, tokens = [], theme }) {
         </div>
       </div>
 
+      {/* Where the encoder info comes from  data flow diagram */}
+      <div className={`w-full max-w-[760px] mb-5 rounded-xl border p-4 ${isDark ? "border-slate-700 bg-slate-900/80" : "border-slate-400/70 bg-slate-50"}`}>
+        <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-cyan-300" : "text-blue-800"}`}>
+          Where does the encoder info come from?
+        </h3>
+        <p className={`text-[11px] leading-5 mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+          The decoder's cross-attention doesn't see raw words. It reaches back to the encoder and reads the encoder's <b>final processed output</b>, which is the result of the encoder's last Feed Forward + Add &amp; Norm layer. That output becomes the K and V the cross-attention uses.
+        </p>
+
+        {/* Visual flow */}
+        <div className={`rounded-lg border p-3 mb-3 ${isDark ? "border-slate-700 bg-slate-950/60" : "border-slate-300 bg-white"}`}>
+          <div className={`text-[9px] font-bold uppercase tracking-wider text-center mb-2 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+            The connection path
+          </div>
+          <div className="flex items-center gap-1.5 justify-center flex-wrap">
+            <div className={`px-2.5 py-1.5 rounded-md border text-[10.5px] font-semibold ${isDark ? "border-green-400/40 bg-green-400/10 text-green-300" : "border-green-300 bg-green-50 text-green-700"}`}>
+              Encoder Stack
+            </div>
+            <span className={`text-sm font-bold ${isDark ? "text-slate-500" : "text-slate-400"}`}>{`>`}</span>
+            <div className={`px-2.5 py-1.5 rounded-md border text-[10.5px] font-semibold ${isDark ? "border-green-400/40 bg-green-400/10 text-green-300" : "border-green-300 bg-green-50 text-green-700"}`}>
+              Feed Forward
+            </div>
+            <span className={`text-sm font-bold ${isDark ? "text-slate-500" : "text-slate-400"}`}>{`>`}</span>
+            <div className={`px-2.5 py-1.5 rounded-md border text-[10.5px] font-semibold ${isDark ? "border-green-400/40 bg-green-400/10 text-green-300" : "border-green-300 bg-green-50 text-green-700"}`}>
+              Add &amp; Norm
+            </div>
+            <span className={`text-sm font-bold ${isDark ? "text-slate-500" : "text-slate-400"}`}>{`>`}</span>
+            <div className={`px-2.5 py-1.5 rounded-md border-2 text-[10.5px] font-bold ${isDark ? "border-green-400 bg-green-400/25 text-green-200" : "border-green-500 bg-green-100 text-green-800"}`}>
+              Encoder Output
+            </div>
+            <span className={`text-base font-bold ${isDark ? "text-cyan-300" : "text-blue-600"}`}>{`>>`}</span>
+            <div className={`px-2.5 py-1.5 rounded-md border-2 text-[10.5px] font-bold ${isDark ? "border-cyan-400 bg-cyan-400/25 text-cyan-200" : "border-blue-400 bg-blue-100 text-blue-800"}`}>
+              Decoder Cross-Attention
+            </div>
+          </div>
+          <div className={`text-center mt-2 text-[10px] italic ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+            The encoder's last Feed Forward is the source. Its output flows into every decoder block's cross-attention as K and V.
+          </div>
+        </div>
+
+        <div className={`rounded-lg p-2.5 text-[10.5px] leading-[1.1rem] ${isDark ? "bg-cyan-400/5 border border-cyan-400/20 text-slate-300" : "bg-blue-50 border border-blue-200 text-slate-700"}`}>
+          <b className={isDark ? "text-cyan-300" : "text-blue-800"}>Important: </b>
+          The green encoder tokens you see in the interactive view below are NOT raw input embeddings. They're vectors that already carry context about every other word in your sentence, thanks to the encoder's self-attention and feed-forward layers. The decoder gets the "smart" processed version, not the raw one.
+        </div>
+      </div>
+
       <div className={`w-full rounded-xl border p-5 mb-5 ${isDark ? "border-slate-700 bg-slate-900/70" : "border-slate-400/70 bg-slate-50"}`}>
         <div className={`text-sm font-semibold mb-1 text-center ${isDark ? "text-cyan-300" : "text-blue-800"}`}>
           Interactive Cross-Attention Flow
         </div>
-        <div className={`text-[10px] text-center mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-          Hover a decoder token (Q) to see which encoder tokens it attends to
+        <div className={`text-[11px] text-center mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+          Which input word is the decoder reading right now? Hover to find out.
+        </div>
+
+        {/* Purpose explainer  visual card layout */}
+        <div className="mb-4 space-y-2">
+          {/* The big idea */}
+          <div className={`rounded-lg border p-3 ${isDark ? "border-cyan-500/40 bg-cyan-500/5" : "border-blue-300 bg-blue-50"}`}>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full tracking-wider ${isDark ? "bg-cyan-400/20 text-cyan-300" : "bg-blue-200 text-blue-800"}`}>THE BIG IDEA</span>
+            </div>
+            <p className={`text-[12px] leading-5 font-medium ${isDark ? "text-slate-100" : "text-slate-800"}`}>
+              Every word the decoder writes is "powered by" one specific word from your input. This visual lets you see which one, live.
+            </p>
+          </div>
+
+          {/* Quick story  3 columns */}
+          <div className={`rounded-lg border p-3 ${isDark ? "border-slate-700 bg-slate-950/40" : "border-slate-300 bg-white"}`}>
+            <div className="flex items-center gap-2 mb-2">
+              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full tracking-wider ${isDark ? "bg-slate-800 text-slate-300" : "bg-slate-200 text-slate-700"}`}>A QUICK STORY</span>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              <div className={`rounded-md border p-2.5 ${isDark ? "border-amber-400/30 bg-amber-400/5" : "border-amber-200 bg-amber-50"}`}>
+                <div className={`text-[10px] font-bold uppercase tracking-wide mb-1 ${isDark ? "text-amber-300" : "text-amber-700"}`}>Step 1</div>
+                <div className={`text-[11px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                  You're translating "I love sunny days" into French.
+                </div>
+              </div>
+              <div className={`rounded-md border p-2.5 ${isDark ? "border-amber-400/30 bg-amber-400/5" : "border-amber-200 bg-amber-50"}`}>
+                <div className={`text-[10px] font-bold uppercase tracking-wide mb-1 ${isDark ? "text-amber-300" : "text-amber-700"}`}>Step 2</div>
+                <div className={`text-[11px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                  To write the French word for "sunny", the decoder has to find "sunny" inside your input first.
+                </div>
+              </div>
+              <div className={`rounded-md border p-2.5 ${isDark ? "border-amber-400/30 bg-amber-400/5" : "border-amber-200 bg-amber-50"}`}>
+                <div className={`text-[10px] font-bold uppercase tracking-wide mb-1 ${isDark ? "text-amber-300" : "text-amber-700"}`}>Step 3</div>
+                <div className={`text-[11px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                  Cross-attention is the searchlight. It tells the decoder where to look.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Try it yourself  numbered instructions */}
+          <div className={`rounded-lg border p-3 ${isDark ? "border-slate-700 bg-slate-950/40" : "border-slate-300 bg-white"}`}>
+            <div className="flex items-center gap-2 mb-2">
+              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full tracking-wider ${isDark ? "bg-slate-800 text-slate-300" : "bg-slate-200 text-slate-700"}`}>TRY IT YOURSELF</span>
+            </div>
+            <div className="space-y-2">
+              <div className="flex gap-2.5 items-start">
+                <span className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${isDark ? "bg-amber-400/20 text-amber-300 border border-amber-400/40" : "bg-amber-100 text-amber-700 border border-amber-300"}`}>1</span>
+                <span className={`text-[11.5px] leading-5 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                  Hover any <b className={isDark ? "text-amber-300" : "text-amber-700"}>amber token</b> on the left. That's the output word you're "watching" the decoder write.
+                </span>
+              </div>
+              <div className="flex gap-2.5 items-start">
+                <span className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${isDark ? "bg-green-400/20 text-green-300 border border-green-400/40" : "bg-green-100 text-green-700 border border-green-300"}`}>2</span>
+                <span className={`text-[11.5px] leading-5 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                  Watch the <b className={isDark ? "text-green-300" : "text-green-700"}>green tokens</b> on the right. The brightest one is where the decoder is focusing.
+                </span>
+              </div>
+              <div className="flex gap-2.5 items-start">
+                <span className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${isDark ? "bg-cyan-400/20 text-cyan-300 border border-cyan-400/40" : "bg-blue-100 text-blue-700 border border-blue-300"}`}>3</span>
+                <span className={`text-[11.5px] leading-5 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                  Check the <b>percentages</b> in the middle. They add up to 100%. That's the decoder splitting its attention across your input words.
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Why hover  the punchline */}
+          <div className={`rounded-lg border p-3 ${isDark ? "border-lime-400/30 bg-lime-400/5" : "border-lime-200 bg-lime-50"}`}>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full tracking-wider ${isDark ? "bg-lime-400/20 text-lime-300" : "bg-lime-200 text-lime-800"}`}>WHY HOVER AT ALL</span>
+            </div>
+            <p className={`text-[11.5px] leading-5 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+              Attention isn't a static thing. As you slide between output words, the focus on your input shifts. That live shift <i>is</i> cross-attention. Reading it as numbers on a page feels abstract. Hovering makes it click.
+            </p>
+          </div>
         </div>
 
         <div className="flex items-start gap-4 relative">
@@ -252,6 +368,17 @@ function DecoderCrossAttentionStep({ active, tokens = [], theme }) {
                 <div className={`text-[9px] text-center mb-1 font-medium ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                   Attention weights from "{decoderVectors[hoveredDecoder]?.token}"
                 </div>
+                {(() => {
+                  const row = crossMatrix[hoveredDecoder] || [];
+                  const topIdx = row.indexOf(Math.max(...row));
+                  const topWord = encoderOutputs[topIdx]?.word;
+                  const topPct = Math.round((row[topIdx] || 0) * 100);
+                  return (
+                    <div className={`text-[9px] leading-4 text-center mb-1.5 px-2 py-1 rounded ${isDark ? "bg-cyan-400/10 text-cyan-300 border border-cyan-400/30" : "bg-blue-50 text-blue-800 border border-blue-200"}`}>
+                      Right now the decoder is mostly reading <b>"{topWord}"</b> ({topPct}%). That's the input word it's "translating" at this position.
+                    </div>
+                  );
+                })()}
                 {encoderOutputs.map((enc, i) => {
                   const score = crossMatrix[hoveredDecoder][i];
                   const pct = Math.round(score * 100);
@@ -295,8 +422,10 @@ function DecoderCrossAttentionStep({ active, tokens = [], theme }) {
                 </motion.div>
               </>
             ) : (
-              <div className={`text-[10px] text-center leading-5 mt-4 ${isDark ? "text-slate-600" : "text-slate-400"}`}>
-                ← Hover a decoder token to see which encoder tokens it queries
+              <div className={`text-[10px] text-center leading-5 mt-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+                ← Hover a decoder token on the left.
+                <br />
+                <span className="opacity-70">You'll see which input word it focuses on and how the encoder's information gets blended into its context.</span>
               </div>
             )}
           </div>
@@ -358,7 +487,7 @@ function DecoderCrossAttentionStep({ active, tokens = [], theme }) {
         }`}
       >
         <div
-          className={`text-sm font-semibold mb-3 ${
+          className={`text-sm font-semibold mb-1 ${
             isDark ? "text-cyan-300" : "text-blue-800"
           }`}
         >
@@ -366,12 +495,80 @@ function DecoderCrossAttentionStep({ active, tokens = [], theme }) {
         </div>
 
         <div
-          className={`text-[11px] leading-5 mb-3 ${
-            isDark ? "text-slate-400" : "text-slate-700"
+          className={`text-[11px] leading-4 mb-4 ${
+            isDark ? "text-slate-400" : "text-slate-600"
           }`}
         >
-          Rows = decoder tokens (Query source). Columns = encoder tokens
-          (Key/Value source). Higher scores mean stronger attention.
+          Every output word, every input word, one heatmap.
+        </div>
+
+        {/* Purpose explainer  visual card layout */}
+        <div className="mb-4 space-y-2">
+          {/* Why it exists */}
+          <div className={`rounded-lg border p-3 ${isDark ? "border-cyan-500/40 bg-cyan-500/5" : "border-blue-300 bg-blue-50"}`}>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full tracking-wider ${isDark ? "bg-cyan-400/20 text-cyan-300" : "bg-blue-200 text-blue-800"}`}>WHY THIS EXISTS</span>
+            </div>
+            <p className={`text-[12px] leading-5 font-medium ${isDark ? "text-slate-100" : "text-slate-800"}`}>
+              The hover view above shows you ONE output word's focus at a time. This table shows EVERY output word's focus at once. One glance, the whole story.
+            </p>
+          </div>
+
+          {/* Read it like a spreadsheet  3 cards */}
+          <div className={`rounded-lg border p-3 ${isDark ? "border-slate-700 bg-slate-950/40" : "border-slate-300 bg-white"}`}>
+            <div className="flex items-center gap-2 mb-2">
+              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full tracking-wider ${isDark ? "bg-slate-800 text-slate-300" : "bg-slate-200 text-slate-700"}`}>READ IT LIKE A SPREADSHEET</span>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              <div className={`rounded-md border p-2.5 ${isDark ? "border-cyan-400/30 bg-cyan-400/5" : "border-blue-200 bg-blue-50"}`}>
+                <div className={`text-[10px] font-bold uppercase tracking-wide mb-1 ${isDark ? "text-cyan-300" : "text-blue-700"}`}>Each row</div>
+                <div className={`text-[11px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                  One decoder output word.
+                </div>
+              </div>
+              <div className={`rounded-md border p-2.5 ${isDark ? "border-green-400/30 bg-green-400/5" : "border-green-200 bg-green-50"}`}>
+                <div className={`text-[10px] font-bold uppercase tracking-wide mb-1 ${isDark ? "text-green-300" : "text-green-700"}`}>Each column</div>
+                <div className={`text-[11px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                  One encoder input word.
+                </div>
+              </div>
+              <div className={`rounded-md border p-2.5 ${isDark ? "border-slate-600 bg-slate-800/40" : "border-slate-300 bg-slate-100"}`}>
+                <div className={`text-[10px] font-bold uppercase tracking-wide mb-1 ${isDark ? "text-slate-200" : "text-slate-700"}`}>Each cell</div>
+                <div className={`text-[11px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                  How much THAT row focuses on THAT column. Darker blue means stronger focus.
+                </div>
+              </div>
+            </div>
+            <div className={`mt-2 text-[10.5px] leading-4 italic px-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+              Every row adds up to 100%. Think of it as the decoder's attention "budget" being split across your input words.
+            </div>
+          </div>
+
+          {/* Spot the pattern */}
+          <div className={`rounded-lg border p-3 ${isDark ? "border-amber-400/30 bg-amber-400/5" : "border-amber-200 bg-amber-50"}`}>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full tracking-wider ${isDark ? "bg-amber-400/20 text-amber-300" : "bg-amber-200 text-amber-800"}`}>THE ONE THING TO SPOT</span>
+            </div>
+            <p className={`text-[11.5px] leading-5 mb-2 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+              The <b className={isDark ? "text-amber-300" : "text-amber-700"}>amber-highlighted cells</b> in the table below mark each row's strongest attention. Connect them with your eyes and you'll see a clear <b>diagonal stripe</b> from top-left to bottom-right.
+            </p>
+            <p className={`text-[11.5px] leading-5 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+              That stripe is the model's translation alignment: output 1 focuses on input 1, output 2 on input 2, output 3 on input 3, and so on. If you can see the diagonal, the model is wired correctly.
+            </p>
+            <div className={`mt-2 pt-2 border-t text-[10.5px] leading-4 ${isDark ? "border-amber-400/20 text-slate-400" : "border-amber-200 text-slate-600"}`}>
+              <b>Visual cue:</b> amber cells glow with a subtle pulse. Non-diagonal cells stay quieter in blue. The contrast between them <i>is</i> the alignment pattern.
+            </div>
+          </div>
+
+          {/* Why researchers care */}
+          <div className={`rounded-lg border p-3 ${isDark ? "border-lime-400/30 bg-lime-400/5" : "border-lime-200 bg-lime-50"}`}>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full tracking-wider ${isDark ? "bg-lime-400/20 text-lime-300" : "bg-lime-200 text-lime-800"}`}>WHY RESEARCHERS CARE</span>
+            </div>
+            <p className={`text-[11.5px] leading-5 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+              Researchers print these heatmaps to debug their models. "Is the decoder looking at the right input word?" That question can take hours of digging through code, or two seconds of glancing at this matrix.
+            </p>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -398,59 +595,93 @@ function DecoderCrossAttentionStep({ active, tokens = [], theme }) {
               </tr>
             </thead>
             <tbody>
-              {crossMatrix.map((row, rIdx) => (
-                <tr key={`crow-${rIdx}`}>
-                  <td
-                    className={`px-2 py-1 font-medium ${
-                      isDark ? "text-cyan-300" : "text-blue-800"
-                    }`}
-                  >
-                    {decoderTokens[rIdx]}
-                  </td>
-                  {row.map((score, cIdx) => {
-                    const intensity = score;
-                    return (
-                      <td key={`ccell-${rIdx}-${cIdx}`} className="px-1 py-1">
-                        <motion.div
-                          animate={
-                            active
-                              ? {
-                                  boxShadow: isDark
-                                    ? [
-                                        `0 0 0px rgba(34,211,238,0)`,
-                                        `0 0 ${Math.round(intensity * 12)}px rgba(34,211,238,${intensity * 0.3})`,
-                                        `0 0 0px rgba(34,211,238,0)`,
-                                      ]
-                                    : "none",
-                                }
-                              : {}
-                          }
-                          transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            delay: rIdx * 0.08,
-                          }}
-                          className={`min-w-[48px] text-center rounded border px-2 py-1 ${
-                            isDark
-                              ? "border-slate-700"
-                              : "border-slate-300"
-                          }`}
-                          style={{
-                            backgroundColor: isDark
-                              ? `rgba(34,211,238,${intensity * 0.15})`
-                              : `rgba(59,130,246,${intensity * 0.12})`,
-                            color: isDark ? "#e2e8f0" : "#1e293b",
-                          }}
-                        >
-                          {score.toFixed(2)}
-                        </motion.div>
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
+              {crossMatrix.map((row, rIdx) => {
+                const topIdx = row.indexOf(Math.max(...row));
+                return (
+                  <tr key={`crow-${rIdx}`}>
+                    <td
+                      className={`px-2 py-1 font-medium ${
+                        isDark ? "text-cyan-300" : "text-blue-800"
+                      }`}
+                    >
+                      {decoderTokens[rIdx]}
+                    </td>
+                    {row.map((score, cIdx) => {
+                      const intensity = score;
+                      const isTop = cIdx === topIdx;
+                      return (
+                        <td key={`ccell-${rIdx}-${cIdx}`} className="px-1 py-1">
+                          <motion.div
+                            animate={
+                              active
+                                ? {
+                                    boxShadow: isTop
+                                      ? isDark
+                                        ? [
+                                            `0 0 0px rgba(251,191,36,0)`,
+                                            `0 0 14px rgba(251,191,36,0.7)`,
+                                            `0 0 0px rgba(251,191,36,0)`,
+                                          ]
+                                        : [
+                                            `0 0 0px rgba(217,119,6,0)`,
+                                            `0 0 10px rgba(217,119,6,0.45)`,
+                                            `0 0 0px rgba(217,119,6,0)`,
+                                          ]
+                                      : isDark
+                                        ? [
+                                            `0 0 0px rgba(34,211,238,0)`,
+                                            `0 0 ${Math.round(intensity * 8)}px rgba(34,211,238,${intensity * 0.25})`,
+                                            `0 0 0px rgba(34,211,238,0)`,
+                                          ]
+                                        : "none",
+                                  }
+                                : {}
+                            }
+                            transition={{
+                              duration: 2,
+                              repeat: Infinity,
+                              delay: rIdx * 0.08,
+                            }}
+                            className={`min-w-[56px] text-center rounded-md px-2 py-1.5 ${
+                              isTop
+                                ? isDark
+                                  ? "border-2 border-amber-400 ring-2 ring-amber-400/30 font-bold"
+                                  : "border-2 border-amber-500 ring-2 ring-amber-300/50 font-bold"
+                                : isDark
+                                  ? "border border-slate-700"
+                                  : "border border-slate-300"
+                            }`}
+                            style={{
+                              backgroundColor: isTop
+                                ? isDark
+                                  ? `rgba(251,191,36,${0.25 + intensity * 0.35})`
+                                  : `rgba(251,191,36,${0.3 + intensity * 0.35})`
+                                : isDark
+                                  ? `rgba(34,211,238,${intensity * 0.35})`
+                                  : `rgba(59,130,246,${intensity * 0.3})`,
+                              color: isTop
+                                ? isDark
+                                  ? "#fef3c7"
+                                  : "#78350f"
+                                : isDark
+                                  ? "#e2e8f0"
+                                  : "#1e293b",
+                            }}
+                          >
+                            {score.toFixed(2)}
+                          </motion.div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
+          <div className={`mt-3 flex items-center justify-center gap-2 text-[10.5px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            <span className={`inline-block w-3.5 h-3.5 rounded border-2 ${isDark ? "border-amber-400 bg-amber-400/30" : "border-amber-500 bg-amber-200"}`}></span>
+            <span>Amber-highlighted cells form the diagonal alignment. They are each row's strongest focus.</span>
+          </div>
         </div>
       </div>
 
