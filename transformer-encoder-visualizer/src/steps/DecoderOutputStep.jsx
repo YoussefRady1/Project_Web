@@ -278,7 +278,7 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
           <p className="mb-2">
             After predicting a word, that word is appended to the input and the
             whole decoder runs again to predict the next word. This loop is
-            called <strong>autoregressive generation</strong>.
+            called <strong>token-by-token generation</strong>.
           </p>
           <p>
             Generation stops when the model predicts the special &lt;END&gt;
