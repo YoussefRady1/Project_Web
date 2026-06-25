@@ -71,7 +71,7 @@ function DecoderStackStep({ active, tokens, theme }) {
           className={`px-4 py-1.5 text-xs border rounded-lg transition ${
             isDark
               ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10"
-              : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+              : "border-blue-700 text-blue-900 bg-blue-100 hover:bg-blue-200"
           }`}
         >
           ← Back to Decoder Stack
@@ -89,7 +89,7 @@ function DecoderStackStep({ active, tokens, theme }) {
           className={`px-4 py-1.5 text-xs border rounded-lg transition ${
             isDark
               ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10"
-              : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+              : "border-blue-700 text-blue-900 bg-blue-100 hover:bg-blue-200"
           }`}
         >
           ← Back to Decoder Stack
@@ -107,7 +107,7 @@ function DecoderStackStep({ active, tokens, theme }) {
           className={`px-4 py-1.5 text-xs border rounded-lg transition ${
             isDark
               ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10"
-              : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+              : "border-blue-700 text-blue-900 bg-blue-100 hover:bg-blue-200"
           }`}
         >
           ← Back to Decoder Stack
@@ -125,7 +125,7 @@ function DecoderStackStep({ active, tokens, theme }) {
           className={`px-4 py-1.5 text-xs border rounded-lg transition ${
             isDark
               ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10"
-              : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+              : "border-blue-700 text-blue-900 bg-blue-100 hover:bg-blue-200"
           }`}
         >
           ← Back to Decoder Stack
@@ -135,10 +135,10 @@ function DecoderStackStep({ active, tokens, theme }) {
           animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
           transition={{ duration: 0.3 }}
           className={`p-6 border rounded-2xl w-[980px] min-h-[520px] flex flex-col items-center ${
-            isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+            isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
           }`}
         >
-          <h2 className={`font-semibold text-center ${isDark ? "text-cyan-300" : "text-blue-800"}`}>
+          <h2 className={`font-semibold text-center ${isDark ? "text-cyan-300" : "text-blue-900"}`}>
             Add &amp; Normalize
           </h2>
           <p className={`text-xs text-center mb-5 ${isDark ? "text-slate-400" : "text-slate-700"}`}>
@@ -147,18 +147,18 @@ function DecoderStackStep({ active, tokens, theme }) {
 
           <div
             className={`w-full max-w-[640px] rounded-xl border p-4 ${
-              isDark ? "border-slate-700 bg-slate-900/80" : "border-slate-400/70 bg-slate-50"
+              isDark ? "border-slate-700 bg-slate-900/80" : "border-slate-600/70 bg-slate-50"
             }`}
           >
             <div className="flex items-center justify-between mb-3">
-              <h3 className={`text-base font-semibold ${isDark ? "text-cyan-300" : "text-blue-800"}`}>
+              <h3 className={`text-base font-semibold ${isDark ? "text-cyan-300" : "text-blue-900"}`}>
                 What Add &amp; Normalize does
               </h3>
               <span
                 className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
                   isDark
                     ? "border-cyan-400/40 text-cyan-300 bg-cyan-400/10"
-                    : "border-blue-400 text-blue-700 bg-blue-50"
+                    : "border-blue-700 text-blue-900 bg-blue-100"
                 }`}
               >
                 ×3 per layer
@@ -168,7 +168,7 @@ function DecoderStackStep({ active, tokens, theme }) {
             {/* Mini flow diagram */}
             <div
               className={`rounded-lg border p-3 mb-3 ${
-                isDark ? "border-slate-700 bg-slate-950/60" : "border-slate-300 bg-white"
+                isDark ? "border-slate-700 bg-slate-950/60" : "border-slate-500 bg-white"
               }`}
             >
               <div className="flex items-stretch justify-between gap-1 text-[10px]">
@@ -176,28 +176,28 @@ function DecoderStackStep({ active, tokens, theme }) {
                   className={`flex-1 px-2 py-1.5 rounded border text-center ${
                     isDark
                       ? "border-slate-600 text-slate-200 bg-slate-900"
-                      : "border-slate-300 text-slate-800 bg-slate-50"
+                      : "border-slate-500 text-slate-800 bg-slate-50"
                   }`}
                 >
                   <div className="font-mono font-semibold">x</div>
-                  <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-700"}`}>
                     token vector
                   </div>
                 </div>
-                <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-400"}`}>→</span>
+                <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-700"}`}>→</span>
                 <div
                   className={`flex-1 px-2 py-1.5 rounded border text-center ${
                     isDark
                       ? "border-cyan-500/40 text-cyan-300 bg-cyan-500/5"
-                      : "border-blue-400 text-blue-700 bg-blue-50"
+                      : "border-blue-700 text-blue-900 bg-blue-100"
                   }`}
                 >
                   <div className="font-semibold">Sub-Layer</div>
-                  <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-700"}`}>
                     attention / FFN
                   </div>
                 </div>
-                <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-400"}`}>→</span>
+                <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-700"}`}>→</span>
                 <div
                   className={`flex flex-col items-center justify-center px-1 ${
                     isDark ? "text-amber-300" : "text-amber-700"
@@ -207,43 +207,43 @@ function DecoderStackStep({ active, tokens, theme }) {
                     className={`w-6 h-6 rounded-full border flex items-center justify-center font-bold ${
                       isDark
                         ? "border-amber-500/60 bg-amber-500/10"
-                        : "border-amber-400 bg-amber-50"
+                        : "border-amber-700 bg-amber-100"
                     }`}
                   >
                     +
                   </div>
                   <div className="text-[9px] mt-0.5">add x back</div>
                 </div>
-                <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-400"}`}>→</span>
+                <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-700"}`}>→</span>
                 <div
                   className={`flex-1 px-2 py-1.5 rounded border text-center ${
                     isDark
                       ? "border-emerald-500/40 text-emerald-300 bg-emerald-500/5"
-                      : "border-emerald-400 text-emerald-700 bg-emerald-50"
+                      : "border-emerald-700 text-emerald-700 bg-emerald-100"
                   }`}
                 >
                   <div className="font-semibold">LayerNorm</div>
-                  <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-700"}`}>
                     rescale values
                   </div>
                 </div>
-                <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-400"}`}>→</span>
+                <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-700"}`}>→</span>
                 <div
                   className={`flex-1 px-2 py-1.5 rounded border text-center ${
                     isDark
                       ? "border-slate-600 text-slate-200 bg-slate-900"
-                      : "border-slate-300 text-slate-800 bg-slate-50"
+                      : "border-slate-500 text-slate-800 bg-slate-50"
                   }`}
                 >
                   <div className="font-mono font-semibold">out</div>
-                  <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-700"}`}>
                     refined vector
                   </div>
                 </div>
               </div>
               <div
                 className={`mt-2 text-center text-[10px] font-mono ${
-                  isDark ? "text-slate-400" : "text-slate-600"
+                  isDark ? "text-slate-400" : "text-slate-800"
                 }`}
               >
                 out = LayerNorm( x + SubLayer(x) )
@@ -252,14 +252,14 @@ function DecoderStackStep({ active, tokens, theme }) {
               {/* Legend explaining each symbol */}
               <div
                 className={`mt-2 pt-2 border-t text-[10px] leading-4 space-y-1 ${
-                  isDark ? "border-slate-700 text-slate-300" : "border-slate-200 text-slate-700"
+                  isDark ? "border-slate-700 text-slate-300" : "border-slate-500 text-slate-700"
                 }`}
               >
                 <div>
                   <span className="font-mono font-semibold">x</span> the token vector going into the sub-layer (e.g. the decoder vector for one word).
                 </div>
                 <div>
-                  <span className={`font-semibold ${isDark ? "text-cyan-300" : "text-blue-700"}`}>Sub-Layer</span> whichever operation is being applied: <em>masked self-attention</em>, <em>cross-attention</em>, or the <em>feed-forward</em> network.
+                  <span className={`font-semibold ${isDark ? "text-cyan-300" : "text-blue-900"}`}>Sub-Layer</span> whichever operation is being applied: <em>masked self-attention</em>, <em>cross-attention</em>, or the <em>feed-forward</em> network.
                 </div>
                 <div>
                   <span className={`font-bold ${isDark ? "text-amber-300" : "text-amber-700"}`}>+</span> the <em>residual connection</em>: we add the original <span className="font-mono">x</span> back to the sub-layer's output so nothing learned earlier is lost.
@@ -274,7 +274,7 @@ function DecoderStackStep({ active, tokens, theme }) {
             <div className="grid grid-cols-2 gap-2 mb-2">
               <div
                 className={`rounded-lg border p-2 ${
-                  isDark ? "border-amber-500/40 bg-amber-500/5" : "border-amber-300 bg-amber-50"
+                  isDark ? "border-amber-500/40 bg-amber-500/5" : "border-amber-600 bg-amber-100"
                 }`}
               >
                 <div
@@ -294,7 +294,7 @@ function DecoderStackStep({ active, tokens, theme }) {
               </div>
               <div
                 className={`rounded-lg border p-2 ${
-                  isDark ? "border-emerald-500/40 bg-emerald-500/5" : "border-emerald-300 bg-emerald-50"
+                  isDark ? "border-emerald-500/40 bg-emerald-500/5" : "border-emerald-600 bg-emerald-100"
                 }`}
               >
                 <div
@@ -316,7 +316,7 @@ function DecoderStackStep({ active, tokens, theme }) {
 
             <p
               className={`text-[10px] leading-4 ${
-                isDark ? "text-slate-400" : "text-slate-600"
+                isDark ? "text-slate-400" : "text-slate-800"
               }`}
             >
               Applied after masked self-attention, cross-attention, and feed-forward.
@@ -336,12 +336,12 @@ function DecoderStackStep({ active, tokens, theme }) {
       }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[980px] min-h-[760px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
       }`}
     >
       <h2
         className={`font-semibold text-center ${
-          isDark ? "text-cyan-300" : "text-blue-800"
+          isDark ? "text-cyan-300" : "text-blue-900"
         }`}
       >
         Decoder Stack
@@ -358,7 +358,7 @@ function DecoderStackStep({ active, tokens, theme }) {
       <button
         onClick={() => setShowExplanation((v) => !v)}
         className={`mb-3 text-[11px] font-medium underline underline-offset-2 ${
-          isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-700 hover:text-blue-800"
+          isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-900 hover:text-blue-900"
         }`}
       >
         {showExplanation ? "Hide explanation" : "Show explanation"}
@@ -369,7 +369,7 @@ function DecoderStackStep({ active, tokens, theme }) {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 text-[11px] leading-5 ${
-            isDark ? "border-slate-700 bg-slate-900/70 text-slate-300" : "border-slate-300 bg-slate-50 text-slate-700"
+            isDark ? "border-slate-700 bg-slate-900/70 text-slate-300" : "border-slate-500 bg-slate-50 text-slate-700"
           }`}
         >
           The decoder stack repeats decoder layers to progressively refine the output. Each layer combines masked self-attention, cross-attention, and a feed-forward network to produce accurate predictions.
@@ -381,12 +381,12 @@ function DecoderStackStep({ active, tokens, theme }) {
           className={`rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
+              : "border-slate-600/70 bg-slate-50"
           }`}
         >
           <h3
             className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
+              isDark ? "text-cyan-300" : "text-blue-900"
             }`}
           >
             What happens inside one decoder layer?
@@ -401,12 +401,12 @@ function DecoderStackStep({ active, tokens, theme }) {
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-slate-700 bg-slate-950/60"
-                  : "border-slate-400/70 bg-white"
+                  : "border-slate-600/70 bg-white"
               }`}
             >
               <div
                 className={`font-medium mb-2 ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
+                  isDark ? "text-cyan-300" : "text-blue-900"
                 }`}
               >
                 Correct decoder layer order
@@ -429,10 +429,10 @@ function DecoderStackStep({ active, tokens, theme }) {
                         isNorm
                           ? isDark
                             ? "border-slate-700 text-slate-300 bg-slate-900/40"
-                            : "border-slate-300 text-slate-700 bg-white"
+                            : "border-slate-500 text-slate-700 bg-white"
                           : isDark
                           ? "border-slate-600 text-white bg-slate-900/60"
-                          : "border-slate-300 text-slate-900 bg-slate-50"
+                          : "border-slate-500 text-slate-900 bg-slate-50"
                       }`}
                     >
                       <span
@@ -455,12 +455,12 @@ function DecoderStackStep({ active, tokens, theme }) {
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-cyan-400/40 bg-cyan-400/5"
-                  : "border-blue-400 bg-blue-50"
+                  : "border-blue-700 bg-blue-100"
               }`}
             >
               <div
                 className={`font-medium mb-1 ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
+                  isDark ? "text-cyan-300" : "text-blue-900"
                 }`}
               >
                 Key difference from encoder
@@ -476,12 +476,12 @@ function DecoderStackStep({ active, tokens, theme }) {
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-slate-700 bg-slate-950/60"
-                  : "border-slate-400/70 bg-white"
+                  : "border-slate-600/70 bg-white"
               }`}
             >
               <div
                 className={`font-semibold text-lg mb-3 text-center ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
+                  isDark ? "text-cyan-300" : "text-blue-900"
                 }`}
               >
                 Learn the internal parts
@@ -503,7 +503,7 @@ function DecoderStackStep({ active, tokens, theme }) {
                   className={`px-4 py-1.5 text-xs border rounded-lg transition ${
                     isDark
                       ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10"
-                      : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+                      : "border-blue-700 text-blue-900 bg-blue-100 hover:bg-blue-200"
                   }`}
                 >
                   Learn Masked Self-Attention
@@ -514,7 +514,7 @@ function DecoderStackStep({ active, tokens, theme }) {
                   className={`px-4 py-1.5 text-xs border rounded-lg transition ${
                     isDark
                       ? "border-amber-400 text-amber-300 hover:bg-amber-400/10"
-                      : "border-amber-400 text-amber-700 bg-amber-100 hover:bg-amber-200"
+                      : "border-amber-700 text-amber-700 bg-amber-100 hover:bg-amber-200"
                   }`}
                 >
                   Learn Cross-Attention
@@ -548,8 +548,8 @@ function DecoderStackStep({ active, tokens, theme }) {
       </div>
 
       {/* Understanding Depth Bar */}
-      <div className={`w-full mb-4 rounded-xl border p-3 ${isDark ? "border-slate-700 bg-slate-900/70" : "border-slate-300 bg-slate-50"}`}>
-        <div className={`flex justify-between text-[10px] mb-1.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+      <div className={`w-full mb-4 rounded-xl border p-3 ${isDark ? "border-slate-700 bg-slate-900/70" : "border-slate-500 bg-slate-50"}`}>
+        <div className={`flex justify-between text-[10px] mb-1.5 ${isDark ? "text-slate-400" : "text-slate-800"}`}>
           <span className="font-medium">Understanding Depth</span>
           <span>{layerCount} / 6 decoder layers active</span>
         </div>
@@ -561,7 +561,7 @@ function DecoderStackStep({ active, tokens, theme }) {
             style={{ background: "linear-gradient(to right, #ef4444, #f97316, #eab308, #84cc16, #22c55e)" }}
           />
         </div>
-        <div className={`text-[10px] text-center mt-1.5 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+        <div className={`text-[10px] text-center mt-1.5 ${isDark ? "text-slate-500" : "text-slate-700"}`}>
           {layerCount === 1
             ? "1 layer basic context processing begins"
             : layerCount <= 2
@@ -598,7 +598,7 @@ function DecoderStackStep({ active, tokens, theme }) {
                     ? `${layer.border} ${layer.glow}`
                     : isDark
                     ? "border-slate-800"
-                    : "border-slate-200"
+                    : "border-slate-500"
                 } ${isDark ? "bg-slate-900" : "bg-white"}`}
               >
                 <div
@@ -607,7 +607,7 @@ function DecoderStackStep({ active, tokens, theme }) {
                       ? layer.text
                       : isDark
                       ? "text-slate-600"
-                      : "text-slate-400"
+                      : "text-slate-700"
                   }`}
                 >
                   Layer {index + 1}
@@ -618,10 +618,10 @@ function DecoderStackStep({ active, tokens, theme }) {
                     isActive
                       ? isDark
                         ? "text-slate-500"
-                        : "text-slate-600"
+                        : "text-slate-800"
                       : isDark
                       ? "text-slate-700"
-                      : "text-slate-400"
+                      : "text-slate-700"
                   }`}
                 >
                   {layer.note}
@@ -636,7 +636,7 @@ function DecoderStackStep({ active, tokens, theme }) {
                           ? layer.text
                           : isDark
                           ? "text-slate-600"
-                          : "text-slate-400"
+                          : "text-slate-700"
                       }`}
                     >
                       {t}
@@ -659,15 +659,15 @@ function DecoderStackStep({ active, tokens, theme }) {
                         row.highlight
                           ? isDark
                             ? "border-amber-500/60 text-amber-300 bg-amber-500/5"
-                            : "border-amber-300 text-amber-800 bg-amber-50"
+                            : "border-amber-600 text-amber-800 bg-amber-100"
                           : isDark
                           ? "border-slate-600 text-white"
-                          : "border-slate-300 text-slate-900 bg-slate-50"
+                          : "border-slate-500 text-slate-900 bg-slate-50"
                       }`}
                     >
                       <span
                         className={`font-mono font-semibold w-4 shrink-0 ${
-                          isDark ? "text-slate-400" : "text-slate-500"
+                          isDark ? "text-slate-400" : "text-slate-700"
                         }`}
                       >
                         {n + 1}.
@@ -695,7 +695,7 @@ function DecoderStackStep({ active, tokens, theme }) {
                     arrowActive
                       ? isDark
                         ? "text-cyan-400"
-                        : "text-blue-600"
+                        : "text-blue-900"
                       : isDark
                       ? "text-slate-700"
                       : "text-slate-300"
@@ -713,7 +713,7 @@ function DecoderStackStep({ active, tokens, theme }) {
         className={`mt-3 rounded-xl border p-3 text-[11px] leading-5 text-center w-full ${
           isDark
             ? "border-slate-700 bg-slate-900/70 text-slate-300"
-            : "border-slate-400/70 bg-slate-50 text-slate-700"
+            : "border-slate-600/70 bg-slate-50 text-slate-700"
         }`}
       >
         {layerCount === 1

@@ -24,7 +24,7 @@ function TokenInput({ setTokens, theme }) {
       className={`w-[460px] rounded-xl border px-4 py-2.5 text-center transition-all duration-300 outline-none ${
         isDark
           ? "border-slate-600 bg-slate-800 text-white placeholder-slate-500 focus:border-cyan-400/60"
-          : "border-slate-400 bg-white text-slate-900 placeholder-slate-400 shadow-sm focus:border-blue-500"
+          : "border-2 border-slate-700 bg-white text-slate-900 placeholder-slate-500 shadow-md focus:border-blue-900 focus:ring-2 focus:ring-blue-300"
       }`}
     />
   );

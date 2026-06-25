@@ -74,7 +74,7 @@ function Section({ title, accent, children, isDark }) {
   return (
     <div
       className={`rounded-lg border p-3 ${
-        isDark ? "border-slate-700 bg-slate-900/50" : "border-slate-400/70 bg-white"
+        isDark ? "border-slate-700 bg-slate-900/50" : "border-slate-600/70 bg-white"
       }`}
     >
       <div
@@ -102,7 +102,7 @@ function Slider({ label, rule, value, min, max, step, onChange, suffix, isDark, 
           {rule && (
             <div
               className={`font-mono text-[9px] ${
-                isDark ? "text-slate-500" : "text-slate-400"
+                isDark ? "text-slate-500" : "text-slate-700"
               }`}
             >
               {rule}
@@ -171,7 +171,7 @@ function Select({ label, value, options, onChange, isDark, accentClass }) {
                   : `bg-slate-100 ${accentClass} border-current`
                 : isDark
                 ? "border-slate-700 text-slate-500 hover:text-slate-300"
-                : "border-slate-300 text-slate-400 hover:text-slate-600"
+                : "border-slate-500 text-slate-700 hover:text-slate-800"
             }`}
           >
             {name}
@@ -197,7 +197,7 @@ export default function AnimationRuleEditor({ rules, setRules, isDark }) {
       className={`rounded-xl border ${
         isDark
           ? "border-purple-500/30 bg-slate-900/40"
-          : "border-purple-300 bg-purple-50/40"
+          : "border-purple-600 bg-purple-100/40"
       }`}
     >
       <button
@@ -216,7 +216,7 @@ export default function AnimationRuleEditor({ rules, setRules, isDark }) {
           </span>
           <span
             className={`text-[10px] ${
-              isDark ? "text-slate-500" : "text-slate-500"
+              isDark ? "text-slate-500" : "text-slate-700"
             }`}
           >
             {activePresetName
@@ -226,7 +226,7 @@ export default function AnimationRuleEditor({ rules, setRules, isDark }) {
         </div>
         <span
           className={`text-[11px] ${
-            isDark ? "text-purple-400" : "text-purple-600"
+            isDark ? "text-purple-400" : "text-purple-800"
           }`}
         >
           {open ? "▾" : "▸"}
@@ -247,7 +247,7 @@ export default function AnimationRuleEditor({ rules, setRules, isDark }) {
               <div className="flex items-center gap-1.5 flex-wrap">
                 <span
                   className={`text-[9.5px] font-bold uppercase tracking-wider mr-1 ${
-                    isDark ? "text-slate-500" : "text-slate-500"
+                    isDark ? "text-slate-500" : "text-slate-700"
                   }`}
                 >
                   Presets:
@@ -263,7 +263,7 @@ export default function AnimationRuleEditor({ rules, setRules, isDark }) {
                           : "border-purple-500 text-purple-700 bg-purple-100"
                         : isDark
                         ? "border-slate-700 text-slate-400 hover:border-slate-600"
-                        : "border-slate-300 text-slate-500 hover:border-slate-400"
+                        : "border-slate-500 text-slate-700 hover:border-slate-600"
                     }`}
                   >
                     {name}
@@ -274,7 +274,7 @@ export default function AnimationRuleEditor({ rules, setRules, isDark }) {
                   className={`ml-auto px-2.5 py-0.5 rounded-md text-[10px] font-bold transition ${
                     isDark
                       ? "text-slate-400 hover:text-slate-200"
-                      : "text-slate-500 hover:text-slate-700"
+                      : "text-slate-700 hover:text-slate-700"
                   }`}
                 >
                   Reset
@@ -407,7 +407,7 @@ export default function AnimationRuleEditor({ rules, setRules, isDark }) {
                     className={`text-[9.5px] pt-1 border-t ${
                       isDark
                         ? "border-slate-800 text-slate-500"
-                        : "border-slate-200 text-slate-500"
+                        : "border-slate-500 text-slate-700"
                     }`}
                   >
                     Toggle structural parts of the diagram on/off
@@ -435,7 +435,7 @@ export default function AnimationRuleEditor({ rules, setRules, isDark }) {
                     className={`text-[9.5px] pt-1 border-t ${
                       isDark
                         ? "border-slate-800 text-slate-500"
-                        : "border-slate-200 text-slate-500"
+                        : "border-slate-500 text-slate-700"
                     }`}
                   >
                     Rules that filter elements based on data values

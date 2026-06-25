@@ -87,12 +87,12 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
       }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[980px] min-h-[620px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
       }`}
     >
       <h2
         className={`font-semibold text-center ${
-          isDark ? "text-cyan-300" : "text-blue-800"
+          isDark ? "text-cyan-300" : "text-blue-900"
         }`}
       >
         Encoder Output
@@ -109,12 +109,12 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
   className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 ${
     isDark
       ? "border-cyan-400/30 bg-cyan-400/5"
-      : "border-blue-400 bg-blue-50"
+      : "border-blue-700 bg-blue-100"
   }`}
 >
   <div
     className={`text-sm font-semibold mb-1 ${
-      isDark ? "text-cyan-300" : "text-blue-800"
+      isDark ? "text-cyan-300" : "text-blue-900"
     }`}
   >
     Why we use this step
@@ -130,7 +130,7 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
 </div>
       <p
         className={`text-[11px] text-center mb-5 max-w-[780px] leading-5 ${
-          isDark ? "text-slate-500" : "text-slate-600"
+          isDark ? "text-slate-500" : "text-slate-800"
         }`}
       >
         After passing through the encoder stack, each word now has an output
@@ -143,12 +143,12 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
           className={`rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
+              : "border-slate-600/70 bg-slate-50"
           }`}
         >
           <h3
             className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
+              isDark ? "text-cyan-300" : "text-blue-900"
             }`}
           >
             What does encoder output mean?
@@ -187,12 +187,12 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
           className={`rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
+              : "border-slate-600/70 bg-slate-50"
           }`}
         >
           <h3
             className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
+              isDark ? "text-cyan-300" : "text-blue-900"
             }`}
           >
             Final encoder result
@@ -237,13 +237,13 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
             className={`rounded-xl border p-4 ${
               isDark
                 ? "border-slate-700 bg-slate-900/70"
-                : "border-slate-400/70 bg-white"
+                : "border-slate-600/70 bg-white"
             }`}
           >
             <div className="flex items-center gap-3 mb-2 flex-wrap">
               <div
                 className={`text-sm font-medium min-w-[90px] ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
+                  isDark ? "text-cyan-300" : "text-blue-900"
                 }`}
               >
                 {row.word}
@@ -251,7 +251,7 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
 
               <div
                 className={`text-[10px] ${
-                  isDark ? "text-slate-500" : "text-slate-600"
+                  isDark ? "text-slate-500" : "text-slate-800"
                 }`}
               >
                 Final encoder output vector
@@ -274,7 +274,7 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
                     className={`px-2 py-1 text-xs border rounded ${
                       isDark
                         ? "border-cyan-400 text-cyan-300"
-                        : "border-blue-400 text-blue-800 bg-blue-100"
+                        : "border-blue-700 text-blue-900 bg-blue-100"
                     }`}
                   >
                     {v.toFixed(2)}
@@ -299,7 +299,7 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
                     className={`px-2 py-1 text-xs border rounded ${
                       isDark
                         ? "border-purple-400 text-purple-300"
-                        : "border-violet-300 text-violet-700 bg-violet-100"
+                        : "border-violet-600 text-violet-700 bg-violet-100"
                     }`}
                   >
                     +{v.toFixed(2)}
@@ -354,7 +354,7 @@ function EncoderOutputStep({ active, tokens = [], theme }) {
                     className={`px-3 py-1 text-xs rounded border ${
                       isDark
                         ? "border-green-400 text-green-300"
-                        : "border-green-400 text-green-700 bg-green-100"
+                        : "border-green-700 text-green-700 bg-green-100"
                     }`}
                   >
                     {v.toFixed(2)}

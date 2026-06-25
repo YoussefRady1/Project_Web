@@ -112,10 +112,10 @@ function TokenStep({ active, tokens = [], theme }) {
       }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[680px] h-[430px] flex flex-col items-center justify-start overflow-hidden ${
-  isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+  isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
 }`}
     >
-      <h2 className={`${isDark ? "text-cyan-300" : "text-blue-800"} font-semibold text-center`}>
+      <h2 className={`${isDark ? "text-cyan-300" : "text-blue-900"} font-semibold text-center`}>
   Tokenization
 </h2>
 <p
@@ -129,12 +129,12 @@ function TokenStep({ active, tokens = [], theme }) {
   className={`w-full max-w-[420px] mb-6 rounded-xl border p-3 ${
     isDark
       ? "border-cyan-400/30 bg-cyan-400/5"
-      : "border-blue-400 bg-blue-50"
+      : "border-blue-700 bg-blue-100"
   }`}
 >
   <div
     className={`text-sm font-semibold mb-1 ${
-      isDark ? "text-cyan-300" : "text-blue-800"
+      isDark ? "text-cyan-300" : "text-blue-900"
     }`}
   >
     Why we use this step
@@ -153,14 +153,14 @@ function TokenStep({ active, tokens = [], theme }) {
         {/* Before / After labels (left side, stacked) */}
         <div
           className={`absolute left-2 top-[10px] text-xs font-bold ${
-            isDark ? "text-cyan-400" : "text-blue-700"
+            isDark ? "text-cyan-400" : "text-blue-900"
           }`}
         >
           Before:
         </div>
         <div
           className={`absolute left-2 top-[68px] text-xs font-bold ${
-            isDark ? "text-cyan-400" : "text-blue-700"
+            isDark ? "text-cyan-400" : "text-blue-900"
           }`}
         >
           After:
@@ -173,7 +173,7 @@ function TokenStep({ active, tokens = [], theme }) {
           className={`absolute top-0 px-4 py-2 border rounded-lg text-sm max-w-[340px] text-center ${
   isDark
     ? "bg-slate-800 border-cyan-400 text-white"
-    : "bg-blue-50 border-blue-300 text-slate-900"
+    : "bg-blue-100 border-blue-700 text-slate-900"
 }`}
         >
           {safeTokens.join(" ")}
@@ -189,7 +189,7 @@ function TokenStep({ active, tokens = [], theme }) {
             className={`absolute top-0 px-3 py-2 border rounded-lg text-sm whitespace-nowrap will-change-transform ${
   isDark
     ? "bg-slate-900 border-cyan-400 text-cyan-300 shadow-[0_0_18px_rgba(34,211,238,0.18)]"
-    : "bg-white border-blue-300 text-blue-800 shadow-[0_4px_14px_rgba(59,130,246,0.12)]"
+    : "bg-white border-blue-700 text-blue-900 shadow-[0_4px_14px_rgba(59,130,246,0.12)]"
 }`}
           >
             {word}

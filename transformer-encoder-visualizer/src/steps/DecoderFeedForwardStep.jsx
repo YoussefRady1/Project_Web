@@ -79,12 +79,12 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
       animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[980px] min-h-[620px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
       }`}
     >
       <h2
         className={`font-semibold text-center ${
-          isDark ? "text-cyan-300" : "text-blue-800"
+          isDark ? "text-cyan-300" : "text-blue-900"
         }`}
       >
         Feed Forward (Decoder)
@@ -102,7 +102,7 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
       <button
         onClick={() => setShowExplanation((v) => !v)}
         className={`mb-3 text-[11px] font-medium underline underline-offset-2 ${
-          isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-700 hover:text-blue-800"
+          isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-900 hover:text-blue-900"
         }`}
       >
         {showExplanation ? "Hide explanation" : "Show explanation"}
@@ -113,7 +113,7 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 text-[11px] leading-5 ${
-            isDark ? "border-slate-700 bg-slate-900/70 text-slate-300" : "border-slate-300 bg-slate-50 text-slate-700"
+            isDark ? "border-slate-700 bg-slate-900/70 text-slate-300" : "border-slate-500 bg-slate-50 text-slate-700"
           }`}
         >
           The feed-forward network refines each token independently after attention. It applies a non-linear transformation (ReLU) so the decoder can learn patterns that pure attention cannot capture.
@@ -124,12 +124,12 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
         className={`w-full max-w-[760px] mb-5 rounded-xl border p-4 ${
           isDark
             ? "border-slate-700 bg-slate-900/80"
-            : "border-slate-400/70 bg-slate-50"
+            : "border-slate-600/70 bg-slate-50"
         }`}
       >
         <h3
           className={`text-sm font-semibold mb-2 ${
-            isDark ? "text-cyan-300" : "text-blue-800"
+            isDark ? "text-cyan-300" : "text-blue-900"
           }`}
         >
           How it works
@@ -149,7 +149,7 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
               className={`rounded-lg border p-2 text-center text-sm ${
                 isDark
                   ? "border-slate-700 bg-slate-950/70 text-white"
-                  : "border-slate-400/70 bg-white text-slate-900"
+                  : "border-slate-600/70 bg-white text-slate-900"
               }`}
             >
               FFN(x) = ReLU(xW₁ + b₁)W₂ + b₂
@@ -158,7 +158,7 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
               className={`rounded-lg border p-2 text-center text-sm ${
                 isDark
                   ? "border-slate-700 bg-slate-950/70 text-white"
-                  : "border-slate-400/70 bg-white text-slate-900"
+                  : "border-slate-600/70 bg-white text-slate-900"
               }`}
             >
               ReLU(x) = max(0, x)
@@ -172,7 +172,7 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
                 className={`px-2 py-0.5 text-xs border rounded mr-1 ${
                   isDark
                     ? "border-red-400 text-red-300"
-                    : "border-red-400 text-red-700 bg-red-100"
+                    : "border-red-700 text-red-700 bg-red-100"
                 }`}
               >
                 −{v.toFixed(2)}
@@ -184,7 +184,7 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
               Red
             </span>{" "}
             = negative (before ReLU).{" "}
-            <span className={isDark ? "text-blue-300" : "text-blue-700"}>
+            <span className={isDark ? "text-blue-300" : "text-blue-900"}>
               Blue
             </span>{" "}
             = zeroed (after ReLU).
@@ -199,10 +199,10 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
             !showOutput
               ? isDark
                 ? "border-cyan-400 text-cyan-300 bg-cyan-400/10"
-                : "border-blue-400 text-blue-800 bg-blue-100"
+                : "border-blue-700 text-blue-900 bg-blue-100"
               : isDark
               ? "border-slate-600 text-slate-300 hover:bg-slate-800"
-              : "border-slate-300 text-slate-700 hover:bg-slate-100 bg-white"
+              : "border-slate-500 text-slate-700 hover:bg-slate-100 bg-white"
           }`}
         >
           Show Feed Forward Input
@@ -216,7 +216,7 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
                 : "border-green-500 text-green-700 bg-green-100"
               : isDark
               ? "border-slate-600 text-slate-300 hover:bg-slate-800"
-              : "border-slate-300 text-slate-700 hover:bg-slate-100 bg-white"
+              : "border-slate-500 text-slate-700 hover:bg-slate-100 bg-white"
           }`}
         >
           Show ReLU Output
@@ -233,20 +233,20 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
             className={`rounded-xl border p-4 ${
               isDark
                 ? "border-slate-700 bg-slate-900/70"
-                : "border-slate-400/70 bg-white"
+                : "border-slate-600/70 bg-white"
             }`}
           >
             <div className="flex items-center gap-3 mb-2 flex-wrap">
               <div
                 className={`text-sm font-medium min-w-[70px] ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
+                  isDark ? "text-cyan-300" : "text-blue-900"
                 }`}
               >
                 {row.token}
               </div>
               <div
                 className={`text-[10px] ${
-                  isDark ? "text-slate-500" : "text-slate-600"
+                  isDark ? "text-slate-500" : "text-slate-800"
                 }`}
               >
                 Input vector
@@ -258,7 +258,7 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
                     className={`px-2 py-1 text-xs border rounded ${
                       isDark
                         ? "border-cyan-400 text-cyan-300"
-                        : "border-blue-400 text-blue-800 bg-blue-100"
+                        : "border-blue-700 text-blue-900 bg-blue-100"
                     }`}
                   >
                     {v.toFixed(2)}
@@ -291,18 +291,18 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
                         showOutput
                           ? isZeroAfter
                             ? isDark
-                              ? "border-blue-400 text-blue-300"
-                              : "border-blue-400 text-blue-700 bg-blue-100"
+                              ? "border-blue-700 text-blue-300"
+                              : "border-blue-700 text-blue-900 bg-blue-100"
                             : isDark
                             ? "border-green-400 text-green-300"
-                            : "border-green-400 text-green-700 bg-green-100"
+                            : "border-green-700 text-green-700 bg-green-100"
                           : isNeg
                           ? isDark
                             ? "border-red-400 text-red-300"
-                            : "border-red-400 text-red-700 bg-red-100"
+                            : "border-red-700 text-red-700 bg-red-100"
                           : isDark
                           ? "border-cyan-400 text-cyan-300"
-                          : "border-blue-400 text-blue-800 bg-blue-100"
+                          : "border-blue-700 text-blue-900 bg-blue-100"
                       }`}
                     >
                       {v.toFixed(2)}
@@ -314,7 +314,7 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
               <motion.div
                 animate={{ rotate: showOutput ? 180 : 0, opacity: active ? 1 : 0.3 }}
                 transition={{ duration: 0.35 }}
-                className={`text-lg ${isDark ? "text-cyan-400" : "text-blue-600"}`}
+                className={`text-lg ${isDark ? "text-cyan-400" : "text-blue-900"}`}
               >
                 {showOutput ? "←" : "→"}
               </motion.div>
@@ -333,7 +333,7 @@ function DecoderFeedForwardStep({ active, tokens = [], theme }) {
         ))}
       </div>
 
-      <div className={`w-full max-w-[760px] mt-5 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-400 bg-violet-50"}`}>
+      <div className={`w-full max-w-[760px] mt-5 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-700 bg-violet-100"}`}>
         <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-violet-300" : "text-violet-700"}`}>Key insight</div>
         <p className={`text-[10px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>The feed-forward network adds non-linearity via ReLU, enabling the model to learn complex patterns. It processes each token independently (unlike attention, which mixes tokens). Same architecture as the encoder's FFN, but with separate learned weights.</p>
       </div>

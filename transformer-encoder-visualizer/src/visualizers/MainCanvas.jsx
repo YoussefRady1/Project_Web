@@ -96,7 +96,7 @@ function MainCanvas({
           className={`rounded-xl border px-3 py-3 backdrop-blur-sm transition-colors duration-300 ${
             isDark
               ? "border-slate-700/60 bg-slate-900/85"
-              : "border-slate-400/60 bg-white/90 shadow-md"
+              : "border-slate-600 bg-white/90 shadow-md"
           }`}
         >
           {SECTION_MAP.map((sec, i) => {
@@ -117,14 +117,14 @@ function MainCanvas({
                     isActive
                       ? isDark
                         ? "bg-cyan-400/15 text-cyan-300"
-                        : "bg-blue-100 text-blue-800 font-bold"
+                        : "bg-blue-100 text-blue-900 font-bold"
                       : isPast
                       ? isDark
                         ? "text-green-400/80 hover:bg-green-400/10"
-                        : "text-green-700 hover:bg-green-50"
+                        : "text-green-700 hover:bg-green-100"
                       : isDark
                       ? "text-slate-500 hover:bg-slate-800"
-                      : "text-slate-500 hover:bg-slate-100"
+                      : "text-slate-700 hover:bg-slate-100"
                   }`}
                 >
                   <div
@@ -139,7 +139,7 @@ function MainCanvas({
                           : "bg-green-600"
                         : isDark
                         ? "bg-slate-600"
-                        : "bg-slate-400"
+                        : "bg-slate-500"
                     }`}
                   />
                   {sec.label}
@@ -154,7 +154,7 @@ function MainCanvas({
                             : "bg-green-500/40"
                           : isDark
                           ? "bg-slate-700"
-                          : "bg-slate-300"
+                          : "bg-slate-500"
                       }`}
                     />
                   </div>
@@ -180,7 +180,7 @@ function MainCanvas({
               className={
                 isDark
                   ? "text-cyan-300 font-semibold"
-                  : "text-blue-800 font-bold"
+                  : "text-blue-900 font-bold"
               }
             >
               {config.title}
@@ -189,14 +189,14 @@ function MainCanvas({
 
           <div
             className={`relative w-full h-2 rounded-full overflow-hidden ${
-              isDark ? "bg-slate-800" : "bg-slate-300"
+              isDark ? "bg-slate-800" : "bg-slate-400"
             }`}
           >
             <motion.div
               className={`h-full ${
                 isDark
                   ? "bg-gradient-to-r from-cyan-500 via-cyan-400 to-blue-400"
-                  : "bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500"
+                  : "bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700"
               }`}
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}

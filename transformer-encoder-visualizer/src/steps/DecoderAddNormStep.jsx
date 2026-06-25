@@ -112,12 +112,12 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
       animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[980px] min-h-[620px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
       }`}
     >
       <h2
         className={`font-semibold text-center ${
-          isDark ? "text-cyan-300" : "text-blue-800"
+          isDark ? "text-cyan-300" : "text-blue-900"
         }`}
       >
         {config.title}
@@ -135,12 +135,12 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
         className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 ${
           isDark
             ? "border-cyan-400/30 bg-cyan-400/5"
-            : "border-blue-400 bg-blue-50"
+            : "border-blue-700 bg-blue-100"
         }`}
       >
         <div
           className={`text-sm font-semibold mb-1 ${
-            isDark ? "text-cyan-300" : "text-blue-800"
+            isDark ? "text-cyan-300" : "text-blue-900"
           }`}
         >
           Why we use this step
@@ -152,7 +152,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
         >
           {config.explanation}
         </p>
-        <p className={`text-[10px] italic mt-2 pt-2 ${isDark ? "border-t border-slate-700/50 text-cyan-300/70" : "border-t border-slate-300/50 text-blue-600/80"}`}>
+        <p className={`text-[10px] italic mt-2 pt-2 ${isDark ? "border-t border-slate-700/50 text-cyan-300/70" : "border-t border-slate-500/50 text-blue-900/80"}`}>
           {variant === "masked-attention"
             ? "Like keeping a photocopy of your original draft before editing if the edits go wrong, you still have the original."
             : variant === "cross-attention"
@@ -163,9 +163,9 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
 
       {/* Data flow */}
       <div className="w-full max-w-[760px] mb-5 grid grid-cols-3 gap-2">
-        <div className={`rounded-xl border p-3 ${isDark ? "border-emerald-500/30 bg-emerald-500/5" : "border-emerald-400 bg-emerald-50"}`}>
+        <div className={`rounded-xl border p-3 ${isDark ? "border-emerald-500/30 bg-emerald-500/5" : "border-emerald-700 bg-emerald-100"}`}>
           <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-emerald-300" : "text-emerald-700"}`}>From previous step</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-800"}`}>
             {variant === "masked-attention"
               ? "Both the original input vectors (before masked attention) AND the masked self-attention output. Two separate data streams arrive here."
               : variant === "cross-attention"
@@ -173,9 +173,9 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
               : "Both the vectors before feed-forward AND the feed-forward output. The third and final Add & Normalize in each decoder layer."}
           </p>
         </div>
-        <div className={`rounded-xl border p-3 ${isDark ? "border-cyan-500/30 bg-cyan-500/5" : "border-blue-400 bg-blue-50"}`}>
-          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-cyan-300" : "text-blue-700"}`}>What happens here</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+        <div className={`rounded-xl border p-3 ${isDark ? "border-cyan-500/30 bg-cyan-500/5" : "border-blue-700 bg-blue-100"}`}>
+          <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-cyan-300" : "text-blue-900"}`}>What happens here</div>
+          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-800"}`}>
             {variant === "masked-attention"
               ? "The residual connection adds the original input to the attention output (input + sublayer). Then layer normalization standardizes the values. This prevents the signal from degrading as it flows through layers."
               : variant === "cross-attention"
@@ -183,9 +183,9 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
               : "Residual addition + layer normalization one final time. This completes one full decoder layer. In T5-small, there are 6 such layers stacked on top of each other."}
           </p>
         </div>
-        <div className={`rounded-xl border p-3 ${isDark ? "border-amber-500/30 bg-amber-500/5" : "border-amber-400 bg-amber-50"}`}>
+        <div className={`rounded-xl border p-3 ${isDark ? "border-amber-500/30 bg-amber-500/5" : "border-amber-700 bg-amber-100"}`}>
           <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-amber-300" : "text-amber-700"}`}>Goes to next step</div>
-          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+          <p className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-800"}`}>
             {variant === "masked-attention"
               ? "Normalized vectors proceed to Cross-Attention, where the decoder will consult the encoder's understanding of the input sentence."
               : variant === "cross-attention"
@@ -200,12 +200,12 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
           className={`rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
+              : "border-slate-600/70 bg-slate-50"
           }`}
         >
           <h3
             className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
+              isDark ? "text-cyan-300" : "text-blue-900"
             }`}
           >
             Residual connection
@@ -226,7 +226,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
               className={`rounded-lg border p-3 text-center text-sm ${
                 isDark
                   ? "border-slate-700 bg-slate-950/70 text-white"
-                  : "border-slate-400/70 bg-white text-slate-900"
+                  : "border-slate-600/70 bg-white text-slate-900"
               }`}
             >
               output = input + {config.prevStep}(input)
@@ -242,12 +242,12 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
           className={`rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
+              : "border-slate-600/70 bg-slate-50"
           }`}
         >
           <h3
             className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
+              isDark ? "text-cyan-300" : "text-blue-900"
             }`}
           >
             Layer normalization
@@ -264,7 +264,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
               className={`rounded-lg border p-3 text-center text-sm ${
                 isDark
                   ? "border-slate-700 bg-slate-950/70 text-white"
-                  : "border-slate-400/70 bg-white text-slate-900"
+                  : "border-slate-600/70 bg-white text-slate-900"
               }`}
             >
               norm(x) = (x − mean) / std
@@ -287,12 +287,12 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
             className={`rounded-xl border p-4 ${
               isDark
                 ? "border-slate-700 bg-slate-900/70"
-                : "border-slate-400/70 bg-white"
+                : "border-slate-600/70 bg-white"
             }`}
           >
             <div
               className={`text-sm font-medium mb-3 ${
-                isDark ? "text-cyan-300" : "text-blue-800"
+                isDark ? "text-cyan-300" : "text-blue-900"
               }`}
             >
               {row.token}
@@ -301,7 +301,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
             <div className="flex items-center gap-2 mb-2 flex-wrap">
               <span
                 className={`text-[10px] min-w-[80px] ${
-                  isDark ? "text-slate-400" : "text-slate-600"
+                  isDark ? "text-slate-400" : "text-slate-800"
                 }`}
               >
                 Input:
@@ -312,7 +312,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
                   className={`px-2 py-0.5 text-[11px] rounded border ${
                     isDark
                       ? "border-cyan-400 text-cyan-300"
-                      : "border-blue-400 text-blue-800 bg-blue-100"
+                      : "border-blue-700 text-blue-900 bg-blue-100"
                   }`}
                 >
                   {v.toFixed(2)}
@@ -323,7 +323,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
             <div className="flex items-center gap-2 mb-2 flex-wrap">
               <span
                 className={`text-[10px] min-w-[80px] ${
-                  isDark ? "text-slate-400" : "text-slate-600"
+                  isDark ? "text-slate-400" : "text-slate-800"
                 }`}
               >
                 Sub-layer:
@@ -334,7 +334,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
                   className={`px-2 py-0.5 text-[11px] rounded border ${
                     isDark
                       ? "border-purple-400 text-purple-300"
-                      : "border-violet-300 text-violet-700 bg-violet-100"
+                      : "border-violet-600 text-violet-700 bg-violet-100"
                   }`}
                 >
                   {v.toFixed(2)}
@@ -345,7 +345,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
             <div className="flex items-center gap-2 mb-2 flex-wrap">
               <span
                 className={`text-[10px] min-w-[80px] ${
-                  isDark ? "text-slate-400" : "text-slate-600"
+                  isDark ? "text-slate-400" : "text-slate-800"
                 }`}
               >
                 Add (residual):
@@ -357,7 +357,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
                     : {}
                 }
                 transition={{ duration: 1.4, repeat: Infinity }}
-                className={isDark ? "text-cyan-400 text-xs" : "text-blue-600 text-xs"}
+                className={isDark ? "text-cyan-400 text-xs" : "text-blue-900 text-xs"}
               >
                 +
               </motion.span>
@@ -367,7 +367,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
                   className={`px-2 py-0.5 text-[11px] rounded border ${
                     isDark
                       ? "border-amber-400 text-amber-300"
-                      : "border-amber-300 text-amber-700 bg-amber-100"
+                      : "border-amber-600 text-amber-700 bg-amber-100"
                   }`}
                 >
                   {v.toFixed(2)}
@@ -378,7 +378,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
             <div className="flex items-center gap-2 flex-wrap">
               <span
                 className={`text-[10px] min-w-[80px] ${
-                  isDark ? "text-slate-400" : "text-slate-600"
+                  isDark ? "text-slate-400" : "text-slate-800"
                 }`}
               >
                 Normalized:
@@ -408,7 +408,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
                   className={`px-2 py-0.5 text-[11px] rounded border ${
                     isDark
                       ? "border-green-400 text-green-300"
-                      : "border-green-400 text-green-700 bg-green-100"
+                      : "border-green-700 text-green-700 bg-green-100"
                   }`}
                 >
                   {v.toFixed(2)}
@@ -421,7 +421,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
 
       <p
         className={`text-[11px] text-center mt-5 max-w-[700px] leading-5 ${
-          isDark ? "text-slate-500" : "text-slate-600"
+          isDark ? "text-slate-500" : "text-slate-800"
         }`}
       >
         Add &amp; Normalize is applied after every sub-layer in the decoder —
@@ -429,7 +429,7 @@ function DecoderAddNormStep({ active, tokens = [], theme, variant = "masked-atte
         feed-forward network.
       </p>
 
-      <div className={`w-full max-w-[760px] mt-5 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-400 bg-violet-50"}`}>
+      <div className={`w-full max-w-[760px] mt-5 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-700 bg-violet-100"}`}>
         <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-violet-300" : "text-violet-700"}`}>Key insight</div>
         <p className={`text-[10px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>Residual connections prevent information loss through deep networks. Layer normalization keeps values stable so training converges. This Add &amp; Normalize pattern repeats three times in every decoder layer it is the glue that holds each sub-layer together.</p>
       </div>

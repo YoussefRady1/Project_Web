@@ -50,12 +50,12 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
       animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[980px] min-h-[620px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
       }`}
     >
       <h2
         className={`font-semibold text-center ${
-          isDark ? "text-cyan-300" : "text-blue-800"
+          isDark ? "text-cyan-300" : "text-blue-900"
         }`}
       >
         Output Embedding
@@ -73,12 +73,12 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
         className={`w-full max-w-[760px] rounded-xl border p-4 mb-4 ${
           isDark
             ? "border-slate-700 bg-slate-900/70"
-            : "border-slate-400/70 bg-slate-50"
+            : "border-slate-600/70 bg-slate-50"
         }`}
       >
         <div
           className={`text-[10px] uppercase tracking-wide text-center mb-1 ${
-            isDark ? "text-cyan-300/70" : "text-blue-600"
+            isDark ? "text-cyan-300/70" : "text-blue-900"
           }`}
         >
           &lt;START&gt; special embedding
@@ -108,7 +108,7 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
               className={`px-3 py-1.5 text-xs rounded border font-mono ${
                 isDark
                   ? "border-cyan-400 text-cyan-300 bg-cyan-400/10"
-                  : "border-blue-400 text-blue-800 bg-blue-100"
+                  : "border-blue-700 text-blue-900 bg-blue-100"
               }`}
             >
               {v.toFixed(2)}
@@ -117,7 +117,7 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
         </div>
         <p
           className={`text-[10px] text-center mt-2 ${
-            isDark ? "text-slate-500" : "text-slate-500"
+            isDark ? "text-slate-500" : "text-slate-700"
           }`}
         >
           Fixed demo vector for the &lt;START&gt; token
@@ -146,7 +146,7 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
                 index === 0
                   ? isDark
                     ? "text-cyan-300"
-                    : "text-blue-800"
+                    : "text-blue-900"
                   : isDark
                   ? "text-slate-300"
                   : "text-slate-700"
@@ -167,7 +167,7 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
                 ease: "easeInOut",
                 delay: index * 0.15,
               }}
-              className={isDark ? "text-cyan-400" : "text-blue-600"}
+              className={isDark ? "text-cyan-400" : "text-blue-900"}
             >
               →
             </motion.div>
@@ -175,7 +175,7 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
             <div className="flex flex-col gap-1">
               <div
                 className={`text-[10px] ${
-                  isDark ? "text-slate-500" : "text-slate-600"
+                  isDark ? "text-slate-500" : "text-slate-800"
                 }`}
               >
                 {index === 0 ? "fixed start embedding" : "letter-based demo vector"}
@@ -184,7 +184,7 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
                 className={`flex gap-1 px-2 py-1 rounded border ${
                   isDark
                     ? "bg-slate-900 border-cyan-400"
-                    : "bg-white border-blue-400"
+                    : "bg-white border-blue-700"
                 }`}
               >
                 {vector.map((v, i) => (
@@ -218,7 +218,7 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
       <button
         onClick={() => setShowExplanation((v) => !v)}
         className={`mt-5 text-[11px] font-medium underline underline-offset-2 ${
-          isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-700 hover:text-blue-800"
+          isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-900 hover:text-blue-900"
         }`}
       >
         {showExplanation ? "Hide explanation" : "Show explanation"}
@@ -229,7 +229,7 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           className={`w-full max-w-[700px] mt-3 rounded-xl border p-3 text-[11px] leading-5 ${
-            isDark ? "border-slate-700 bg-slate-900/70 text-slate-300" : "border-slate-300 bg-slate-50 text-slate-700"
+            isDark ? "border-slate-700 bg-slate-900/70 text-slate-300" : "border-slate-500 bg-slate-50 text-slate-700"
           }`}
         >
           <p className="mb-2">
@@ -241,7 +241,7 @@ function DecoderEmbeddingStep({ active, tokens = [], theme }) {
         </motion.div>
       )}
 
-      <div className={`w-full max-w-[760px] mt-5 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-400 bg-violet-50"}`}>
+      <div className={`w-full max-w-[760px] mt-5 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-700 bg-violet-100"}`}>
         <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-violet-300" : "text-violet-700"}`}>Key insight</div>
         <p className={`text-[10px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>Embedding converts text into numbers. Words with similar meanings tend to have similar embedding vectors, which helps the model understand relationships between words.</p>
       </div>

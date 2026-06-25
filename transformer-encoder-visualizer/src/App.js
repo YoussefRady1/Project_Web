@@ -143,10 +143,10 @@ function App() {
       }`}
     >
       <div
-        className={`p-4 flex items-center justify-between border-b shadow-md transition-colors duration-300 ${
+        className={`p-4 flex items-center justify-between border-b-2 shadow-lg transition-colors duration-300 ${
           isDark
             ? "bg-gradient-to-r from-slate-950 via-slate-900 to-cyan-950 border-cyan-500/30"
-            : "bg-gradient-to-r from-blue-800 via-blue-700 to-blue-900 border-blue-900"
+            : "bg-gradient-to-r from-blue-950 via-blue-900 to-slate-900 border-blue-950"
         }`}
       >
         <div className="flex items-center gap-3">
@@ -195,7 +195,7 @@ function App() {
 
       <div
         className={`p-3 border-b transition-colors duration-300 ${
-          isDark ? "border-slate-800" : "border-slate-400/60"
+          isDark ? "border-slate-800" : "border-slate-600"
         }`}
       >
         <AnimationController step={step} setStep={setStep} theme={theme} />
@@ -203,7 +203,7 @@ function App() {
 
       <div
         className={`flex justify-center py-2 border-b transition-all duration-300 ${
-          isDark ? "border-slate-800" : "border-slate-400/60"
+          isDark ? "border-slate-800" : "border-slate-600"
         } ${showTokenInput ? "opacity-100" : "opacity-0 pointer-events-none"}`}
       >
         <TokenInput setTokens={setTokens} theme={theme} />

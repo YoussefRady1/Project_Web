@@ -81,7 +81,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
             className={`rounded-lg border p-4 text-left ${
               isDark
                 ? "border-slate-700 bg-slate-950/70"
-                : "border-slate-400/70 bg-white"
+                : "border-slate-600/70 bg-white"
             }`}
           >
             <div
@@ -100,7 +100,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
                       : "border-green-500 text-green-700 bg-green-100"
                     : isDark
                     ? "border-red-400/50 text-red-300 bg-red-400/10"
-                    : "border-red-400 text-red-700 bg-red-100"
+                    : "border-red-700 text-red-700 bg-red-100"
                 }`}
               >
                 {isUserCorrect ? "Correct" : "Incorrect"}
@@ -124,7 +124,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
                 {q.correctAnswer}
               </span>
             </div>
-            <div className={`text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            <div className={`text-sm ${isDark ? "text-slate-400" : "text-slate-800"}`}>
               {q.explanation}
             </div>
           </div>
@@ -140,17 +140,17 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
         animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
         transition={{ duration: 0.3 }}
         className={`p-6 border rounded-2xl w-[980px] min-h-[400px] flex flex-col items-center ${
-          isDark ? "border-cyan-500 bg-transparent" : "border-blue-400/80 bg-white shadow-sm"
+          isDark ? "border-cyan-500 bg-transparent" : "border-blue-800 bg-white shadow-sm"
         }`}
       >
         <div
-          className={`text-5xl mb-4 mt-6 ${isDark ? "text-cyan-400" : "text-blue-600"}`}
+          className={`text-5xl mb-4 mt-6 ${isDark ? "text-cyan-400" : "text-blue-900"}`}
         >
           ✓
         </div>
         <h2
           className={`text-xl font-semibold mb-3 ${
-            isDark ? "text-cyan-300" : "text-blue-800"
+            isDark ? "text-cyan-300" : "text-blue-900"
           }`}
         >
           Pre-Quiz Already Completed
@@ -161,7 +161,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
           </span>
         </div>
         <p
-          className={`text-sm mt-2 ${isDark ? "text-slate-400" : "text-slate-600"}`}
+          className={`text-sm mt-2 ${isDark ? "text-slate-400" : "text-slate-800"}`}
         >
           You have already submitted this quiz. Use the Next button to continue.
         </p>
@@ -172,7 +172,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
               className={`px-4 py-2 rounded-lg border text-xs font-medium transition ${
                 isDark
                   ? "border-cyan-400/60 text-cyan-300 bg-cyan-400/10 hover:bg-cyan-400/20"
-                  : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+                  : "border-blue-700 text-blue-900 bg-blue-100 hover:bg-blue-200"
               }`}
             >
               {showReview ? "Hide review" : "Review the full exam"}
@@ -183,7 +183,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
             className={`px-4 py-2 rounded-lg border text-xs font-medium transition ${
               isDark
                 ? "border-slate-600 text-slate-300 bg-slate-900/40 hover:bg-slate-800"
-                : "border-slate-300 text-slate-700 bg-white hover:bg-slate-100"
+                : "border-slate-500 text-slate-700 bg-white hover:bg-slate-100"
             }`}
           >
             Start fresh as a new user
@@ -195,19 +195,19 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
             className={`w-full mt-6 rounded-xl border p-5 ${
               isDark
                 ? "border-slate-700 bg-slate-900/80"
-                : "border-slate-400/70 bg-slate-50"
+                : "border-slate-600/70 bg-slate-50"
             }`}
           >
             <div
               className={`text-lg font-semibold mb-1 ${
-                isDark ? "text-cyan-300" : "text-blue-800"
+                isDark ? "text-cyan-300" : "text-blue-900"
               }`}
             >
               Review All Answers
             </div>
             <p
               className={`text-xs mb-4 ${
-                isDark ? "text-slate-400" : "text-slate-600"
+                isDark ? "text-slate-400" : "text-slate-800"
               }`}
             >
               Walk through every question with the correct answer and explanation.
@@ -225,12 +225,12 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
         animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
         transition={{ duration: 0.3 }}
         className={`p-6 border rounded-2xl w-[980px] min-h-[400px] flex flex-col items-center justify-center ${
-          isDark ? "border-cyan-500 bg-transparent" : "border-blue-400/80 bg-white shadow-sm"
+          isDark ? "border-cyan-500 bg-transparent" : "border-blue-800 bg-white shadow-sm"
         }`}
       >
         <h2
           className={`text-xl font-semibold mb-2 ${
-            isDark ? "text-cyan-300" : "text-blue-800"
+            isDark ? "text-cyan-300" : "text-blue-900"
           }`}
         >
           Pre-Quiz: What Do You Already Know?
@@ -247,12 +247,12 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
           className={`w-full max-w-[400px] rounded-xl border p-5 ${
             isDark
               ? "border-cyan-400/30 bg-cyan-400/5"
-              : "border-blue-400 bg-blue-50"
+              : "border-blue-700 bg-blue-100"
           }`}
         >
           <label
             className={`block text-sm font-semibold mb-2 text-center ${
-              isDark ? "text-cyan-300" : "text-blue-800"
+              isDark ? "text-cyan-300" : "text-blue-900"
             }`}
           >
             Your Name
@@ -269,11 +269,11 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
             className={`w-full px-4 py-2.5 rounded-lg border text-sm transition outline-none ${
               isDark
                 ? "bg-slate-900 border-slate-700 text-white placeholder-slate-500 focus:border-cyan-400"
-                : "bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-blue-400"
+                : "bg-white border-slate-500 text-slate-900 placeholder-slate-400 focus:border-blue-700"
             } ${nameError ? (isDark ? "border-red-400" : "border-red-500") : ""}`}
           />
           {nameError && (
-            <p className={`text-xs mt-1 ${isDark ? "text-red-400" : "text-red-600"}`}>
+            <p className={`text-xs mt-1 ${isDark ? "text-red-400" : "text-red-800"}`}>
               Please enter your name to continue.
             </p>
           )}
@@ -284,7 +284,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
           className={`mt-5 px-6 py-2.5 rounded-full text-sm font-bold transition ${
             isDark
               ? "bg-cyan-500 text-slate-950 hover:bg-cyan-400"
-              : "bg-blue-600 text-white hover:bg-blue-500"
+              : "bg-blue-800 text-white hover:bg-blue-700 shadow-md"
           }`}
         >
           Start Quiz
@@ -301,12 +301,12 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
       }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[1100px] min-h-[760px] flex flex-col items-center ${
-        isDark ? "border-cyan-500 bg-transparent" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500 bg-transparent" : "border-blue-800 bg-white shadow-sm"
       }`}
     >
       <h2
         className={`font-semibold text-center ${
-          isDark ? "text-cyan-300" : "text-blue-800"
+          isDark ? "text-cyan-300" : "text-blue-900"
         }`}
       >
         Pre-Quiz: What Do You Already Know?
@@ -321,12 +321,12 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
       </p>
 
       {userName && !submitted && (
-        <div className={`flex items-center gap-2 text-[11px] mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+        <div className={`flex items-center gap-2 text-[11px] mb-3 ${isDark ? "text-slate-400" : "text-slate-800"}`}>
           <span>Taking this as <span className="font-semibold">{userName}</span></span>
           <span aria-hidden>·</span>
           <button
             onClick={handleStartFresh}
-            className={`underline underline-offset-2 ${isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-700 hover:text-blue-800"}`}
+            className={`underline underline-offset-2 ${isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-900 hover:text-blue-900"}`}
           >
             Change name (resets progress)
           </button>
@@ -335,7 +335,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
 
       <p
         className={`text-[11px] text-center mb-4 max-w-[700px] leading-5 ${
-          isDark ? "text-slate-500" : "text-slate-600"
+          isDark ? "text-slate-500" : "text-slate-800"
         }`}
       >
         Don't worry if you don't know the answers yet this quiz is designed to
@@ -349,12 +349,12 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
             className={`rounded-xl border p-4 ${
               isDark
                 ? "border-slate-700 bg-slate-900/70"
-                : "border-slate-400/70 bg-slate-50"
+                : "border-slate-600/70 bg-slate-50"
             }`}
           >
             <div
               className={`font-medium mb-3 ${
-                isDark ? "text-cyan-300" : "text-blue-800"
+                isDark ? "text-cyan-300" : "text-blue-900"
               }`}
             >
               {index + 1}. {q.question}
@@ -382,14 +382,14 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
                         : isWrongSelected
                         ? isDark
                           ? "border-red-400 text-red-300 bg-red-400/10"
-                          : "border-red-400 text-red-700 bg-red-100"
+                          : "border-red-700 text-red-700 bg-red-100"
                         : isSelected
                         ? isDark
                           ? "border-cyan-400 text-cyan-300 bg-cyan-400/10"
-                          : "border-blue-400 text-blue-800 bg-blue-100"
+                          : "border-blue-700 text-blue-900 bg-blue-100"
                         : isDark
                         ? "border-slate-700 text-slate-300 hover:bg-slate-800"
-                        : "border-slate-300 text-slate-700 hover:bg-slate-100"
+                        : "border-slate-500 text-slate-700 hover:bg-slate-100"
                     }`}
                     disabled={submitted}
                   >
@@ -408,7 +408,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
           className={`mt-6 px-6 py-2 rounded-lg border transition ${
             isDark
               ? "border-cyan-400 text-cyan-300 bg-cyan-400/10 hover:bg-cyan-400/20"
-              : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+              : "border-blue-700 text-blue-900 bg-blue-100 hover:bg-blue-200"
           }`}
         >
           Submit Pre-Quiz
@@ -419,12 +419,12 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
             className={`rounded-xl border p-5 text-center ${
               isDark
                 ? "border-slate-700 bg-slate-900/80"
-                : "border-slate-400/70 bg-slate-50"
+                : "border-slate-600/70 bg-slate-50"
             }`}
           >
             <div
               className={`text-lg font-semibold mb-2 ${
-                isDark ? "text-cyan-300" : "text-blue-800"
+                isDark ? "text-cyan-300" : "text-blue-900"
               }`}
             >
               Your Pre-Quiz Score
@@ -436,14 +436,14 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
             </div>
             <div
               className={`mt-2 text-lg ${
-                isDark ? "text-cyan-300" : "text-blue-800"
+                isDark ? "text-cyan-300" : "text-blue-900"
               }`}
             >
               {scoreData.percentage}%
             </div>
             <p
               className={`mt-3 text-sm ${
-                isDark ? "text-slate-400" : "text-slate-600"
+                isDark ? "text-slate-400" : "text-slate-800"
               }`}
             >
               {scoreData.percentage >= 70
@@ -455,7 +455,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
               className={`mt-4 px-3 py-1.5 rounded-md border text-[11px] font-medium transition ${
                 isDark
                   ? "border-cyan-400/60 text-cyan-300 bg-cyan-400/10 hover:bg-cyan-400/20"
-                  : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+                  : "border-blue-700 text-blue-900 bg-blue-100 hover:bg-blue-200"
               }`}
             >
               {showReview ? "Hide review" : "Review full exam with my answers"}
@@ -467,19 +467,19 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
               className={`rounded-xl border p-5 ${
                 isDark
                   ? "border-slate-700 bg-slate-900/80"
-                  : "border-slate-400/70 bg-slate-50"
+                  : "border-slate-600/70 bg-slate-50"
               }`}
             >
               <div
                 className={`text-lg font-semibold mb-1 ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
+                  isDark ? "text-cyan-300" : "text-blue-900"
                 }`}
               >
                 Review All Answers
               </div>
               <p
                 className={`text-xs mb-4 ${
-                  isDark ? "text-slate-400" : "text-slate-600"
+                  isDark ? "text-slate-400" : "text-slate-800"
                 }`}
               >
                 Walk through every question with the correct answer and explanation.
@@ -495,7 +495,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
                       className={`rounded-lg border p-4 ${
                         isDark
                           ? "border-slate-700 bg-slate-950/70"
-                          : "border-slate-400/70 bg-white"
+                          : "border-slate-600/70 bg-white"
                       }`}
                     >
                       <div
@@ -520,7 +520,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
                                 : "border-green-500 text-green-700 bg-green-100"
                               : isDark
                               ? "border-red-400/50 text-red-300 bg-red-400/10"
-                              : "border-red-400 text-red-700 bg-red-100"
+                              : "border-red-700 text-red-700 bg-red-100"
                           }`}
                         >
                           {isUserCorrect ? "Correct" : "Incorrect"}
@@ -563,7 +563,7 @@ function PreQuizStep({ active, theme, userName, setUserName, preQuizCompleted, p
 
                       <div
                         className={`text-sm ${
-                          isDark ? "text-slate-400" : "text-slate-600"
+                          isDark ? "text-slate-400" : "text-slate-800"
                         }`}
                       >
                         {q.explanation}

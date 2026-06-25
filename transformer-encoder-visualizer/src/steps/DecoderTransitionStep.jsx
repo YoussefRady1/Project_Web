@@ -100,12 +100,12 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
       animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[980px] min-h-[620px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
       }`}
     >
       <h2
         className={`font-semibold text-center ${
-          isDark ? "text-cyan-300" : "text-blue-800"
+          isDark ? "text-cyan-300" : "text-blue-900"
         }`}
       >
         Encoder → Decoder Transfer
@@ -122,7 +122,7 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
       <button
         onClick={() => setShowExplanation((v) => !v)}
         className={`mb-3 text-[11px] font-medium underline underline-offset-2 ${
-          isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-700 hover:text-blue-800"
+          isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-900 hover:text-blue-900"
         }`}
       >
         {showExplanation ? "Hide explanation" : "Show explanation"}
@@ -133,7 +133,7 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           className={`w-full max-w-[720px] mb-4 rounded-xl border p-3 text-[11px] leading-5 ${
-            isDark ? "border-slate-700 bg-slate-900/70 text-slate-300" : "border-slate-300 bg-slate-50 text-slate-700"
+            isDark ? "border-slate-700 bg-slate-900/70 text-slate-300" : "border-slate-500 bg-slate-50 text-slate-700"
           }`}
         >
           <p className="mb-2">
@@ -159,14 +159,14 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
                   isCurrent
                     ? isDark
                       ? "border-cyan-400 text-cyan-300 bg-cyan-400/15 shadow-[0_0_12px_rgba(34,211,238,0.25)]"
-                      : "border-blue-500 text-blue-800 bg-blue-100"
+                      : "border-blue-800 text-blue-900 bg-blue-100"
                     : isDone
                     ? isDark
                       ? "border-green-400/60 text-green-300 bg-green-400/10 cursor-pointer hover:bg-green-400/20"
-                      : "border-green-400 text-green-700 bg-green-50 cursor-pointer hover:bg-green-100"
+                      : "border-green-700 text-green-700 bg-green-100 cursor-pointer hover:bg-green-100"
                     : isDark
                     ? "border-slate-700 text-slate-500 bg-slate-900/40 cursor-not-allowed"
-                    : "border-slate-300 text-slate-400 bg-slate-50 cursor-not-allowed"
+                    : "border-slate-500 text-slate-700 bg-slate-50 cursor-not-allowed"
                 }`}
               >
                 <span
@@ -181,7 +181,7 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
                         : "bg-green-500 text-white"
                       : isDark
                       ? "bg-slate-800 text-slate-500"
-                      : "bg-slate-200 text-slate-400"
+                      : "bg-slate-200 text-slate-700"
                   }`}
                 >
                   {isDone ? "✓" : i + 1}
@@ -194,7 +194,7 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
                     i < stage
                       ? isDark
                         ? "text-green-400/60"
-                        : "text-green-500"
+                        : "text-green-700"
                       : isDark
                       ? "text-slate-700"
                       : "text-slate-300"
@@ -220,8 +220,8 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
               transition={{ duration: 0.35 }}
               className="w-full flex flex-col items-center"
             >
-              <div className={`w-full max-w-[760px] rounded-xl border p-4 ${isDark ? "border-cyan-400/30 bg-cyan-400/5" : "border-blue-200 bg-blue-50"}`}>
-                <div className={`text-sm font-semibold mb-2 ${isDark ? "text-cyan-300" : "text-blue-800"}`}>
+              <div className={`w-full max-w-[760px] rounded-xl border p-4 ${isDark ? "border-cyan-400/30 bg-cyan-400/5" : "border-blue-600 bg-blue-100"}`}>
+                <div className={`text-sm font-semibold mb-2 ${isDark ? "text-cyan-300" : "text-blue-900"}`}>
                   Why does this transfer happen?
                 </div>
                 <div className={`text-[12px] leading-5 space-y-2 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
@@ -235,17 +235,17 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
               </div>
 
               <div className={`mt-4 grid grid-cols-3 gap-2 w-full max-w-[760px]`}>
-                <div className={`rounded-lg border p-2 text-center ${isDark ? "border-green-400/40 bg-green-400/5" : "border-green-300 bg-green-50"}`}>
+                <div className={`rounded-lg border p-2 text-center ${isDark ? "border-green-400/40 bg-green-400/5" : "border-green-600 bg-green-100"}`}>
                   <div className={`text-[10px] font-semibold ${isDark ? "text-green-300" : "text-green-700"}`}>Source</div>
-                  <div className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>Encoder output</div>
+                  <div className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-800"}`}>Encoder output</div>
                 </div>
-                <div className={`rounded-lg border p-2 text-center ${isDark ? "border-cyan-400/40 bg-cyan-400/5" : "border-blue-300 bg-blue-50"}`}>
-                  <div className={`text-[10px] font-semibold ${isDark ? "text-cyan-300" : "text-blue-700"}`}>Carries</div>
-                  <div className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>K &amp; V vectors</div>
+                <div className={`rounded-lg border p-2 text-center ${isDark ? "border-cyan-400/40 bg-cyan-400/5" : "border-blue-700 bg-blue-100"}`}>
+                  <div className={`text-[10px] font-semibold ${isDark ? "text-cyan-300" : "text-blue-900"}`}>Carries</div>
+                  <div className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-800"}`}>K &amp; V vectors</div>
                 </div>
-                <div className={`rounded-lg border p-2 text-center ${isDark ? "border-violet-400/40 bg-violet-400/5" : "border-violet-300 bg-violet-50"}`}>
+                <div className={`rounded-lg border p-2 text-center ${isDark ? "border-violet-400/40 bg-violet-400/5" : "border-violet-600 bg-violet-100"}`}>
                   <div className={`text-[10px] font-semibold ${isDark ? "text-violet-300" : "text-violet-700"}`}>Destination</div>
-                  <div className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>Decoder cross-attention</div>
+                  <div className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-800"}`}>Decoder cross-attention</div>
                 </div>
               </div>
             </motion.div>
@@ -260,27 +260,27 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
               transition={{ duration: 0.35 }}
               className="w-full"
             >
-              <div className={`text-[11px] text-center mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+              <div className={`text-[11px] text-center mb-3 ${isDark ? "text-slate-400" : "text-slate-800"}`}>
                 The encoder has finished processing. The decoder is waiting for its memory.
               </div>
 
               <div className="flex gap-3 w-full items-stretch">
                 {/* Encoder side */}
-                <div className={`flex-1 rounded-xl border p-3 ${isDark ? "border-green-400/50 bg-green-400/5 shadow-[0_0_18px_rgba(74,222,128,0.08)]" : "border-green-300 bg-green-50"}`}>
+                <div className={`flex-1 rounded-xl border p-3 ${isDark ? "border-green-400/50 bg-green-400/5 shadow-[0_0_18px_rgba(74,222,128,0.08)]" : "border-green-600 bg-green-100"}`}>
                   <div className="flex items-center justify-between mb-2">
                     <div className={`text-xs font-bold ${isDark ? "text-green-300" : "text-green-700"}`}>ENCODER</div>
                     <div className={`text-[10px] px-1.5 py-0.5 rounded-full ${isDark ? "bg-green-400/20 text-green-300" : "bg-green-200 text-green-800"}`}>
                       ✓ Done
                     </div>
                   </div>
-                  <div className={`text-[10px] mb-2 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+                  <div className={`text-[10px] mb-2 ${isDark ? "text-slate-500" : "text-slate-700"}`}>
                     Understood your input sentence
                   </div>
                   <div className="flex flex-col gap-1.5">
                     {rows.map((row, i) => (
-                      <div key={i} className={`rounded border px-2 py-1 flex items-center justify-between ${isDark ? "border-green-400/20 bg-slate-900/60" : "border-green-200 bg-white"}`}>
+                      <div key={i} className={`rounded border px-2 py-1 flex items-center justify-between ${isDark ? "border-green-400/20 bg-slate-900/60" : "border-green-500 bg-white"}`}>
                         <span className={`text-[10px] font-medium ${isDark ? "text-green-300" : "text-green-700"}`}>{row.word}</span>
-                        <span className={`text-[9px] ml-2 font-mono ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+                        <span className={`text-[9px] ml-2 font-mono ${isDark ? "text-slate-500" : "text-slate-700"}`}>
                           [{row.output.map((v) => v.toFixed(2)).join(", ")}]
                         </span>
                       </div>
@@ -295,29 +295,29 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
                       key={idx}
                       animate={{ x: [0, 8, 0], opacity: [0.25, 1, 0.25] }}
                       transition={{ duration: 1.4, repeat: Infinity, delay: idx * 0.35 }}
-                      className={`text-2xl ${isDark ? "text-cyan-400" : "text-blue-500"}`}
+                      className={`text-2xl ${isDark ? "text-cyan-400" : "text-blue-800"}`}
                     >
                       →
                     </motion.div>
                   ))}
-                  <div className={`text-[9px] text-center ${isDark ? "text-slate-500" : "text-slate-500"}`}>K, V</div>
+                  <div className={`text-[9px] text-center ${isDark ? "text-slate-500" : "text-slate-700"}`}>K, V</div>
                 </div>
 
                 {/* Decoder side */}
-                <div className={`flex-1 rounded-xl border p-3 opacity-70 ${isDark ? "border-slate-600 bg-slate-900/40" : "border-slate-300 bg-slate-50"}`}>
+                <div className={`flex-1 rounded-xl border p-3 opacity-70 ${isDark ? "border-slate-600 bg-slate-900/40" : "border-slate-500 bg-slate-50"}`}>
                   <div className="flex items-center justify-between mb-2">
-                    <div className={`text-xs font-bold ${isDark ? "text-slate-300" : "text-slate-600"}`}>DECODER</div>
-                    <div className={`text-[10px] px-1.5 py-0.5 rounded-full ${isDark ? "bg-slate-700 text-slate-300" : "bg-slate-200 text-slate-600"}`}>
+                    <div className={`text-xs font-bold ${isDark ? "text-slate-300" : "text-slate-800"}`}>DECODER</div>
+                    <div className={`text-[10px] px-1.5 py-0.5 rounded-full ${isDark ? "bg-slate-700 text-slate-300" : "bg-slate-200 text-slate-800"}`}>
                       ⏳ Waiting
                     </div>
                   </div>
-                  <div className={`text-[10px] mb-2 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+                  <div className={`text-[10px] mb-2 ${isDark ? "text-slate-500" : "text-slate-700"}`}>
                     Needs encoder's understanding
                   </div>
                   <div className="flex flex-col gap-1.5">
                     {[0, 1, 2, 3].map((i) => (
-                      <div key={i} className={`rounded border px-2 py-1.5 ${isDark ? "border-slate-700 bg-slate-800/50" : "border-slate-200 bg-white"}`}>
-                        <span className={`text-[10px] italic ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                      <div key={i} className={`rounded border px-2 py-1.5 ${isDark ? "border-slate-700 bg-slate-800/50" : "border-slate-500 bg-white"}`}>
+                        <span className={`text-[10px] italic ${isDark ? "text-slate-500" : "text-slate-700"}`}>
                           awaiting encoder K, V…
                         </span>
                       </div>
@@ -337,7 +337,7 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
               transition={{ duration: 0.35 }}
               className="w-full flex flex-col items-center"
             >
-              <div className={`text-xs mb-3 text-center ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+              <div className={`text-xs mb-3 text-center ${isDark ? "text-slate-400" : "text-slate-800"}`}>
                 Encoder output vectors flowing into the decoder
               </div>
 
@@ -362,10 +362,10 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
                     className={`px-3 py-2 rounded-lg border ${
                       isDark
                         ? "border-green-400/60 bg-slate-900/80"
-                        : "border-green-400 bg-white"
+                        : "border-green-700 bg-white"
                     }`}
                   >
-                    <div className={`text-xs font-medium mb-1 ${isDark ? "text-cyan-300" : "text-blue-800"}`}>
+                    <div className={`text-xs font-medium mb-1 ${isDark ? "text-cyan-300" : "text-blue-900"}`}>
                       {row.word}
                     </div>
                     <div className="flex gap-1">
@@ -420,7 +420,7 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
                 ))}
               </div>
 
-              <p className={`text-sm mt-2 ${isDark ? "text-cyan-300/80" : "text-blue-700"}`}>
+              <p className={`text-sm mt-2 ${isDark ? "text-cyan-300/80" : "text-blue-900"}`}>
                 {transferDone
                   ? "Vectors delivered to the decoder."
                   : "Passing encoder context vectors to decoder…"}
@@ -440,35 +440,35 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
               <div className={`text-xl font-bold mb-1 ${isDark ? "text-green-300" : "text-green-700"}`}>
                 Transfer Complete ✓
               </div>
-              <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+              <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-800"}`}>
                 The decoder now has the encoder's understanding it can start generating
               </p>
 
-              <div className={`w-full max-w-[760px] rounded-xl border p-4 ${isDark ? "border-green-400/30 bg-green-400/5" : "border-green-300 bg-green-50"}`}>
+              <div className={`w-full max-w-[760px] rounded-xl border p-4 ${isDark ? "border-green-400/30 bg-green-400/5" : "border-green-600 bg-green-100"}`}>
                 <div className={`text-sm font-semibold mb-3 text-center ${isDark ? "text-green-300" : "text-green-700"}`}>
                   What the decoder received and how it uses these vectors
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 mb-3">
-                  <div className={`rounded-lg border p-2 ${isDark ? "border-pink-400/30 bg-pink-400/5" : "border-pink-200 bg-pink-50"}`}>
+                  <div className={`rounded-lg border p-2 ${isDark ? "border-pink-400/30 bg-pink-400/5" : "border-pink-500 bg-pink-100"}`}>
                     <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-pink-300" : "text-pink-700"}`}>
                       Used as Keys (K) in Cross-Attention
                     </div>
-                    <div className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                    <div className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-800"}`}>
                       The decoder compares its Query against these to score relevance <em>"which input word matters most right now?"</em>
                     </div>
                   </div>
-                  <div className={`rounded-lg border p-2 ${isDark ? "border-lime-400/30 bg-lime-400/5" : "border-lime-200 bg-lime-50"}`}>
+                  <div className={`rounded-lg border p-2 ${isDark ? "border-lime-400/30 bg-lime-400/5" : "border-lime-500 bg-lime-100"}`}>
                     <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-lime-300" : "text-lime-700"}`}>
                       Used as Values (V) in Cross-Attention
                     </div>
-                    <div className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                    <div className={`text-[10px] leading-4 ${isDark ? "text-slate-400" : "text-slate-800"}`}>
                       Blended by attention weights, these give the decoder the actual <em>content</em> from relevant input words.
                     </div>
                   </div>
                 </div>
 
-                <div className={`text-[10px] uppercase tracking-wide text-center mb-2 ${isDark ? "text-green-300/70" : "text-green-600"}`}>
+                <div className={`text-[10px] uppercase tracking-wide text-center mb-2 ${isDark ? "text-green-300/70" : "text-green-800"}`}>
                   Encoder Memory Vectors (K &amp; V source in every cross-attention layer)
                 </div>
 
@@ -479,7 +479,7 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
                       initial={{ opacity: 0, scale: 0.85 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.15 + i * 0.06 }}
-                      className={`px-3 py-1.5 rounded-lg border text-xs font-mono ${isDark ? "border-green-400/50 text-green-300 bg-green-400/10" : "border-green-300 text-green-700 bg-green-100"}`}
+                      className={`px-3 py-1.5 rounded-lg border text-xs font-mono ${isDark ? "border-green-400/50 text-green-300 bg-green-400/10" : "border-green-600 text-green-700 bg-green-100"}`}
                     >
                       {row.word}: [{row.output.map((v) => v.toFixed(2)).join(", ")}]
                     </motion.div>
@@ -487,7 +487,7 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
                 </div>
               </div>
 
-              <p className={`text-sm mt-5 ${isDark ? "text-cyan-300/70" : "text-blue-600"}`}>
+              <p className={`text-sm mt-5 ${isDark ? "text-cyan-300/70" : "text-blue-900"}`}>
                 Press <strong>Next</strong> on the main controller to begin the Decoder steps →
               </p>
             </motion.div>
@@ -504,17 +504,17 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
             stage === 0
               ? isDark
                 ? "border-slate-800 text-slate-700 cursor-not-allowed"
-                : "border-slate-200 text-slate-300 cursor-not-allowed"
+                : "border-slate-500 text-slate-300 cursor-not-allowed"
               : isDark
               ? "border-slate-600 text-slate-300 hover:bg-slate-800"
-              : "border-slate-300 text-slate-700 hover:bg-slate-100"
+              : "border-slate-500 text-slate-700 hover:bg-slate-100"
           }`}
         >
           ← Previous
         </button>
 
-        <div className={`text-[11px] ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-          Stage {stage + 1} of {STAGES.length} <span className={isDark ? "text-cyan-300" : "text-blue-700"}>{STAGES[stage].label}</span>
+        <div className={`text-[11px] ${isDark ? "text-slate-500" : "text-slate-700"}`}>
+          Stage {stage + 1} of {STAGES.length} <span className={isDark ? "text-cyan-300" : "text-blue-900"}>{STAGES[stage].label}</span>
         </div>
 
         {stage < STAGES.length - 1 ? (
@@ -525,10 +525,10 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
               nextDisabled
                 ? isDark
                   ? "border-slate-700 text-slate-600 cursor-not-allowed"
-                  : "border-slate-200 text-slate-400 cursor-not-allowed"
+                  : "border-slate-500 text-slate-700 cursor-not-allowed"
                 : isDark
                 ? "border-cyan-400 text-cyan-300 bg-cyan-400/10 hover:bg-cyan-400/20 shadow-[0_0_12px_rgba(34,211,238,0.2)]"
-                : "border-blue-500 text-blue-800 bg-blue-100 hover:bg-blue-200"
+                : "border-blue-800 text-blue-900 bg-blue-100 hover:bg-blue-200"
             }`}
           >
             {stage === 1 ? "Start Transfer →" : nextDisabled ? "Transferring…" : "Next →"}
@@ -539,7 +539,7 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
             className={`px-4 py-1.5 text-xs rounded-lg border transition ${
               isDark
                 ? "border-slate-600 text-slate-300 hover:bg-slate-800"
-                : "border-slate-300 text-slate-700 hover:bg-slate-100"
+                : "border-slate-500 text-slate-700 hover:bg-slate-100"
             }`}
           >
             ↻ Replay
@@ -547,7 +547,7 @@ function DecoderTransitionStep({ active, tokens = [], theme }) {
         )}
       </div>
 
-      <div className={`w-full max-w-[760px] mt-5 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-400 bg-violet-50"}`}>
+      <div className={`w-full max-w-[760px] mt-5 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-700 bg-violet-100"}`}>
         <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-violet-300" : "text-violet-700"}`}>Key insight</div>
         <p className={`text-[10px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
           The encoder's output vectors are the decoder's "memory" of the input. Without this transfer, the decoder would have no knowledge of what to translate. These vectors will be used as Keys and Values in cross-attention.

@@ -86,12 +86,12 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
       animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[860px] min-h-[560px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
       }`}
     >
       <h2
         className={`font-semibold text-center ${
-          isDark ? "text-cyan-300" : "text-blue-800"
+          isDark ? "text-cyan-300" : "text-blue-900"
         }`}
       >
         Output Prediction
@@ -107,23 +107,23 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
         className={`mb-4 px-5 py-2.5 rounded-xl border text-center ${
           isDark
             ? "border-cyan-500/40 bg-cyan-500/10"
-            : "border-blue-300 bg-blue-50"
+            : "border-blue-700 bg-blue-100"
         }`}
       >
         <div
           className={`text-[10px] uppercase tracking-wider font-semibold mb-0.5 ${
-            isDark ? "text-cyan-400/70" : "text-blue-500"
+            isDark ? "text-cyan-400/70" : "text-blue-800"
           }`}
         >
           Task
         </div>
         <div
           className={`text-lg font-bold ${
-            isDark ? "text-cyan-200" : "text-blue-800"
+            isDark ? "text-cyan-200" : "text-blue-900"
           }`}
         >
           Translating <span className="italic">"{sentence}"</span>
-          <span className={isDark ? "text-cyan-400" : "text-blue-500"}> → French</span>
+          <span className={isDark ? "text-cyan-400" : "text-blue-700"}> → French</span>
         </div>
       </div>
 
@@ -131,12 +131,12 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
         {/* Current decoder input - grows with each run */}
         <div
           className={`w-full max-w-[680px] rounded-xl border p-4 ${
-            isDark ? "border-slate-700 bg-slate-900/60" : "border-slate-300 bg-slate-50"
+            isDark ? "border-slate-700 bg-slate-900/60" : "border-slate-500 bg-slate-50"
           }`}
         >
           <div
             className={`text-[10px] uppercase tracking-wider font-semibold mb-3 ${
-              isDark ? "text-slate-500" : "text-slate-500"
+              isDark ? "text-slate-500" : "text-slate-700"
             }`}
           >
             Decoder input for next run
@@ -152,10 +152,10 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
                   tok === "<START>"
                     ? isDark
                       ? "border-purple-400 text-purple-300 bg-purple-400/10"
-                      : "border-purple-400 text-purple-700 bg-purple-100"
+                      : "border-purple-700 text-purple-700 bg-purple-100"
                     : isDark
                     ? "border-green-400 text-green-300 bg-green-400/10"
-                    : "border-green-400 text-green-700 bg-green-100"
+                    : "border-green-700 text-green-700 bg-green-100"
                 }`}
               >
                 {tok}
@@ -164,7 +164,7 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
             {!isComplete && (
               <span
                 className={`px-2.5 py-1 rounded-lg text-xs border border-dashed ${
-                  isDark ? "border-slate-600 text-slate-500" : "border-slate-300 text-slate-400"
+                  isDark ? "border-slate-600 text-slate-500" : "border-slate-500 text-slate-700"
                 }`}
               >
                 → ?
@@ -174,7 +174,7 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
           {stepIdx > 0 && !isComplete && (
             <p
               className={`mt-2 text-[10px] ${
-                isDark ? "text-slate-500" : "text-slate-500"
+                isDark ? "text-slate-500" : "text-slate-700"
               }`}
             >
               Run {stepIdx} predicted{" "}
@@ -196,7 +196,7 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
             className={`px-4 py-2 rounded-lg border text-sm font-medium transition disabled:opacity-50 ${
               isDark
                 ? "border-cyan-400 text-cyan-300 bg-cyan-400/10 hover:bg-cyan-400/20"
-                : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+                : "border-blue-700 text-blue-900 bg-blue-100 hover:bg-blue-200"
             }`}
           >
             {isComplete ? "Reset" : stepIdx === 0 ? "Run Decoder" : "Run Again"}
@@ -208,10 +208,10 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
                 autoPlay
                   ? isDark
                     ? "border-red-400 text-red-300 bg-red-400/10 hover:bg-red-400/20"
-                    : "border-red-400 text-red-700 bg-red-100 hover:bg-red-200"
+                    : "border-red-700 text-red-700 bg-red-100 hover:bg-red-200"
                   : isDark
                   ? "border-green-400 text-green-300 bg-green-400/10 hover:bg-green-400/20"
-                  : "border-green-400 text-green-700 bg-green-100 hover:bg-green-200"
+                  : "border-green-700 text-green-700 bg-green-100 hover:bg-green-200"
               }`}
             >
               {autoPlay ? "Pause" : "Auto Run"}
@@ -227,7 +227,7 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
             className={`w-full max-w-[680px] mt-2 rounded-xl border p-4 text-center ${
               isDark
                 ? "border-green-400/30 bg-green-400/5"
-                : "border-green-300 bg-green-50"
+                : "border-green-600 bg-green-100"
             }`}
           >
             <span
@@ -253,7 +253,7 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
         className={`mt-5 text-[11px] font-medium underline underline-offset-2 ${
           isDark
             ? "text-cyan-300 hover:text-cyan-200"
-            : "text-blue-700 hover:text-blue-800"
+            : "text-blue-900 hover:text-blue-900"
         }`}
       >
         {showExplanation ? "Hide explanation" : "Show explanation"}
@@ -266,7 +266,7 @@ function DecoderOutputStep({ active, tokens = [], theme }) {
           className={`w-full max-w-[700px] mt-3 rounded-xl border p-3 text-[11px] leading-5 ${
             isDark
               ? "border-slate-700 bg-slate-900/70 text-slate-300"
-              : "border-slate-300 bg-slate-50 text-slate-700"
+              : "border-slate-500 bg-slate-50 text-slate-700"
           }`}
         >
           <p className="mb-2">

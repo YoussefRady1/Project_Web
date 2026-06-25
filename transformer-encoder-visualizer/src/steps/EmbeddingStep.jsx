@@ -62,12 +62,12 @@ function EmbeddingStep({ active, tokens, theme }) {
       }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[760px] min-h-[420px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
       }`}
     >
       <h2
         className={`font-semibold text-center ${
-          isDark ? "text-cyan-300" : "text-blue-800"
+          isDark ? "text-cyan-300" : "text-blue-900"
         }`}
       >
         Embedding
@@ -85,12 +85,12 @@ function EmbeddingStep({ active, tokens, theme }) {
   className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 ${
     isDark
       ? "border-cyan-400/30 bg-cyan-400/5"
-      : "border-blue-400 bg-blue-50"
+      : "border-blue-700 bg-blue-100"
   }`}
 >
   <div
     className={`text-sm font-semibold mb-1 ${
-      isDark ? "text-cyan-300" : "text-blue-800"
+      isDark ? "text-cyan-300" : "text-blue-900"
     }`}
   >
     Why we use this step
@@ -116,7 +116,7 @@ function EmbeddingStep({ active, tokens, theme }) {
           className={`w-full rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/70"
-              : "border-slate-400/70 bg-slate-50"
+              : "border-slate-600/70 bg-slate-50"
           }`}
         >
           <div className="mb-4 flex justify-center">
@@ -125,7 +125,7 @@ function EmbeddingStep({ active, tokens, theme }) {
               className={`rounded-lg border px-4 py-2 text-[11px] font-medium transition ${
                 isDark
                   ? "border-cyan-400/40 bg-cyan-400/10 text-cyan-300 hover:bg-cyan-400/20"
-                  : "border-blue-300 bg-blue-100 text-blue-800 hover:bg-blue-200"
+                  : "border-blue-700 bg-blue-100 text-blue-900 hover:bg-blue-200"
               }`}
             >
               {showExplanation
@@ -140,12 +140,12 @@ function EmbeddingStep({ active, tokens, theme }) {
                 className={`mb-3 rounded-lg border p-3 text-[11px] leading-5 ${
                   isDark
                     ? "border-cyan-400/40 bg-cyan-400/5 text-slate-300"
-                    : "border-blue-400 bg-blue-50 text-slate-700"
+                    : "border-blue-700 bg-blue-100 text-slate-700"
                 }`}
               >
                 <span
                   className={`font-medium ${
-                    isDark ? "text-cyan-300" : "text-blue-800"
+                    isDark ? "text-cyan-300" : "text-blue-900"
                   }`}
                 >
                   Why convert words to vectors?
@@ -158,7 +158,7 @@ function EmbeddingStep({ active, tokens, theme }) {
 
               <h3
                 className={`text-sm font-semibold mb-3 ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
+                  isDark ? "text-cyan-300" : "text-blue-900"
                 }`}
               >
                 How is the vector made here?
@@ -173,19 +173,19 @@ function EmbeddingStep({ active, tokens, theme }) {
                   className={`rounded-lg border p-3 ${
                     isDark
                       ? "border-slate-700 bg-slate-950/60"
-                      : "border-slate-400/70 bg-white"
+                      : "border-slate-600/70 bg-white"
                   }`}
                 >
                   <div
                     className={`text-[10px] uppercase tracking-wide mb-1 ${
-                      isDark ? "text-slate-500" : "text-slate-600"
+                      isDark ? "text-slate-500" : "text-slate-800"
                     }`}
                   >
                     Sample word
                   </div>
                   <div
                     className={`font-medium text-sm ${
-                      isDark ? "text-cyan-300" : "text-blue-800"
+                      isDark ? "text-cyan-300" : "text-blue-900"
                     }`}
                   >
                     {sampleWord}
@@ -196,12 +196,12 @@ function EmbeddingStep({ active, tokens, theme }) {
                   className={`rounded-lg border p-3 ${
                     isDark
                       ? "border-slate-700 bg-slate-950/60"
-                      : "border-slate-400/70 bg-white"
+                      : "border-slate-600/70 bg-white"
                   }`}
                 >
                   <div
                     className={`text-[10px] uppercase tracking-wide mb-2 ${
-                      isDark ? "text-slate-500" : "text-slate-600"
+                      isDark ? "text-slate-500" : "text-slate-800"
                     }`}
                   >
                     What we read from the word
@@ -221,31 +221,31 @@ function EmbeddingStep({ active, tokens, theme }) {
                     </div>
                     <div>
                       Length:{" "}
-                      <span className={isDark ? "text-cyan-300" : "text-blue-800"}>
+                      <span className={isDark ? "text-cyan-300" : "text-blue-900"}>
                         {wordLength}
                       </span>
                     </div>
                     <div>
                       First letter code:{" "}
-                      <span className={isDark ? "text-cyan-300" : "text-blue-800"}>
+                      <span className={isDark ? "text-cyan-300" : "text-blue-900"}>
                         {sampleChars[0] || "-"} → {firstCode}
                       </span>
                     </div>
                     <div>
                       Last letter code:{" "}
-                      <span className={isDark ? "text-cyan-300" : "text-blue-800"}>
+                      <span className={isDark ? "text-cyan-300" : "text-blue-900"}>
                         {sampleChars[sampleChars.length - 1] || "-"} → {lastCode}
                       </span>
                     </div>
                     <div>
                       Vowels (a, e, i, o, u):{" "}
-                      <span className={isDark ? "text-cyan-300" : "text-blue-800"}>
+                      <span className={isDark ? "text-cyan-300" : "text-blue-900"}>
                         {vowelCount}
                       </span>
                     </div>
                     <div>
                       Total letter codes:{" "}
-                      <span className={isDark ? "text-cyan-300" : "text-blue-800"}>
+                      <span className={isDark ? "text-cyan-300" : "text-blue-900"}>
                         {sampleCodes.join(" + ")} = {sumCodes}
                       </span>
                     </div>
@@ -256,12 +256,12 @@ function EmbeddingStep({ active, tokens, theme }) {
                   className={`rounded-lg border p-3 ${
                     isDark
                       ? "border-slate-700 bg-slate-950/60"
-                      : "border-slate-400/70 bg-white"
+                      : "border-slate-600/70 bg-white"
                   }`}
                 >
                   <div
                     className={`text-[10px] uppercase tracking-wide mb-2 ${
-                      isDark ? "text-slate-500" : "text-slate-600"
+                      isDark ? "text-slate-500" : "text-slate-800"
                     }`}
                   >
                     How each output is calculated
@@ -276,10 +276,10 @@ function EmbeddingStep({ active, tokens, theme }) {
                       className={`rounded-md border p-2 ${
                         isDark
                           ? "border-slate-800 bg-slate-900/70"
-                          : "border-slate-400/70 bg-slate-50"
+                          : "border-slate-600/70 bg-slate-50"
                       }`}
                     >
-                      <span className={isDark ? "text-cyan-300 font-medium" : "text-blue-800 font-medium"}>
+                      <span className={isDark ? "text-cyan-300 font-medium" : "text-blue-900 font-medium"}>
                         1st value
                       </span>{" "}
                       = total codes % 100
@@ -292,10 +292,10 @@ function EmbeddingStep({ active, tokens, theme }) {
                       className={`rounded-md border p-2 ${
                         isDark
                           ? "border-slate-800 bg-slate-900/70"
-                          : "border-slate-400/70 bg-slate-50"
+                          : "border-slate-600/70 bg-slate-50"
                       }`}
                     >
-                      <span className={isDark ? "text-cyan-300 font-medium" : "text-blue-800 font-medium"}>
+                      <span className={isDark ? "text-cyan-300 font-medium" : "text-blue-900 font-medium"}>
                         2nd value
                       </span>{" "}
                       = (first code × length) % 100
@@ -308,10 +308,10 @@ function EmbeddingStep({ active, tokens, theme }) {
                       className={`rounded-md border p-2 ${
                         isDark
                           ? "border-slate-800 bg-slate-900/70"
-                          : "border-slate-400/70 bg-slate-50"
+                          : "border-slate-600/70 bg-slate-50"
                       }`}
                     >
-                      <span className={isDark ? "text-cyan-300 font-medium" : "text-blue-800 font-medium"}>
+                      <span className={isDark ? "text-cyan-300 font-medium" : "text-blue-900 font-medium"}>
                         3rd value
                       </span>{" "}
                       = (last code + vowels × 7) % 100
@@ -324,10 +324,10 @@ function EmbeddingStep({ active, tokens, theme }) {
                       className={`rounded-md border p-2 ${
                         isDark
                           ? "border-slate-800 bg-slate-900/70"
-                          : "border-slate-400/70 bg-slate-50"
+                          : "border-slate-600/70 bg-slate-50"
                       }`}
                     >
-                      <span className={isDark ? "text-cyan-300 font-medium" : "text-blue-800 font-medium"}>
+                      <span className={isDark ? "text-cyan-300 font-medium" : "text-blue-900 font-medium"}>
                         4th value
                       </span>{" "}
                       = ((total + first + last + length) × 3) % 100
@@ -342,12 +342,12 @@ function EmbeddingStep({ active, tokens, theme }) {
                   className={`rounded-lg border p-3 ${
                     isDark
                       ? "border-cyan-400/40 bg-cyan-400/5"
-                      : "border-blue-400 bg-blue-50"
+                      : "border-blue-700 bg-blue-100"
                   }`}
                 >
                   <div
                     className={`text-[10px] uppercase tracking-wide mb-2 ${
-                      isDark ? "text-cyan-300/80" : "text-blue-700"
+                      isDark ? "text-cyan-300/80" : "text-blue-900"
                     }`}
                   >
                     Final demo vector
@@ -360,7 +360,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                         className={`text-xs px-2 py-1 rounded border ${
                           isDark
                             ? "text-white bg-slate-900 border-cyan-400/40"
-                            : "text-slate-900 bg-white border-blue-400"
+                            : "text-slate-900 bg-white border-blue-700"
                         }`}
                       >
                         {value}
@@ -400,7 +400,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                     delay: index * 0.12,
                   }}
                   className={`text-sm w-16 text-right font-medium ${
-                    isDark ? "text-cyan-300" : "text-blue-800"
+                    isDark ? "text-cyan-300" : "text-blue-900"
                   }`}
                 >
                   {word}
@@ -418,7 +418,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                     ease: "easeInOut",
                     delay: index * 0.15,
                   }}
-                  className={isDark ? "text-cyan-400" : "text-blue-600"}
+                  className={isDark ? "text-cyan-400" : "text-blue-900"}
                 >
                   →
                 </motion.div>
@@ -426,7 +426,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                 <div className="flex flex-col gap-1">
                   <div
                     className={`text-[10px] ${
-                      isDark ? "text-slate-500" : "text-slate-600"
+                      isDark ? "text-slate-500" : "text-slate-800"
                     }`}
                   >
                     letter-based demo vector
@@ -436,7 +436,7 @@ function EmbeddingStep({ active, tokens, theme }) {
                     className={`flex gap-1 px-2 py-1 rounded border ${
                       isDark
                         ? "bg-slate-900 border-cyan-400"
-                        : "bg-white border-blue-400"
+                        : "bg-white border-blue-700"
                     }`}
                   >
                     {vector.map((v, i) => (

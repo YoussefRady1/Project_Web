@@ -450,7 +450,7 @@ const focusedUnderstandingLabel =
       }}
       transition={{ duration: 0.3 }}
       className={`border rounded-2xl overflow-hidden ${
-        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
       }`}
       style={{ width: BOX_W }}
     >
@@ -458,7 +458,7 @@ const focusedUnderstandingLabel =
         <div className="pt-5 pb-3 text-center">
           <h2
             className={`font-semibold ${
-              isDark ? "text-cyan-300" : "text-blue-800"
+              isDark ? "text-cyan-300" : "text-blue-900"
             }`}
             style={{ fontSize: "1.6rem" }}
           >
@@ -475,12 +475,12 @@ const focusedUnderstandingLabel =
   className={`mx-4 mb-4 rounded-xl border p-3 ${
     isDark
       ? "border-cyan-400/30 bg-cyan-400/5"
-      : "border-blue-400 bg-blue-50"
+      : "border-blue-700 bg-blue-100"
   }`}
 >
   <div
     className={`text-sm font-semibold mb-1 ${
-      isDark ? "text-cyan-300" : "text-blue-800"
+      isDark ? "text-cyan-300" : "text-blue-900"
     }`}
   >
     Why we use this step
@@ -500,7 +500,7 @@ const focusedUnderstandingLabel =
           className={`mx-4 mb-3 rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/95"
-              : "border-slate-400/70 bg-slate-50"
+              : "border-slate-600/70 bg-slate-50"
           }`}
           style={{ touchAction: "auto" }}
         >
@@ -508,14 +508,14 @@ const focusedUnderstandingLabel =
             <div>
               <div
                 className={`text-sm font-semibold ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
+                  isDark ? "text-cyan-300" : "text-blue-900"
                 }`}
               >
                 Attention details
               </div>
               <div
                 className={`text-[11px] ${
-                  isDark ? "text-slate-500" : "text-slate-600"
+                  isDark ? "text-slate-500" : "text-slate-800"
                 }`}
               >
                 Focused word:{" "}
@@ -540,12 +540,12 @@ const focusedUnderstandingLabel =
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-cyan-400/30 bg-cyan-400/5"
-                  : "border-blue-400 bg-blue-50"
+                  : "border-blue-700 bg-blue-100"
               }`}
             >
               <div
                 className={`font-medium mb-1 ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
+                  isDark ? "text-cyan-300" : "text-blue-900"
                 }`}
               >
                 Input from Positional Encoding
@@ -564,7 +564,7 @@ const focusedUnderstandingLabel =
                       className={`px-2 py-1 rounded border ${
                         isDark
                           ? "border-cyan-400 text-cyan-300"
-                          : "border-blue-400 text-blue-800 bg-blue-100"
+                          : "border-blue-700 text-blue-900 bg-blue-100"
                       }`}
                     >
                       {v}
@@ -572,7 +572,7 @@ const focusedUnderstandingLabel =
                   ))}
                 </div>
 
-                <span className={isDark ? "text-cyan-400" : "text-blue-600"}>+</span>
+                <span className={isDark ? "text-cyan-400" : "text-blue-900"}>+</span>
 
                 <div className="flex gap-1">
                   {formatVector(focusedData.positional).map((v, i) => (
@@ -581,7 +581,7 @@ const focusedUnderstandingLabel =
                       className={`px-2 py-1 rounded border ${
                         isDark
                           ? "border-purple-400 text-purple-300"
-                          : "border-violet-300 text-violet-700 bg-violet-100"
+                          : "border-violet-600 text-violet-700 bg-violet-100"
                       }`}
                     >
                       {v}
@@ -589,7 +589,7 @@ const focusedUnderstandingLabel =
                   ))}
                 </div>
 
-                <span className={isDark ? "text-cyan-400" : "text-blue-600"}>→</span>
+                <span className={isDark ? "text-cyan-400" : "text-blue-900"}>→</span>
 
                 <div className="flex gap-1">
                   {formatVector(focusedData.input).map((v, i) => (
@@ -598,7 +598,7 @@ const focusedUnderstandingLabel =
                       className={`px-2 py-1 rounded border ${
                         isDark
                           ? "border-green-400 text-green-300"
-                          : "border-green-400 text-green-700 bg-green-100"
+                          : "border-green-700 text-green-700 bg-green-100"
                       }`}
                     >
                       {v}
@@ -612,7 +612,7 @@ const focusedUnderstandingLabel =
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-slate-700 bg-slate-950/60"
-                  : "border-slate-400/70 bg-white"
+                  : "border-slate-600/70 bg-white"
               }`}
             >
               <div
@@ -650,12 +650,12 @@ const focusedUnderstandingLabel =
                 className={`rounded-md border p-2 mb-3 ${
                   isDark
                     ? "border-slate-800 bg-slate-900/70"
-                    : "border-slate-400/70 bg-slate-50"
+                    : "border-slate-600/70 bg-slate-50"
                 }`}
               >
                 <div
                   className={`text-[10px] mb-1 ${
-                    isDark ? "text-slate-500" : "text-slate-600"
+                    isDark ? "text-slate-500" : "text-slate-800"
                   }`}
                 >
                   Focused input vector
@@ -667,7 +667,7 @@ const focusedUnderstandingLabel =
                       className={`px-2 py-1 rounded border ${
                         isDark
                           ? "border-green-400 text-green-300"
-                          : "border-green-400 text-green-700 bg-green-100"
+                          : "border-green-700 text-green-700 bg-green-100"
                       }`}
                     >
                       {v}
@@ -681,7 +681,7 @@ const focusedUnderstandingLabel =
                   className={`rounded-md p-2 ${
                     isDark
                       ? "border border-amber-400/30 bg-amber-400/5"
-                      : "border border-amber-300 bg-amber-50"
+                      : "border border-amber-600 bg-amber-100"
                   }`}
                 >
                   <div
@@ -698,7 +698,7 @@ const focusedUnderstandingLabel =
                         className={`px-2 py-1 rounded border ${
                           isDark
                             ? "border-amber-400 text-amber-300"
-                            : "border-amber-400 text-amber-700 bg-amber-100"
+                            : "border-amber-700 text-amber-700 bg-amber-100"
                         }`}
                       >
                         {v}
@@ -711,7 +711,7 @@ const focusedUnderstandingLabel =
                   className={`rounded-md p-2 ${
                     isDark
                       ? "border border-pink-400/30 bg-pink-400/5"
-                      : "border border-pink-300 bg-pink-50"
+                      : "border border-pink-600 bg-pink-100"
                   }`}
                 >
                   <div
@@ -728,7 +728,7 @@ const focusedUnderstandingLabel =
                         className={`px-2 py-1 rounded border ${
                           isDark
                             ? "border-pink-400 text-pink-300"
-                            : "border-pink-400 text-pink-700 bg-pink-100"
+                            : "border-pink-700 text-pink-700 bg-pink-100"
                         }`}
                       >
                         {v}
@@ -741,7 +741,7 @@ const focusedUnderstandingLabel =
                   className={`rounded-md p-2 ${
                     isDark
                       ? "border border-lime-400/30 bg-lime-400/5"
-                      : "border border-lime-300 bg-lime-50"
+                      : "border border-lime-600 bg-lime-100"
                   }`}
                 >
                   <div
@@ -758,7 +758,7 @@ const focusedUnderstandingLabel =
                         className={`px-2 py-1 rounded border ${
                           isDark
                             ? "border-lime-400 text-lime-300"
-                            : "border-lime-400 text-lime-700 bg-lime-100"
+                            : "border-lime-700 text-lime-700 bg-lime-100"
                         }`}
                       >
                         {v}
@@ -773,7 +773,7 @@ const focusedUnderstandingLabel =
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-slate-700 bg-slate-950/60"
-                  : "border-slate-400/70 bg-white"
+                  : "border-slate-600/70 bg-white"
               }`}
             >
               <div
@@ -806,12 +806,12 @@ const focusedUnderstandingLabel =
                 <table className="text-[11px] border-collapse">
                   <thead>
                     <tr>
-                      <th className={`px-2 py-1 ${isDark ? "text-slate-500" : "text-slate-600"}`}></th>
+                      <th className={`px-2 py-1 ${isDark ? "text-slate-500" : "text-slate-800"}`}></th>
                       {safeTokens.map((token, index) => (
                         <th
                           key={`col-${index}`}
                           className={`px-2 py-1 font-medium ${
-                            isDark ? "text-cyan-300" : "text-blue-800"
+                            isDark ? "text-cyan-300" : "text-blue-900"
                           }`}
                         >
                           {token}
@@ -825,7 +825,7 @@ const focusedUnderstandingLabel =
                       <tr key={`row-${rowIndex}`}>
                         <td
                           className={`px-2 py-1 font-medium ${
-                            isDark ? "text-cyan-300" : "text-blue-800"
+                            isDark ? "text-cyan-300" : "text-blue-900"
                           }`}
                         >
                           {safeTokens[rowIndex]}
@@ -840,7 +840,7 @@ const focusedUnderstandingLabel =
                             : cell.active
                             ? isDark
                               ? "bg-cyan-400/10 text-cyan-200"
-                              : "bg-blue-100 text-blue-800"
+                              : "bg-blue-100 text-blue-900"
                             : isDark
                             ? "bg-red-400/10 text-red-300"
                             : "bg-red-100 text-red-700";
@@ -849,7 +849,7 @@ const focusedUnderstandingLabel =
                             <td key={`cell-${rowIndex}-${colIndex}`} className="px-1 py-1">
                               <div
                                 className={`min-w-[44px] text-center rounded border px-2 py-1 ${
-                                  isDark ? "border-slate-700" : "border-slate-300"
+                                  isDark ? "border-slate-700" : "border-slate-500"
                                 } ${bgClass}`}
                               >
                                 {cell.score.toFixed(2)}
@@ -879,12 +879,12 @@ const focusedUnderstandingLabel =
               className={`rounded-lg border p-3 leading-5 ${
                 isDark
                   ? "border-slate-700 bg-slate-950/60 text-slate-300"
-                  : "border-slate-400/70 bg-white text-slate-700"
+                  : "border-slate-600/70 bg-white text-slate-700"
               }`}
             >
               <div
                 className={`font-medium mb-1 ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
+                  isDark ? "text-cyan-300" : "text-blue-900"
                 }`}
               >
                 How the graph, Q/K/V, and matrix relate
@@ -942,11 +942,11 @@ const focusedUnderstandingLabel =
             className={`absolute z-20 w-[34px] h-[34px] rounded-full border flex items-center justify-center cursor-grab active:cursor-grabbing ${
               isDark
                 ? "border-cyan-400 bg-slate-900 shadow-[0_0_12px_rgba(34,211,238,0.35)]"
-                : "border-blue-400/80 bg-white shadow-sm shadow-[0_0_12px_rgba(59,130,246,0.18)]"
+                : "border-blue-800 bg-white shadow-sm shadow-[0_0_12px_rgba(59,130,246,0.18)]"
             }`}
             title="Drag to cut connections"
           >
-            <span className={`text-lg leading-none ${isDark ? "text-cyan-300" : "text-blue-700"}`}>
+            <span className={`text-lg leading-none ${isDark ? "text-cyan-300" : "text-blue-900"}`}>
               ✂
             </span>
           </motion.div>
@@ -1081,12 +1081,12 @@ const focusedUnderstandingLabel =
             className={`rounded-xl border p-4 ${
               isDark
                 ? "border-slate-700 bg-slate-900/80"
-                : "border-slate-400/70 bg-slate-50"
+                : "border-slate-600/70 bg-slate-50"
             }`}
           >
             <div
               className={`text-sm font-semibold mb-2 ${
-                isDark ? "text-cyan-300" : "text-blue-800"
+                isDark ? "text-cyan-300" : "text-blue-900"
               }`}
             >
               What this graph means
@@ -1118,12 +1118,12 @@ const focusedUnderstandingLabel =
             className={`rounded-xl border p-4 ${
               isDark
                 ? "border-slate-700 bg-slate-900/80"
-                : "border-slate-400/70 bg-slate-50"
+                : "border-slate-600/70 bg-slate-50"
             }`}
           >
             <div
               className={`text-sm font-semibold mb-2 ${
-                isDark ? "text-cyan-300" : "text-blue-800"
+                isDark ? "text-cyan-300" : "text-blue-900"
               }`}
             >
               Live attention effect
@@ -1134,7 +1134,7 @@ const focusedUnderstandingLabel =
                 className={`px-3 py-1.5 rounded-lg border ${
                   isDark
                     ? "border-cyan-400 text-cyan-300 bg-cyan-400/10"
-                    : "border-blue-400 text-blue-800 bg-blue-100"
+                    : "border-blue-700 text-blue-900 bg-blue-100"
                 }`}
               >
                 Active links: {activeEdgeCount} / {totalEdgeCount}
@@ -1144,7 +1144,7 @@ const focusedUnderstandingLabel =
                 className={`px-3 py-1.5 rounded-lg border ${
                   isDark
                     ? "border-green-400 text-green-300 bg-green-400/10"
-                    : "border-green-400 text-green-700 bg-green-100"
+                    : "border-green-700 text-green-700 bg-green-100"
                 }`}
               >
                 Connectivity: {connectionPercent}%
@@ -1154,7 +1154,7 @@ const focusedUnderstandingLabel =
                 className={`px-3 py-1.5 rounded-lg border ${
                   isDark
                     ? "border-purple-400 text-purple-300 bg-purple-400/10"
-                    : "border-violet-400 text-violet-700 bg-violet-100"
+                    : "border-violet-700 text-violet-700 bg-violet-100"
                 }`}
               >
                 Focused word links: {focusedConnections}
@@ -1166,14 +1166,14 @@ const focusedUnderstandingLabel =
                 allConnected
                   ? isDark
                     ? "border-green-400/40 bg-green-400/5 text-slate-300"
-                    : "border-green-400 bg-green-50 text-slate-700"
+                    : "border-green-700 bg-green-100 text-slate-700"
                   : partiallyDisconnected
                   ? isDark
                     ? "border-amber-400/40 bg-amber-400/5 text-slate-300"
-                    : "border-amber-400 bg-amber-50 text-slate-700"
+                    : "border-amber-700 bg-amber-100 text-slate-700"
                   : isDark
                   ? "border-red-400/40 bg-red-400/5 text-slate-300"
-                  : "border-red-400 bg-red-50 text-slate-700"
+                  : "border-red-700 bg-red-100 text-slate-700"
               }`}
             >
               {allConnected && (
@@ -1206,12 +1206,12 @@ const focusedUnderstandingLabel =
           className={`mx-4 mt-4 rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
+              : "border-slate-600/70 bg-slate-50"
           }`}
         >
           <div
             className={`text-sm font-semibold mb-3 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
+              isDark ? "text-cyan-300" : "text-blue-900"
             }`}
           >
             Token Perspective Mode
@@ -1222,19 +1222,19 @@ const focusedUnderstandingLabel =
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-cyan-400/30 bg-cyan-400/5"
-                  : "border-blue-400 bg-blue-50"
+                  : "border-blue-700 bg-blue-100"
               }`}
             >
               <div
                 className={`text-[10px] uppercase tracking-wide mb-2 ${
-                  isDark ? "text-cyan-300/80" : "text-blue-700"
+                  isDark ? "text-cyan-300/80" : "text-blue-900"
                 }`}
               >
                 I am this word
               </div>
               <div
                 className={`text-sm font-medium ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
+                  isDark ? "text-cyan-300" : "text-blue-900"
                 }`}
               >
                 {focusedWord}
@@ -1245,7 +1245,7 @@ const focusedUnderstandingLabel =
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-green-400/30 bg-green-400/5"
-                  : "border-green-400 bg-green-50"
+                  : "border-green-700 bg-green-100"
               }`}
             >
               <div
@@ -1268,7 +1268,7 @@ const focusedUnderstandingLabel =
               className={`rounded-lg border p-3 ${
                 isDark
                   ? "border-red-400/30 bg-red-400/5"
-                  : "border-red-400 bg-red-50"
+                  : "border-red-700 bg-red-100"
               }`}
             >
               <div
@@ -1294,14 +1294,14 @@ const focusedUnderstandingLabel =
                 focusedUnderstandingLabel === "Strong output context"
                   ? isDark
                     ? "border-green-400 text-green-300 bg-green-400/10"
-                    : "border-green-400 text-green-700 bg-green-100"
+                    : "border-green-700 text-green-700 bg-green-100"
                   : focusedUnderstandingLabel === "Partial output context"
                   ? isDark
                     ? "border-amber-400 text-amber-300 bg-amber-400/10"
-                    : "border-amber-400 text-amber-700 bg-amber-100"
+                    : "border-amber-700 text-amber-700 bg-amber-100"
                   : isDark
                   ? "border-red-400 text-red-300 bg-red-400/10"
-                  : "border-red-400 text-red-700 bg-red-100"
+                  : "border-red-700 text-red-700 bg-red-100"
               }`}
             >
               {focusedUnderstandingLabel}
@@ -1312,12 +1312,12 @@ const focusedUnderstandingLabel =
           className={`mx-4 mt-4 rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
+              : "border-slate-600/70 bg-slate-50"
           }`}
         >
           <div
             className={`text-sm font-semibold mb-3 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
+              isDark ? "text-cyan-300" : "text-blue-900"
             }`}
           >
             Attention Mistake Simulator
@@ -1331,14 +1331,14 @@ const focusedUnderstandingLabel =
                   disconnectedWords.length === 0
                     ? isDark
                       ? "border-green-400/30 bg-green-400/5 text-slate-300"
-                      : "border-green-400 bg-green-50 text-slate-700"
+                      : "border-green-700 bg-green-100 text-slate-700"
                     : connectedWords.length === 0
                     ? isDark
                       ? "border-red-400/30 bg-red-400/5 text-slate-300"
-                      : "border-red-400 bg-red-50 text-slate-700"
+                      : "border-red-700 bg-red-100 text-slate-700"
                     : isDark
                     ? "border-amber-400/30 bg-amber-400/5 text-slate-300"
-                    : "border-amber-400 bg-amber-50 text-slate-700"
+                    : "border-amber-700 bg-amber-100 text-slate-700"
                 }`}
               >
                 {message}

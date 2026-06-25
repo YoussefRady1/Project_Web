@@ -17,7 +17,7 @@ function AnimationController({ step, setStep, theme }) {
         }${
           isDark
             ? "bg-slate-800 text-white hover:bg-slate-700"
-            : "bg-white text-slate-900 border border-slate-400 hover:bg-slate-100 shadow-sm font-medium"
+            : "bg-white text-slate-900 border border-slate-600 hover:bg-slate-100 shadow-sm font-medium"
         }`}
       >
         Back
@@ -33,7 +33,7 @@ function AnimationController({ step, setStep, theme }) {
         }${
           isDark
             ? "bg-cyan-500 text-black hover:bg-cyan-400"
-            : "bg-blue-600 text-white hover:bg-blue-500"
+            : "bg-blue-800 text-white hover:bg-blue-700 shadow-md font-semibold"
         }`}
       >
         Next →

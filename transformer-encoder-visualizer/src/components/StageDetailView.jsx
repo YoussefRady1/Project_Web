@@ -860,14 +860,14 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
           className={`mt-3 rounded-2xl border overflow-hidden shadow-lg ${
             isDark
               ? "bg-slate-900/70 border-slate-700"
-              : "bg-white border-slate-300"
+              : "bg-white border-slate-500"
           }`}
         >
           <div
             className={`flex items-center justify-between px-5 py-3 border-b ${
               isDark
                 ? "border-slate-700 bg-gradient-to-r from-slate-900 via-slate-900 to-cyan-950/40"
-                : "border-slate-300 bg-gradient-to-r from-blue-50 via-white to-blue-50"
+                : "border-slate-500 bg-gradient-to-r from-blue-50 via-white to-blue-50"
             }`}
           >
             <div className="flex items-center gap-2.5">
@@ -875,7 +875,7 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
                 className={`inline-flex items-center justify-center w-6 h-6 rounded-md text-[12px] font-bold ${
                   isDark
                     ? "bg-cyan-500/15 text-cyan-300 border border-cyan-500/40"
-                    : "bg-blue-100 text-blue-700 border border-blue-300"
+                    : "bg-blue-100 text-blue-900 border border-blue-700"
                 }`}
                 aria-hidden
               >
@@ -883,7 +883,7 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
               </span>
               <span
                 className={`text-[13px] font-bold tracking-wide ${
-                  isDark ? "text-cyan-300" : "text-blue-700"
+                  isDark ? "text-cyan-300" : "text-blue-900"
                 }`}
               >
                 {EXPLANATIONS[stageKey]?.title}
@@ -894,7 +894,7 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
               className={`text-[14px] leading-none w-6 h-6 inline-flex items-center justify-center rounded-md transition ${
                 isDark
                   ? "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
-                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                  : "text-slate-700 hover:bg-slate-100 hover:text-slate-700"
               }`}
               aria-label="Close"
             >
@@ -906,7 +906,7 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
             className={`px-4 py-4 border-b ${
               isDark
                 ? "border-slate-800 bg-slate-950/30"
-                : "border-slate-200 bg-slate-50/60"
+                : "border-slate-500 bg-slate-50/60"
             }`}
           >
             {content[stageKey]}
@@ -918,12 +918,12 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
               className={`rounded-xl border p-3.5 ${
                 isDark
                   ? "border-cyan-500/30 bg-cyan-500/5"
-                  : "border-blue-300 bg-blue-50"
+                  : "border-blue-700 bg-blue-100"
               }`}
             >
               <div
                 className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider mb-1.5 ${
-                  isDark ? "text-cyan-300" : "text-blue-700"
+                  isDark ? "text-cyan-300" : "text-blue-900"
                 }`}
               >
                 <span aria-hidden>💡</span>
@@ -943,12 +943,12 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
               className={`rounded-xl border p-3.5 ${
                 isDark
                   ? "border-slate-700 bg-slate-950/50"
-                  : "border-slate-300 bg-white"
+                  : "border-slate-500 bg-white"
               }`}
             >
               <div
                 className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider mb-3 ${
-                  isDark ? "text-amber-300" : "text-amber-600"
+                  isDark ? "text-amber-300" : "text-amber-800"
                 }`}
               >
                 <span aria-hidden>🧮</span>
@@ -961,7 +961,7 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
                       className={`shrink-0 inline-flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-bold ${
                         isDark
                           ? "bg-amber-500/15 text-amber-300 border border-amber-500/40"
-                          : "bg-amber-100 text-amber-700 border border-amber-300"
+                          : "bg-amber-100 text-amber-700 border border-amber-600"
                       }`}
                     >
                       {i + 1}
@@ -978,14 +978,14 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
                         className={`font-mono text-[11px] rounded-md px-2.5 py-1.5 mb-1.5 inline-block ${
                           isDark
                             ? "bg-slate-900 text-cyan-300 border border-slate-700"
-                            : "bg-slate-100 text-blue-800 border border-slate-200"
+                            : "bg-slate-100 text-blue-900 border border-slate-500"
                         }`}
                       >
                         {m.formula}
                       </div>
                       <div
                         className={`text-[10.5px] leading-[1.55] ${
-                          isDark ? "text-slate-400" : "text-slate-600"
+                          isDark ? "text-slate-400" : "text-slate-800"
                         }`}
                       >
                         {m.detail}
@@ -1011,7 +1011,7 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
                   className={`rounded-lg border p-3 ${
                     isDark
                       ? "border-amber-500/30 bg-amber-500/5"
-                      : "border-amber-400 bg-amber-50"
+                      : "border-amber-700 bg-amber-100"
                   }`}
                 >
                   <div
@@ -1036,7 +1036,7 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
                     className={`rounded-md border p-2 mb-2 font-mono text-[10.5px] leading-6 ${
                       isDark
                         ? "bg-slate-900 border-slate-700 text-cyan-300"
-                        : "bg-white border-slate-300 text-blue-800"
+                        : "bg-white border-slate-500 text-blue-900"
                     }`}
                   >
                     {top5.map((t, i) => (
@@ -1058,7 +1058,7 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
                     className={`rounded-md border p-2 mb-2 font-mono text-[10.5px] ${
                       isDark
                         ? "bg-slate-900 border-slate-700 text-cyan-300"
-                        : "bg-white border-slate-300 text-blue-800"
+                        : "bg-white border-slate-500 text-blue-900"
                     }`}
                   >
                     softmax("{topToken.tok}") = exp({logits[0].toFixed(3)}) / Σ exp(z_j) = {exps[0].toFixed(4)} / {sumExp.toFixed(4)} = <span className="font-bold">{(renorm[0] * 100).toFixed(1)}%</span>
@@ -1066,7 +1066,7 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
 
                   <div
                     className={`text-[10px] leading-4 ${
-                      isDark ? "text-slate-500" : "text-slate-500"
+                      isDark ? "text-slate-500" : "text-slate-700"
                     }`}
                   >
                     Note: this is a renormalization over the top 5 candidates, not the full 32,128-token vocabulary.
@@ -1075,7 +1075,7 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
 
                   <div
                     className={`mt-2 text-[10px] italic ${
-                      isDark ? "text-cyan-400/70" : "text-blue-600"
+                      isDark ? "text-cyan-400/70" : "text-blue-900"
                     }`}
                   >
                     These probabilities come from the actual T5-small model running in your browser.
@@ -1089,7 +1089,7 @@ function StageDetailView({ stageKey, onClose, p, isDark, liveOutput }) {
               className={`rounded-xl border p-3.5 ${
                 isDark
                   ? "border-emerald-500/30 bg-emerald-500/5"
-                  : "border-emerald-300 bg-emerald-50"
+                  : "border-emerald-600 bg-emerald-100"
               }`}
             >
               <div

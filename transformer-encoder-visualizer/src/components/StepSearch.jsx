@@ -95,13 +95,13 @@ function StepSearch({ setStep, theme }) {
           className={`absolute right-0 mt-1 w-72 rounded-lg border shadow-lg overflow-hidden z-50 ${
             isDark
               ? "border-cyan-500/40 bg-slate-900/95 backdrop-blur"
-              : "border-slate-300 bg-white"
+              : "border-slate-500 bg-white"
           }`}
         >
           {noResults ? (
             <div
               className={`px-3 py-3 text-sm text-center ${
-                isDark ? "text-slate-400" : "text-slate-600"
+                isDark ? "text-slate-400" : "text-slate-800"
               }`}
             >
               Not found
@@ -115,13 +115,13 @@ function StepSearch({ setStep, theme }) {
                     className={`w-full text-left px-3 py-2 flex flex-col gap-0.5 transition ${
                       isDark
                         ? "hover:bg-cyan-400/10 text-slate-200"
-                        : "hover:bg-blue-50 text-slate-800"
+                        : "hover:bg-blue-100 text-slate-800"
                     }`}
                   >
-                    <span className={`text-sm font-medium ${isDark ? "text-cyan-300" : "text-blue-800"}`}>
+                    <span className={`text-sm font-medium ${isDark ? "text-cyan-300" : "text-blue-900"}`}>
                       {m.title}
                     </span>
-                    <span className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+                    <span className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-700"}`}>
                       {m.label}
                     </span>
                   </button>

@@ -114,31 +114,31 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
       num: 1,
       label: "Decoder Vector",
       sub: "the decoder's 512-number summary",
-      color: isDark ? "border-cyan-500/50 bg-cyan-500/10" : "border-blue-400 bg-blue-50",
+      color: isDark ? "border-cyan-500/50 bg-cyan-500/10" : "border-blue-700 bg-blue-100",
     },
     {
       num: 2,
       label: "Linear Layer",
       sub: "gives every word a score",
-      color: isDark ? "border-amber-500/50 bg-amber-500/10" : "border-amber-400 bg-amber-50",
+      color: isDark ? "border-amber-500/50 bg-amber-500/10" : "border-amber-700 bg-amber-100",
     },
     {
       num: 3,
       label: "Logits",
       sub: `${vocab.length} raw scores not % yet`,
-      color: isDark ? "border-orange-500/50 bg-orange-500/10" : "border-orange-400 bg-orange-50",
+      color: isDark ? "border-orange-500/50 bg-orange-500/10" : "border-orange-700 bg-orange-100",
     },
     {
       num: 4,
       label: "Softmax",
       sub: "turns the scores into %",
-      color: isDark ? "border-purple-500/50 bg-purple-500/10" : "border-purple-400 bg-purple-50",
+      color: isDark ? "border-purple-500/50 bg-purple-500/10" : "border-purple-700 bg-purple-100",
     },
     {
       num: 5,
       label: "Probabilities",
       sub: "a % per word, adding up to 100%",
-      color: isDark ? "border-green-500/50 bg-green-500/10" : "border-green-400 bg-green-50",
+      color: isDark ? "border-green-500/50 bg-green-500/10" : "border-green-700 bg-green-100",
     },
   ];
 
@@ -147,12 +147,12 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
       animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[980px] min-h-[620px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
       }`}
     >
       <h2
         className={`text-lg font-bold text-center ${
-          isDark ? "text-cyan-300" : "text-blue-800"
+          isDark ? "text-cyan-300" : "text-blue-900"
         }`}
       >
         Linear + Softmax
@@ -166,7 +166,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
       </p>
       <p
         className={`text-[10px] text-center mb-4 ${
-          isDark ? "text-slate-500" : "text-slate-500"
+          isDark ? "text-slate-500" : "text-slate-700"
         }`}
       >
         This step runs after the full decoder stack, it is not part of the
@@ -176,7 +176,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
       <button
         onClick={() => setShowExplanation((v) => !v)}
         className={`mb-4 text-[11px] font-medium underline underline-offset-2 ${
-          isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-700 hover:text-blue-800"
+          isDark ? "text-cyan-300 hover:text-cyan-200" : "text-blue-900 hover:text-blue-900"
         }`}
       >
         {showExplanation ? "Hide explanation" : "Show explanation"}
@@ -185,7 +185,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
       {/* Visual flow pipeline */}
       <div
         className={`text-[10px] text-center mb-2 font-medium ${
-          isDark ? "text-slate-400" : "text-slate-600"
+          isDark ? "text-slate-400" : "text-slate-800"
         }`}
       >
         Follow the 5 steps: one decoder vector → a probability for every word
@@ -200,7 +200,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
                 className={`absolute -top-2 -left-2 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border ${
                   isDark
                     ? "bg-slate-900 border-slate-600 text-white"
-                    : "bg-white border-slate-400 text-slate-800"
+                    : "bg-white border-slate-600 text-slate-800"
                 }`}
               >
                 {item.num}
@@ -214,7 +214,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
               </div>
               <div
                 className={`text-[9px] leading-3 mt-0.5 ${
-                  isDark ? "text-slate-400" : "text-slate-500"
+                  isDark ? "text-slate-400" : "text-slate-700"
                 }`}
               >
                 {item.sub}
@@ -223,7 +223,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
             {i < FLOW.length - 1 && (
               <span
                 className={`text-lg font-bold ${
-                  isDark ? "text-slate-600" : "text-slate-400"
+                  isDark ? "text-slate-600" : "text-slate-700"
                 }`}
               >
                 →
@@ -241,7 +241,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
           className={`w-full max-w-[760px] rounded-xl border p-4 mb-5 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
+              : "border-slate-600/70 bg-slate-50"
           }`}
         >
           <div
@@ -260,7 +260,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
                 className={`flex-1 rounded-lg border p-2.5 text-center font-mono text-[11px] ${
                   isDark
                     ? "border-slate-700 bg-slate-950/70 text-white"
-                    : "border-slate-400/70 bg-white text-slate-900"
+                    : "border-slate-600/70 bg-white text-slate-900"
                 }`}
               >
                 logits = decoder_output × W<sub>vocab</sub>
@@ -269,7 +269,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
                 className={`flex-1 rounded-lg border p-2.5 text-center font-mono text-[11px] ${
                   isDark
                     ? "border-slate-700 bg-slate-950/70 text-white"
-                    : "border-slate-400/70 bg-white text-slate-900"
+                    : "border-slate-600/70 bg-white text-slate-900"
                 }`}
               >
                 P(word) = e<sup>logit</sup> / Σ e<sup>all logits</sup>
@@ -283,14 +283,14 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
       <div className="w-full mb-4">
         <div
           className={`text-sm font-semibold mb-2 text-center ${
-            isDark ? "text-cyan-300" : "text-blue-800"
+            isDark ? "text-cyan-300" : "text-blue-900"
           }`}
         >
           Decoder output position
         </div>
         <div
           className={`text-[10px] text-center mb-3 ${
-            isDark ? "text-slate-500" : "text-slate-500"
+            isDark ? "text-slate-500" : "text-slate-700"
           }`}
         >
           Click a position to see which word the decoder predicts there
@@ -304,10 +304,10 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
                 selectedPos === i
                   ? isDark
                     ? "border-cyan-400 text-cyan-300 bg-cyan-400/15 shadow-[0_0_10px_rgba(34,211,238,0.2)]"
-                    : "border-blue-500 text-blue-800 bg-blue-100 shadow-sm"
+                    : "border-blue-800 text-blue-900 bg-blue-100 shadow-sm"
                   : isDark
                   ? "border-slate-700 text-slate-400 bg-slate-800 hover:border-slate-500"
-                  : "border-slate-300 text-slate-600 bg-white hover:border-slate-400"
+                  : "border-slate-500 text-slate-800 bg-white hover:border-slate-600"
               }`}
             >
               Position {i}
@@ -316,10 +316,10 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
                   selectedPos === i
                     ? isDark
                       ? "text-cyan-400"
-                      : "text-blue-600"
+                      : "text-blue-900"
                     : isDark
                     ? "text-slate-600"
-                    : "text-slate-400"
+                    : "text-slate-700"
                 }`}
               >
                 → {inputWords[i] || tok}
@@ -334,19 +334,19 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
         className={`w-full rounded-xl border p-4 ${
           isDark
             ? "border-slate-700 bg-slate-900/70"
-            : "border-slate-400/70 bg-slate-50"
+            : "border-slate-600/70 bg-slate-50"
         }`}
       >
         <div
           className={`text-sm font-semibold mb-1 text-center ${
-            isDark ? "text-cyan-300" : "text-blue-800"
+            isDark ? "text-cyan-300" : "text-blue-900"
           }`}
         >
           Vocabulary probabilities, position {selectedPos}
         </div>
         <div
           className={`text-[10px] text-center mb-4 ${
-            isDark ? "text-slate-500" : "text-slate-500"
+            isDark ? "text-slate-500" : "text-slate-700"
           }`}
         >
           Top 5 candidates (a real model scores all 32,128 vocabulary tokens)
@@ -421,7 +421,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
                         : "text-green-700 font-bold"
                       : isDark
                       ? "text-slate-400"
-                      : "text-slate-600"
+                      : "text-slate-800"
                   }`}
                 >
                   {(item.prob * 100).toFixed(1)}%
@@ -438,7 +438,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
           className={`mt-4 rounded-lg border p-3 text-center ${
             isDark
               ? "border-green-400/30 bg-green-400/5"
-              : "border-green-300 bg-green-50"
+              : "border-green-600 bg-green-100"
           }`}
         >
           <span
@@ -451,7 +451,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
           </span>
           <span
             className={`text-xs ml-2 ${
-              isDark ? "text-green-300/60" : "text-green-600"
+              isDark ? "text-green-300/60" : "text-green-800"
             }`}
           >
             ({(candidates[0]?.prob * 100).toFixed(1)}%)
@@ -460,7 +460,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
 
         <div
           className={`mt-3 text-[10px] text-center italic ${
-            isDark ? "text-cyan-400/60" : "text-blue-600"
+            isDark ? "text-cyan-400/60" : "text-blue-900"
           }`}
         >
           Showing top 5 from a demo vocabulary, a real T5 model scores all
@@ -468,7 +468,7 @@ function DecoderLinearSoftmaxStep({ active, tokens = [], theme }) {
         </div>
       </div>
 
-      <div className={`w-full max-w-[760px] mt-5 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-400 bg-violet-50"}`}>
+      <div className={`w-full max-w-[760px] mt-5 rounded-xl border p-3 ${isDark ? "border-violet-500/30 bg-violet-500/5" : "border-violet-700 bg-violet-100"}`}>
         <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-violet-300" : "text-violet-700"}`}>Key insight</div>
         <p className={`text-[10px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>This is where the decoder makes its final prediction. The linear layer evaluates every word in the vocabulary (32,128 words for T5), and softmax amplifies the highest score so one word clearly wins. The entire decoder stack exists to produce the single vector that feeds into this step.</p>
       </div>

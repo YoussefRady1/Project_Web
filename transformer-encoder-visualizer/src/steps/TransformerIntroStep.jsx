@@ -15,12 +15,12 @@ function TransformerIntroStep({ active, theme, setStep }) {
       }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[980px] min-h-[620px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
       }`}
     >
       <h2
         className={`font-semibold text-center mb-4 ${
-          isDark ? "text-cyan-300" : "text-blue-800"
+          isDark ? "text-cyan-300" : "text-blue-900"
         }`}
       >
         What is a Transformer?
@@ -31,12 +31,12 @@ function TransformerIntroStep({ active, theme, setStep }) {
           className={`rounded-xl border p-4 ${
             isDark
               ? "border-cyan-400/30 bg-cyan-400/5"
-              : "border-blue-400 bg-blue-50"
+              : "border-blue-700 bg-blue-100"
           }`}
         >
           <div
             className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
+              isDark ? "text-cyan-300" : "text-blue-900"
             }`}
           >
             Overview
@@ -56,12 +56,12 @@ Each word is first converted into a numerical vector called an embedding, and po
           className={`rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
+              : "border-slate-600/70 bg-slate-50"
           }`}
         >
           <div
             className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
+              isDark ? "text-cyan-300" : "text-blue-900"
             }`}
           >
             The Encoder
@@ -91,12 +91,12 @@ Each word is first converted into a numerical vector called an embedding, and po
           className={`rounded-xl border p-4 ${
             isDark
               ? "border-slate-700 bg-slate-900/80"
-              : "border-slate-400/70 bg-slate-50"
+              : "border-slate-600/70 bg-slate-50"
           }`}
         >
           <div
             className={`text-sm font-semibold mb-2 ${
-              isDark ? "text-cyan-300" : "text-blue-800"
+              isDark ? "text-cyan-300" : "text-blue-900"
             }`}
           >
             The Decoder
@@ -130,7 +130,7 @@ Each word is first converted into a numerical vector called an embedding, and po
         className={`px-6 py-2.5 rounded-full text-sm font-bold transition ${
           isDark
             ? "bg-cyan-500 text-slate-950 hover:bg-cyan-400"
-            : "bg-blue-600 text-white hover:bg-blue-500"
+            : "bg-blue-800 text-white hover:bg-blue-700 shadow-md"
         }`}
       >
         Start Pre-Quiz →

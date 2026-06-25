@@ -69,7 +69,7 @@ function EncoderStackStep({ active, tokens, theme }) {
           className={`px-4 py-1.5 text-xs border rounded-lg transition ${
             isDark
               ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10"
-              : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+              : "border-blue-700 text-blue-900 bg-blue-100 hover:bg-blue-200"
           }`}
         >
           ← Back to Encoder Stack
@@ -88,7 +88,7 @@ function EncoderStackStep({ active, tokens, theme }) {
           className={`px-4 py-1.5 text-xs border rounded-lg transition ${
             isDark
               ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10"
-              : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+              : "border-blue-700 text-blue-900 bg-blue-100 hover:bg-blue-200"
           }`}
         >
           ← Back to Encoder Stack
@@ -107,7 +107,7 @@ function EncoderStackStep({ active, tokens, theme }) {
           className={`px-4 py-1.5 text-xs border rounded-lg transition ${
             isDark
               ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10"
-              : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"
+              : "border-blue-700 text-blue-900 bg-blue-100 hover:bg-blue-200"
           }`}
         >
           ← Back to Encoder Stack
@@ -117,10 +117,10 @@ function EncoderStackStep({ active, tokens, theme }) {
           animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
           transition={{ duration: 0.3 }}
           className={`p-6 border rounded-2xl w-[980px] min-h-[620px] flex flex-col items-center ${
-            isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+            isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
           }`}
         >
-          <h2 className={`font-semibold text-center ${isDark ? "text-cyan-300" : "text-blue-800"}`}>
+          <h2 className={`font-semibold text-center ${isDark ? "text-cyan-300" : "text-blue-900"}`}>
             Add &amp; Normalize
           </h2>
           <p className={`text-xs text-center mb-4 ${isDark ? "text-slate-400" : "text-slate-700"}`}>
@@ -130,49 +130,49 @@ function EncoderStackStep({ active, tokens, theme }) {
           {/* Mini flow diagram */}
           <div
             className={`w-full max-w-[760px] rounded-xl border p-4 mb-4 ${
-              isDark ? "border-slate-700 bg-slate-950/60" : "border-slate-300 bg-white"
+              isDark ? "border-slate-700 bg-slate-950/60" : "border-slate-500 bg-white"
             }`}
           >
             <div className="flex items-stretch justify-between gap-1 text-[10px]">
-              <div className={`flex-1 px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-slate-200 bg-slate-900" : "border-slate-300 text-slate-800 bg-slate-50"}`}>
+              <div className={`flex-1 px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-slate-200 bg-slate-900" : "border-slate-500 text-slate-800 bg-slate-50"}`}>
                 <div className="font-mono font-semibold">x</div>
-                <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>token vector</div>
+                <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-700"}`}>token vector</div>
               </div>
-              <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-400"}`}>→</span>
-              <div className={`flex-1 px-2 py-1.5 rounded border text-center ${isDark ? "border-cyan-500/40 text-cyan-300 bg-cyan-500/5" : "border-blue-400 text-blue-700 bg-blue-50"}`}>
+              <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-700"}`}>→</span>
+              <div className={`flex-1 px-2 py-1.5 rounded border text-center ${isDark ? "border-cyan-500/40 text-cyan-300 bg-cyan-500/5" : "border-blue-700 text-blue-900 bg-blue-100"}`}>
                 <div className="font-semibold">Sub-Layer</div>
-                <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>attention / FFN</div>
+                <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-700"}`}>attention / FFN</div>
               </div>
-              <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-400"}`}>→</span>
+              <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-700"}`}>→</span>
               <div className={`flex flex-col items-center justify-center px-1 ${isDark ? "text-amber-300" : "text-amber-700"}`}>
-                <div className={`w-6 h-6 rounded-full border flex items-center justify-center font-bold ${isDark ? "border-amber-500/60 bg-amber-500/10" : "border-amber-400 bg-amber-50"}`}>+</div>
+                <div className={`w-6 h-6 rounded-full border flex items-center justify-center font-bold ${isDark ? "border-amber-500/60 bg-amber-500/10" : "border-amber-700 bg-amber-100"}`}>+</div>
                 <div className="text-[9px] mt-0.5">add x back</div>
               </div>
-              <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-400"}`}>→</span>
-              <div className={`flex-1 px-2 py-1.5 rounded border text-center ${isDark ? "border-emerald-500/40 text-emerald-300 bg-emerald-500/5" : "border-emerald-400 text-emerald-700 bg-emerald-50"}`}>
+              <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-700"}`}>→</span>
+              <div className={`flex-1 px-2 py-1.5 rounded border text-center ${isDark ? "border-emerald-500/40 text-emerald-300 bg-emerald-500/5" : "border-emerald-700 text-emerald-700 bg-emerald-100"}`}>
                 <div className="font-semibold">LayerNorm</div>
-                <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>rescale values</div>
+                <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-700"}`}>rescale values</div>
               </div>
-              <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-400"}`}>→</span>
-              <div className={`flex-1 px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-slate-200 bg-slate-900" : "border-slate-300 text-slate-800 bg-slate-50"}`}>
+              <span className={`self-center ${isDark ? "text-slate-500" : "text-slate-700"}`}>→</span>
+              <div className={`flex-1 px-2 py-1.5 rounded border text-center ${isDark ? "border-slate-600 text-slate-200 bg-slate-900" : "border-slate-500 text-slate-800 bg-slate-50"}`}>
                 <div className="font-mono font-semibold">out</div>
-                <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>refined vector</div>
+                <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-700"}`}>refined vector</div>
               </div>
             </div>
-            <div className={`mt-2 text-center text-[10px] font-mono ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            <div className={`mt-2 text-center text-[10px] font-mono ${isDark ? "text-slate-400" : "text-slate-800"}`}>
               out = LayerNorm( x + SubLayer(x) )
             </div>
           </div>
 
           {/* Two info cards */}
           <div className="w-full max-w-[760px] grid grid-cols-2 gap-2 mb-4">
-            <div className={`rounded-lg border p-3 ${isDark ? "border-amber-500/40 bg-amber-500/5" : "border-amber-300 bg-amber-50"}`}>
+            <div className={`rounded-lg border p-3 ${isDark ? "border-amber-500/40 bg-amber-500/5" : "border-amber-600 bg-amber-100"}`}>
               <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-amber-300" : "text-amber-800"}`}>Add (residual)</div>
               <p className={`text-[11px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
                 Re-injects the original input <span className="font-mono">x</span> so useful signal is never lost as the layer transforms it.
               </p>
             </div>
-            <div className={`rounded-lg border p-3 ${isDark ? "border-emerald-500/40 bg-emerald-500/5" : "border-emerald-300 bg-emerald-50"}`}>
+            <div className={`rounded-lg border p-3 ${isDark ? "border-emerald-500/40 bg-emerald-500/5" : "border-emerald-600 bg-emerald-100"}`}>
               <div className={`text-[11px] font-semibold mb-1 ${isDark ? "text-emerald-300" : "text-emerald-800"}`}>Normalize</div>
               <p className={`text-[11px] leading-4 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
                 Rescales each vector to zero mean &amp; unit variance keeps training stable across deep stacks.
@@ -196,7 +196,7 @@ function EncoderStackStep({ active, tokens, theme }) {
               allowFullScreen
             />
           </div>
-          <p className={`text-[10px] mt-2 leading-4 max-w-[760px] ${isDark ? "text-slate-500" : "text-slate-600"}`}>
+          <p className={`text-[10px] mt-2 leading-4 max-w-[760px] ${isDark ? "text-slate-500" : "text-slate-800"}`}>
             Short video explaining residual connections and layer normalization.
           </p>
         </motion.div>
@@ -212,12 +212,12 @@ function EncoderStackStep({ active, tokens, theme }) {
       }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[980px] min-h-[760px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
       }`}
     >
       <h2
         className={`font-semibold text-center ${
-          isDark ? "text-cyan-300" : "text-blue-800"
+          isDark ? "text-cyan-300" : "text-blue-900"
         }`}
       >
         Encoder Stack
@@ -234,12 +234,12 @@ function EncoderStackStep({ active, tokens, theme }) {
   className={`w-full max-w-[760px] mb-5 rounded-xl border p-3 ${
     isDark
       ? "border-cyan-400/30 bg-cyan-400/5"
-      : "border-blue-400 bg-blue-50"
+      : "border-blue-700 bg-blue-100"
   }`}
 >
   <div
     className={`text-sm font-semibold mb-1 ${
-      isDark ? "text-cyan-300" : "text-blue-800"
+      isDark ? "text-cyan-300" : "text-blue-900"
     }`}
   >
     Why we use this step
@@ -255,14 +255,14 @@ function EncoderStackStep({ active, tokens, theme }) {
 </div>
       {/* Inside one encoder layer */}
       <div className="w-full mb-5">
-        <div className={`rounded-xl border p-4 ${isDark ? "border-slate-700 bg-slate-900/80" : "border-slate-400/70 bg-slate-50"}`}>
-          <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-cyan-300" : "text-blue-800"}`}>
+        <div className={`rounded-xl border p-4 ${isDark ? "border-slate-700 bg-slate-900/80" : "border-slate-600/70 bg-slate-50"}`}>
+          <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-cyan-300" : "text-blue-900"}`}>
             What happens inside one encoder layer?
           </h3>
 
           {/* Numbered 1-4 layer order */}
-          <div className={`rounded-lg border p-3 mb-3 ${isDark ? "border-slate-700 bg-slate-950/60" : "border-slate-400/70 bg-white"}`}>
-            <div className={`font-medium mb-2 text-[11px] ${isDark ? "text-cyan-300" : "text-blue-800"}`}>
+          <div className={`rounded-lg border p-3 mb-3 ${isDark ? "border-slate-700 bg-slate-950/60" : "border-slate-600/70 bg-white"}`}>
+            <div className={`font-medium mb-2 text-[11px] ${isDark ? "text-cyan-300" : "text-blue-900"}`}>
               Encoder layer order
             </div>
             <div className="flex flex-col gap-1 text-xs">
@@ -280,10 +280,10 @@ function EncoderStackStep({ active, tokens, theme }) {
                       isNorm
                         ? isDark
                           ? "border-slate-700 text-slate-300 bg-slate-900/40"
-                          : "border-slate-300 text-slate-700 bg-white"
+                          : "border-slate-500 text-slate-700 bg-white"
                         : isDark
                         ? "border-slate-600 text-white bg-slate-900/60"
-                        : "border-slate-300 text-slate-900 bg-slate-50"
+                        : "border-slate-500 text-slate-900 bg-slate-50"
                     }`}
                   >
                     <span
@@ -300,8 +300,8 @@ function EncoderStackStep({ active, tokens, theme }) {
             </div>
           </div>
 
-          <div className={`rounded-lg border p-3 mb-3 ${isDark ? "border-cyan-400/40 bg-cyan-400/5" : "border-blue-400 bg-blue-50"}`}>
-            <div className={`font-medium mb-1 text-[11px] ${isDark ? "text-cyan-300" : "text-blue-800"}`}>Important note</div>
+          <div className={`rounded-lg border p-3 mb-3 ${isDark ? "border-cyan-400/40 bg-cyan-400/5" : "border-blue-700 bg-blue-100"}`}>
+            <div className={`font-medium mb-1 text-[11px] ${isDark ? "text-cyan-300" : "text-blue-900"}`}>Important note</div>
             <p className={`text-[11px] leading-5 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
               This encoder layer repeats multiple times to form the full encoder stack. Each repetition refines the representations further.
             </p>
@@ -311,7 +311,7 @@ function EncoderStackStep({ active, tokens, theme }) {
           <div className="flex flex-wrap gap-3">
             <button
               onClick={() => setView("attention")}
-              className={`px-4 py-1.5 text-xs border rounded-lg transition ${isDark ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10" : "border-blue-400 text-blue-800 bg-blue-100 hover:bg-blue-200"}`}
+              className={`px-4 py-1.5 text-xs border rounded-lg transition ${isDark ? "border-cyan-400 text-cyan-300 hover:bg-cyan-400/10" : "border-blue-700 text-blue-900 bg-blue-100 hover:bg-blue-200"}`}
             >
               Learn Self-Attention →
             </button>
@@ -332,8 +332,8 @@ function EncoderStackStep({ active, tokens, theme }) {
       </div>
 
       {/* Understanding Depth bar (auto-incrementing) */}
-      <div className={`w-full mb-4 rounded-xl border p-3 ${isDark ? "border-slate-700 bg-slate-900/70" : "border-slate-300 bg-slate-50"}`}>
-        <div className={`flex justify-between text-[10px] mb-1.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+      <div className={`w-full mb-4 rounded-xl border p-3 ${isDark ? "border-slate-700 bg-slate-900/70" : "border-slate-500 bg-slate-50"}`}>
+        <div className={`flex justify-between text-[10px] mb-1.5 ${isDark ? "text-slate-400" : "text-slate-800"}`}>
           <span className="font-medium">Understanding Depth</span>
           <span>{layerCount} / 6 encoder layers active</span>
         </div>
@@ -345,7 +345,7 @@ function EncoderStackStep({ active, tokens, theme }) {
             style={{ background: "linear-gradient(to right, #ef4444, #f97316, #eab308, #84cc16, #22c55e)" }}
           />
         </div>
-        <div className={`text-[10px] text-center mt-1.5 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+        <div className={`text-[10px] text-center mt-1.5 ${isDark ? "text-slate-500" : "text-slate-700"}`}>
           {layerCount === 1
             ? "1 layer basic word-to-word context begins"
             : layerCount <= 2
@@ -382,7 +382,7 @@ function EncoderStackStep({ active, tokens, theme }) {
                     ? `${layer.border} ${layer.glow}`
                     : isDark
                     ? "border-slate-800"
-                    : "border-slate-200"
+                    : "border-slate-500"
                 } ${isDark ? "bg-slate-900" : "bg-white"}`}
               >
                 <div
@@ -391,7 +391,7 @@ function EncoderStackStep({ active, tokens, theme }) {
                       ? layer.text
                       : isDark
                       ? "text-slate-600"
-                      : "text-slate-400"
+                      : "text-slate-700"
                   }`}
                 >
                   Layer {index + 1}
@@ -402,10 +402,10 @@ function EncoderStackStep({ active, tokens, theme }) {
                     isActive
                       ? isDark
                         ? "text-slate-500"
-                        : "text-slate-600"
+                        : "text-slate-800"
                       : isDark
                       ? "text-slate-700"
-                      : "text-slate-400"
+                      : "text-slate-700"
                   }`}
                 >
                   {layer.note}
@@ -420,7 +420,7 @@ function EncoderStackStep({ active, tokens, theme }) {
                           ? layer.text
                           : isDark
                           ? "text-slate-600"
-                          : "text-slate-400"
+                          : "text-slate-700"
                       }`}
                     >
                       {t}
@@ -429,19 +429,19 @@ function EncoderStackStep({ active, tokens, theme }) {
                 </div>
 
                 <div className="flex items-center gap-2 text-xs flex-wrap">
-                  <div className={`px-2 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
+                  <div className={`px-2 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-500 text-slate-900 bg-slate-50"}`}>
                     Self-Attention
                   </div>
-                  <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-                  <div className={`px-2 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
+                  <span className={isDark ? "text-slate-500" : "text-slate-800"}>→</span>
+                  <div className={`px-2 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-500 text-slate-900 bg-slate-50"}`}>
                     Add &amp; Normalize
                   </div>
-                  <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-                  <div className={`px-2 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
+                  <span className={isDark ? "text-slate-500" : "text-slate-800"}>→</span>
+                  <div className={`px-2 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-500 text-slate-900 bg-slate-50"}`}>
                     Feed Forward
                   </div>
-                  <span className={isDark ? "text-slate-500" : "text-slate-600"}>→</span>
-                  <div className={`px-2 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-300 text-slate-900 bg-slate-50"}`}>
+                  <span className={isDark ? "text-slate-500" : "text-slate-800"}>→</span>
+                  <div className={`px-2 py-1 rounded border ${isDark ? "border-slate-600 text-white" : "border-slate-500 text-slate-900 bg-slate-50"}`}>
                     Add &amp; Normalize
                   </div>
                 </div>
@@ -453,7 +453,7 @@ function EncoderStackStep({ active, tokens, theme }) {
                     arrowActive
                       ? isDark
                         ? "text-cyan-400"
-                        : "text-blue-600"
+                        : "text-blue-900"
                       : isDark
                       ? "text-slate-700"
                       : "text-slate-300"
@@ -471,7 +471,7 @@ function EncoderStackStep({ active, tokens, theme }) {
         className={`mt-3 rounded-xl border p-3 text-[11px] leading-5 text-center w-full ${
           isDark
             ? "border-slate-700 bg-slate-900/70 text-slate-300"
-            : "border-slate-400/70 bg-slate-50 text-slate-700"
+            : "border-slate-600/70 bg-slate-50 text-slate-700"
         }`}
       >
         {layerCount === 1

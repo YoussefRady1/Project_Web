@@ -79,17 +79,17 @@ const PAL = {
     res: "#f97316",
   },
   light: {
-    embed: "#0891b2",
-    selfAttn: "#7c3aed",
-    maskedAttn: "#e11d48",
-    ffn: "#d97706",
-    crossAttn: "#16a34a",
-    output: "#db2777",
-    dim: "#cbd5e1",
-    text: "#1e293b",
-    sub: "#94a3b8",
-    pill: "#f8fafc",
-    res: "#ea580c",
+    embed: "#0e7490",
+    selfAttn: "#6d28d9",
+    maskedAttn: "#be123c",
+    ffn: "#b45309",
+    crossAttn: "#15803d",
+    output: "#be185d",
+    dim: "#64748b",
+    text: "#0f172a",
+    sub: "#475569",
+    pill: "#e2e8f0",
+    res: "#c2410c",
   },
 };
 
@@ -152,7 +152,7 @@ function InfoTip({ text, isDark }) {
         className={`inline-flex items-center justify-center w-3 h-3 rounded-full text-[8px] font-bold cursor-help leading-none transition select-none ${
           isDark
             ? "bg-slate-700 text-slate-300 hover:bg-cyan-500 hover:text-slate-950"
-            : "bg-slate-300 text-slate-600 hover:bg-blue-500 hover:text-white"
+            : "bg-slate-300 text-slate-800 hover:bg-blue-500 hover:text-white"
         }`}
         aria-label="More info"
       >
@@ -163,7 +163,7 @@ function InfoTip({ text, isDark }) {
           className={`absolute z-50 bottom-full mb-1 left-1/2 -translate-x-1/2 w-52 p-2 rounded-lg shadow-xl text-[10px] leading-snug border pointer-events-none normal-case font-normal tracking-normal ${
             isDark
               ? "bg-slate-900 border-slate-600 text-slate-200"
-              : "bg-white border-slate-400 text-slate-800"
+              : "bg-white border-slate-600 text-slate-800"
           }`}
         >
           {text}
@@ -189,12 +189,12 @@ function ControlSlider({
   tooltip,
 }) {
   const accentTxt = {
-    cyan: isDark ? "text-cyan-300" : "text-blue-700",
+    cyan: isDark ? "text-cyan-300" : "text-blue-900",
     purple: isDark ? "text-purple-300" : "text-purple-700",
-    amber: isDark ? "text-amber-300" : "text-amber-600",
+    amber: isDark ? "text-amber-300" : "text-amber-800",
     emerald: isDark ? "text-emerald-300" : "text-emerald-700",
-    rose: isDark ? "text-rose-300" : "text-rose-600",
-    slate: isDark ? "text-slate-300" : "text-slate-600",
+    rose: isDark ? "text-rose-300" : "text-rose-800",
+    slate: isDark ? "text-slate-300" : "text-slate-800",
   }[accent];
   const accentBar = {
     cyan: "accent-cyan-500",
@@ -210,7 +210,7 @@ function ControlSlider({
       <div className="flex items-baseline justify-between mb-0.5">
         <span
           className={`text-[10.5px] font-semibold flex items-center gap-1 ${
-            isDark ? "text-slate-300" : "text-slate-600"
+            isDark ? "text-slate-300" : "text-slate-800"
           }`}
         >
           {label}
@@ -234,7 +234,7 @@ function ControlSlider({
       {hint && (
         <div
           className={`text-[9px] italic leading-tight mt-0.5 ${
-            isDark ? "text-slate-500" : "text-slate-500"
+            isDark ? "text-slate-500" : "text-slate-700"
           }`}
         >
           {hint}
@@ -278,12 +278,12 @@ function GenerationControls({
   return (
     <div
       className={`rounded-xl border px-3 py-2 ${
-        isDark ? "border-slate-700 bg-slate-900/40" : "border-slate-400/70 bg-slate-50"
+        isDark ? "border-slate-700 bg-slate-900/40" : "border-slate-600/70 bg-slate-50"
       }`}
     >
       <div
         className={`text-[10px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1 ${
-          isDark ? "text-slate-400" : "text-slate-500"
+          isDark ? "text-slate-400" : "text-slate-700"
         }`}
       >
         <span>Generation Controls ·</span>
@@ -316,7 +316,7 @@ function GenerationControls({
               ? "greedy/sampling mode"
               : `explores ${numBeams} paths in parallel`
           }
-          tooltip="How many candidate translations the model keeps alive at the same time. 1 = greedy/sampling (fastest). Higher values explore several full paths in parallel and pick the best more careful but slower. Disables Temperature/Top-P/Top-K."
+          tooltip="How many possible translations the model tries at the same time. Beams = 1 means it picks the best word at each step and moves on. Beams = 5 means it keeps 5 options open and picks the best full sentence at the end."
         />
         <ControlSlider
           label="Temperature"
@@ -330,7 +330,7 @@ function GenerationControls({
           disabled={isBeam}
           onChange={setTemperature}
           hint={isBeam ? "n/a in beam search" : tempHint}
-          tooltip="How adventurous the model is. Low (~0.3) makes it stick to the safest, most likely word. High (~1.5) makes it pick surprising, creative words. 1.0 is natural variety."
+          tooltip="How confident or creative the model is. Low temperature (like 0.5) means the model almost always picks the top word. High temperature (like 1.5) means it spreads probability more evenly and picks surprising words more often."
         />
         <ControlSlider
           label="Top-P"
@@ -344,7 +344,7 @@ function GenerationControls({
           disabled={isBeam}
           onChange={setTopP}
           hint={isBeam ? "n/a in beam search" : topPHint}
-          tooltip="Nucleus sampling. The model only chooses from the smallest group of words whose probabilities add up to P. Lower = focused on safe choices; higher = wider creative pool."
+          tooltip="Also limits choices, but by probability instead of count. Top-P = 0.9 means keep adding words from the top until their probabilities add up to 90%, then throw away the rest. When the model is confident, fewer words qualify. When uncertain, more words qualify."
         />
         <ControlSlider
           label="Top-K"
@@ -366,7 +366,7 @@ function GenerationControls({
               ? "moderate candidate pool"
               : "large candidate pool"
           }
-          tooltip="Only the K most likely words are considered at each step, the rest are thrown away. Smaller K = focused/safer; larger K = more variety."
+          tooltip="Limits how many words the model can choose from. Top-K = 10 means only the 10 highest-scoring words are considered. Everything else is thrown away before picking."
         />
         <ControlSlider
           label="Max tokens"
@@ -379,7 +379,7 @@ function GenerationControls({
           isDark={isDark}
           onChange={setMaxTokens}
           hint="cap on output length"
-          tooltip="Maximum number of subword pieces the model can output before it must stop. Higher values let the translation be longer; lower values force it to cut short."
+          tooltip="The maximum number of words the model can generate. If set to 12, it stops after 12 tokens even if the sentence is not finished."
         />
         <ControlSlider
           label="Repetition penalty"
@@ -399,7 +399,7 @@ function GenerationControls({
               : "strongly discourages repeats"
           }
           formatter={(v) => v.toFixed(2)}
-          tooltip="Discourages the model from repeating the same word. 1.0 = no penalty (the model may loop). Higher values reduce the score of words it has already used."
+          tooltip="Reduces the score of words that already appeared in the output. A penalty of 1.0 means no effect. Above 1.0, the model avoids repeating itself."
         />
       </div>
     </div>
@@ -708,7 +708,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
       className={`w-[1060px] max-w-full flex flex-col gap-2 p-5 rounded-2xl border ${
         isDark
           ? "border-cyan-500/20 bg-slate-950/90"
-          : "border-blue-200 bg-white"
+          : "border-blue-600 bg-white"
       }`}
     >
       {modelStatus === "loading" ? (
@@ -716,12 +716,12 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           className={`flex items-center gap-3 px-4 py-2 rounded-xl text-sm ${
             isDark
               ? "bg-slate-900 border border-slate-700"
-              : "bg-slate-50 border border-slate-400/70"
+              : "bg-slate-50 border border-slate-600/70"
           }`}
         >
           <span
             className={`animate-pulse ${
-              isDark ? "text-cyan-400" : "text-blue-600"
+              isDark ? "text-cyan-400" : "text-blue-900"
             }`}
           >
             Loading T5-Small…
@@ -740,7 +740,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           </div>
           <span
             className={`text-xs ${
-              isDark ? "text-slate-500" : "text-slate-400"
+              isDark ? "text-slate-500" : "text-slate-700"
             }`}
           >
             {modelProgress}%
@@ -751,7 +751,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           className={`px-4 py-2 rounded-xl text-sm text-red-500 ${
             isDark
               ? "bg-slate-900 border border-red-500/30"
-              : "bg-red-50 border border-red-200"
+              : "bg-red-100 border border-red-500"
           }`}
         >
           Failed to load model, refresh to retry
@@ -761,7 +761,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           <div className="flex items-center gap-2">
             <span
               className={`text-[10px] font-bold uppercase tracking-wider ${
-                isDark ? "text-slate-500" : "text-slate-400"
+                isDark ? "text-slate-500" : "text-slate-700"
               }`}
             >
               Try:
@@ -774,10 +774,10 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
                   activeExample === idx
                     ? isDark
                       ? "border-cyan-500 bg-cyan-500/15 text-cyan-300"
-                      : "border-blue-500 bg-blue-50 text-blue-700"
+                      : "border-blue-800 bg-blue-100 text-blue-900"
                     : isDark
                     ? "border-slate-700 text-slate-500 hover:border-slate-600"
-                    : "border-slate-400 text-slate-500 hover:border-slate-500"
+                    : "border-slate-600 text-slate-700 hover:border-slate-500"
                 }`}
               >
                 {ex.label}
@@ -786,7 +786,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
             {loading && (
               <span
                 className={`text-xs animate-pulse ml-auto ${
-                  isDark ? "text-slate-500" : "text-slate-400"
+                  isDark ? "text-slate-500" : "text-slate-700"
                 }`}
               >
                 generating…
@@ -797,7 +797,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm ${
               isDark
                 ? "bg-slate-900 border border-slate-700"
-                : "bg-slate-50 border border-slate-400/70"
+                : "bg-slate-50 border border-slate-600/70"
             }`}
           >
             <span
@@ -813,7 +813,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
               className={`flex-1 px-3 py-1 rounded-lg text-sm font-semibold outline-none transition border ${
                 isDark
                   ? "bg-cyan-500/10 border-cyan-500/40 text-cyan-300 focus:border-cyan-400"
-                  : "bg-blue-50 border-blue-300 text-blue-700 focus:border-blue-500"
+                  : "bg-blue-100 border-blue-700 text-blue-900 focus:border-blue-800"
               }`}
               placeholder="Type any sentence…"
             />
@@ -1293,7 +1293,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
       <div className="flex items-center justify-between">
         <span
           className={`text-[11px] ${
-            isDark ? "text-slate-600" : "text-slate-400"
+            isDark ? "text-slate-600" : "text-slate-700"
           }`}
         >
           Running T5-Small right here in your browser. The output percentages come from real softmax probabilities, so try dragging a slider and watch the output shift.
@@ -1303,7 +1303,7 @@ function TransformerArchitectureStep({ active, theme, setStep }) {
           className={`px-5 py-1.5 rounded-full text-[11px] font-bold transition ${
             isDark
               ? "bg-cyan-500 text-slate-950 hover:bg-cyan-400"
-              : "bg-blue-600 text-white hover:bg-blue-500"
+              : "bg-blue-800 text-white hover:bg-blue-700 shadow-md"
           }`}
         >
           Explore Encoder Details →

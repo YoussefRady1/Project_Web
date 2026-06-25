@@ -64,12 +64,12 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
     <motion.div
       animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
       className={`relative p-6 border rounded-2xl w-[900px] min-h-[340px] flex flex-col items-center ${
-        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
       }`}
     >
       <h2
         className={`font-semibold text-center ${
-          isDark ? "text-cyan-300" : "text-blue-800"
+          isDark ? "text-cyan-300" : "text-blue-900"
         }`}
       >
         Positional Encoding (Decoder)
@@ -85,12 +85,12 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
 
       <div
         className={`w-full max-w-[560px] mx-auto mb-5 rounded-xl border p-3 ${
-          isDark ? "border-cyan-400/30 bg-cyan-400/5" : "border-blue-400 bg-blue-50"
+          isDark ? "border-cyan-400/30 bg-cyan-400/5" : "border-blue-700 bg-blue-100"
         }`}
       >
         <div
           className={`text-sm font-semibold mb-1 ${
-            isDark ? "text-cyan-300" : "text-blue-800"
+            isDark ? "text-cyan-300" : "text-blue-900"
           }`}
         >
           Why we use this step decoder purpose
@@ -112,13 +112,13 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
           className={`rounded-lg border px-2.5 py-2 flex flex-col gap-1.5 text-[10px] ${
             isDark
               ? "border-slate-700 bg-slate-900/90"
-              : "border-slate-400/70 bg-slate-50"
+              : "border-slate-600/70 bg-slate-50"
           }`}
         >
           <div className="flex items-center gap-2">
             <span
               className={`w-3 h-3 rounded-sm border ${
-                isDark ? "border-cyan-400 bg-cyan-400/10" : "border-blue-300 bg-blue-100"
+                isDark ? "border-cyan-400 bg-cyan-400/10" : "border-blue-700 bg-blue-100"
               }`}
             />
             <span className={isDark ? "text-slate-300" : "text-slate-700"}>
@@ -128,7 +128,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
           <div className="flex items-center gap-2">
             <span
               className={`w-3 h-3 rounded-sm border ${
-                isDark ? "border-purple-400 bg-purple-400/10" : "border-violet-300 bg-violet-100"
+                isDark ? "border-purple-400 bg-purple-400/10" : "border-violet-600 bg-violet-100"
               }`}
             />
             <span className={isDark ? "text-slate-300" : "text-slate-700"}>
@@ -138,7 +138,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
           <div className="flex items-center gap-2">
             <span
               className={`w-3 h-3 rounded-sm border ${
-                isDark ? "border-green-400 bg-green-400/10" : "border-green-400 bg-green-100"
+                isDark ? "border-green-400 bg-green-400/10" : "border-green-700 bg-green-100"
               }`}
             />
             <span className={isDark ? "text-slate-300" : "text-slate-700"}>
@@ -158,7 +158,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
         className={`mb-2 px-4 py-1 text-xs border rounded transition ${
           isDark
             ? "border-red-400 text-red-300 hover:bg-red-400/10"
-            : "border-red-400 text-red-700 hover:bg-red-100"
+            : "border-red-700 text-red-700 hover:bg-red-100"
         }`}
       >
         {usePosition
@@ -169,7 +169,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
       {usePosition ? (
         <p
           className={`text-[11px] text-center mb-4 ${
-            isDark ? "text-slate-500" : "text-slate-600"
+            isDark ? "text-slate-500" : "text-slate-800"
           }`}
         >
           The purple positional vector marks the generation step: &lt;START&gt; = step 0,
@@ -179,7 +179,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
       ) : (
         <p
           className={`text-[11px] text-center mb-4 ${
-            isDark ? "text-red-400/70" : "text-red-600"
+            isDark ? "text-red-400/70" : "text-red-800"
           }`}
         >
           Without positional encoding the decoder cannot tell which generation step it is on —
@@ -207,7 +207,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
             >
               <div
                 className={`text-sm w-20 text-right ${
-                  isDark ? "text-cyan-300" : "text-blue-800"
+                  isDark ? "text-cyan-300" : "text-blue-900"
                 }`}
               >
                 (Pos {index})
@@ -215,7 +215,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
 
               <div
                 className={`text-sm w-16 text-left ${
-                  isDark ? "text-cyan-400" : "text-blue-700"
+                  isDark ? "text-cyan-400" : "text-blue-900"
                 }`}
               >
                 {tok}
@@ -224,7 +224,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
               <div className="flex flex-col items-center gap-1">
                 <div
                   className={`text-[10px] ${
-                    isDark ? "text-cyan-300" : "text-blue-800"
+                    isDark ? "text-cyan-300" : "text-blue-900"
                   }`}
                 >
                   Embedding
@@ -236,7 +236,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
                       className={`px-2 py-1 text-xs border rounded ${
                         isDark
                           ? "border-cyan-400 text-cyan-300"
-                          : "border-blue-400 text-blue-800 bg-blue-100"
+                          : "border-blue-700 text-blue-900 bg-blue-100"
                       }`}
                     >
                       {v}
@@ -250,7 +250,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
                   <motion.span
                     animate={{ scale: [1, 1.25, 1], opacity: [0.7, 1, 0.7] }}
                     transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut", delay: index * 0.12 }}
-                    className={isDark ? "text-cyan-400" : "text-blue-600"}
+                    className={isDark ? "text-cyan-400" : "text-blue-900"}
                   >
                     +
                   </motion.span>
@@ -270,7 +270,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
                           className={`px-2 py-1 text-xs border rounded ${
                             isDark
                               ? "border-purple-400 text-purple-300"
-                              : "border-violet-300 text-violet-700 bg-violet-100"
+                              : "border-violet-600 text-violet-700 bg-violet-100"
                           }`}
                         >
                           {v}
@@ -282,7 +282,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
                   <motion.span
                     animate={{ x: [0, 6, 0], opacity: [0.6, 1, 0.6] }}
                     transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut", delay: index * 0.12 + 0.2 }}
-                    className={isDark ? "text-cyan-400" : "text-blue-600"}
+                    className={isDark ? "text-cyan-400" : "text-blue-900"}
                   >
                     →
                   </motion.span>
@@ -310,7 +310,7 @@ function DecoderPositionalStep({ active, tokens = [], theme }) {
                           className={`px-2 py-1 text-xs border rounded ${
                             isDark
                               ? "border-green-400 text-green-300 shadow-[0_0_10px_rgba(74,222,128,0.18)]"
-                              : "border-green-400 text-green-700 bg-green-100"
+                              : "border-green-700 text-green-700 bg-green-100"
                           }`}
                         >
                           {(parseFloat(v) + parseFloat(pos[i])).toFixed(2)}

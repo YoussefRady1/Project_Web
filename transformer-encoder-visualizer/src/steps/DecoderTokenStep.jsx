@@ -60,12 +60,12 @@ function DecoderTokenStep({ active, tokens = [], theme }) {
       animate={{ opacity: active ? 1 : 0.2, scale: active ? 1 : 0.95 }}
       transition={{ duration: 0.3 }}
       className={`p-6 border rounded-2xl w-[680px] min-h-[460px] flex flex-col items-center justify-start ${
-        isDark ? "border-cyan-500" : "border-blue-400/80 bg-white shadow-sm"
+        isDark ? "border-cyan-500" : "border-blue-800 bg-white shadow-sm"
       }`}
     >
       <h2
         className={`font-semibold text-center ${
-          isDark ? "text-cyan-300" : "text-blue-800"
+          isDark ? "text-cyan-300" : "text-blue-900"
         }`}
       >
         Output Tokenization
@@ -82,12 +82,12 @@ function DecoderTokenStep({ active, tokens = [], theme }) {
         className={`w-full max-w-[520px] mb-5 rounded-xl border p-3 ${
           isDark
             ? "border-cyan-400/30 bg-cyan-400/5"
-            : "border-blue-400 bg-blue-50"
+            : "border-blue-700 bg-blue-100"
         }`}
       >
         <div
           className={`text-sm font-semibold mb-1 ${
-            isDark ? "text-cyan-300" : "text-blue-800"
+            isDark ? "text-cyan-300" : "text-blue-900"
           }`}
         >
           Why we use this step
@@ -118,14 +118,14 @@ function DecoderTokenStep({ active, tokens = [], theme }) {
                   isStart
                     ? isDark
                       ? "border-cyan-400 text-cyan-300 bg-cyan-400/10"
-                      : "border-blue-400 text-blue-800 bg-blue-100"
+                      : "border-blue-700 text-blue-900 bg-blue-100"
                     : isEnd
                     ? isDark
                       ? "border-purple-400 text-purple-300 bg-purple-400/10"
-                      : "border-purple-400 text-purple-700 bg-purple-100"
+                      : "border-purple-700 text-purple-700 bg-purple-100"
                     : isDark
                     ? "border-green-400 text-green-300 bg-green-400/10"
-                    : "border-green-400 text-green-700 bg-green-100"
+                    : "border-green-700 text-green-700 bg-green-100"
                 }`}
               >
                 {tok}
@@ -139,7 +139,7 @@ function DecoderTokenStep({ active, tokens = [], theme }) {
               className={`px-3 py-2 rounded-lg border-2 border-dashed text-sm ${
                 isDark
                   ? "border-slate-600 text-slate-500"
-                  : "border-slate-400 text-slate-500"
+                  : "border-slate-600 text-slate-700"
               }`}
             >
               ...
@@ -149,7 +149,7 @@ function DecoderTokenStep({ active, tokens = [], theme }) {
 
         <div
           className={`text-[11px] italic h-5 ${
-            isDark ? "text-slate-400" : "text-slate-600"
+            isDark ? "text-slate-400" : "text-slate-800"
           }`}
         >
           {nextLabel}
@@ -157,13 +157,13 @@ function DecoderTokenStep({ active, tokens = [], theme }) {
 
         <div
           className={`text-[10px] flex items-center gap-3 mt-1 ${
-            isDark ? "text-slate-500" : "text-slate-500"
+            isDark ? "text-slate-500" : "text-slate-700"
           }`}
         >
           <span className="flex items-center gap-1">
             <span
               className={`w-2.5 h-2.5 rounded-sm border ${
-                isDark ? "border-cyan-400 bg-cyan-400/20" : "border-blue-400 bg-blue-100"
+                isDark ? "border-cyan-400 bg-cyan-400/20" : "border-blue-700 bg-blue-100"
               }`}
             />
             start signal
@@ -171,7 +171,7 @@ function DecoderTokenStep({ active, tokens = [], theme }) {
           <span className="flex items-center gap-1">
             <span
               className={`w-2.5 h-2.5 rounded-sm border ${
-                isDark ? "border-green-400 bg-green-400/20" : "border-green-400 bg-green-100"
+                isDark ? "border-green-400 bg-green-400/20" : "border-green-700 bg-green-100"
               }`}
             />
             predicted
@@ -179,7 +179,7 @@ function DecoderTokenStep({ active, tokens = [], theme }) {
           <span className="flex items-center gap-1">
             <span
               className={`w-2.5 h-2.5 rounded-sm border ${
-                isDark ? "border-purple-400 bg-purple-400/20" : "border-purple-400 bg-purple-100"
+                isDark ? "border-purple-400 bg-purple-400/20" : "border-purple-700 bg-purple-100"
               }`}
             />
             end of sequence
@@ -192,7 +192,7 @@ function DecoderTokenStep({ active, tokens = [], theme }) {
         className={`mt-4 text-[11px] font-medium underline underline-offset-2 ${
           isDark
             ? "text-cyan-300 hover:text-cyan-200"
-            : "text-blue-700 hover:text-blue-800"
+            : "text-blue-900 hover:text-blue-900"
         }`}
       >
         {showExplanation ? "Hide explanation" : "Show explanation"}
@@ -205,7 +205,7 @@ function DecoderTokenStep({ active, tokens = [], theme }) {
           className={`w-full max-w-[560px] mt-3 rounded-xl border p-3 text-[11px] leading-5 ${
             isDark
               ? "border-slate-700 bg-slate-900/70 text-slate-300"
-              : "border-slate-300 bg-slate-50 text-slate-700"
+              : "border-slate-500 bg-slate-50 text-slate-700"
           }`}
         >
           <p className="mb-2">
